@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>The Royal Place | Chili's Bar & Grill</title>
 
 <style>
@@ -15,41 +16,45 @@
 
 :root{
   --gold:#f4b942;
-  --dark:#080808;
+  --dark:#070707;
   --dark2:#111;
   --card:#171717;
-  --white:#fff;
-  --muted:#aaa;
+  --text:#fff;
+  --muted:#999;
+  --green:#25D366;
 }
 
 body{
   font-family:Arial,Helvetica,sans-serif;
   background:var(--dark);
-  color:var(--white);
+  color:var(--text);
+  overflow-x:hidden;
 }
 
-/* NAVBAR */
+/* ================= NAVBAR ================= */
+
 header{
   position:fixed;
   top:0;
+  left:0;
   width:100%;
   z-index:1000;
-  background:rgba(8,8,8,.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid #292929;
+  background:rgba(5,5,5,.92);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid #252525;
 }
 
 .nav{
   max-width:1200px;
   margin:auto;
-  padding:18px 25px;
+  padding:18px 22px;
   display:flex;
-  align-items:center;
   justify-content:space-between;
+  align-items:center;
 }
 
 .logo{
-  font-size:21px;
+  font-size:20px;
   font-weight:900;
   color:var(--gold);
 }
@@ -63,23 +68,25 @@ nav a{
   text-decoration:none;
   margin-left:25px;
   font-weight:bold;
+  transition:.3s;
 }
 
 nav a:hover{
   color:var(--gold);
 }
 
-/* HERO */
+/* ================= HERO ================= */
+
 .hero{
   min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:120px 20px 60px;
+  padding:120px 20px 70px;
+
   background:
-    linear-gradient(rgba(0,0,0,.72),rgba(0,0,0,.85)),
-    radial-gradient(circle at center,#5a3a08 0%,#080808 55%);
+    radial-gradient(circle at 50% 35%,#4b320c 0%,#111 28%,#070707 65%);
 }
 
 .hero-content{
@@ -88,19 +95,19 @@ nav a:hover{
 
 .badge{
   display:inline-block;
+  padding:8px 18px;
   border:1px solid var(--gold);
   color:var(--gold);
-  padding:8px 18px;
   border-radius:30px;
-  margin-bottom:20px;
-  font-size:13px;
-  letter-spacing:2px;
+  font-size:12px;
+  letter-spacing:3px;
+  margin-bottom:25px;
 }
 
 .hero h1{
-  font-size:clamp(45px,8vw,90px);
+  font-size:clamp(48px,8vw,90px);
   line-height:.95;
-  margin-bottom:20px;
+  margin-bottom:25px;
 }
 
 .hero h1 span{
@@ -108,7 +115,7 @@ nav a:hover{
 }
 
 .hero p{
-  color:#ddd;
+  color:#ccc;
   font-size:18px;
   line-height:1.7;
   max-width:650px;
@@ -116,20 +123,23 @@ nav a:hover{
 }
 
 .buttons{
-  margin-top:35px;
   display:flex;
-  gap:15px;
   justify-content:center;
+  gap:15px;
   flex-wrap:wrap;
+  margin-top:35px;
 }
 
 .btn{
   padding:15px 25px;
-  border-radius:8px;
+  border-radius:9px;
   text-decoration:none;
   font-weight:bold;
-  display:inline-block;
   transition:.3s;
+}
+
+.btn:hover{
+  transform:translateY(-4px);
 }
 
 .btn-gold{
@@ -142,11 +152,8 @@ nav a:hover{
   color:white;
 }
 
-.btn:hover{
-  transform:translateY(-3px);
-}
+/* ================= SECTIONS ================= */
 
-/* SECTION */
 section{
   padding:90px 20px;
 }
@@ -162,7 +169,7 @@ section{
 }
 
 .section-title h2{
-  font-size:40px;
+  font-size:42px;
 }
 
 .section-title span{
@@ -174,7 +181,8 @@ section{
   margin-top:10px;
 }
 
-/* MENU */
+/* ================= MENU ================= */
+
 .menu-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -196,12 +204,13 @@ section{
 
 .food-image{
   height:220px;
-  background:#252525;
+  background:
+    linear-gradient(135deg,#242424,#111);
   display:flex;
   align-items:center;
   justify-content:center;
   color:#777;
-  font-size:16px;
+  overflow:hidden;
 }
 
 .food-image img{
@@ -221,8 +230,8 @@ section{
 
 .food-info p{
   color:#999;
-  font-size:14px;
   line-height:1.5;
+  font-size:14px;
   min-height:42px;
 }
 
@@ -233,18 +242,37 @@ section{
   margin:15px 0;
 }
 
-.add-btn{
-  width:100%;
-  padding:12px;
+/* QUANTITY */
+
+.quantity{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#0c0c0c;
+  border:1px solid #333;
+  border-radius:10px;
+  padding:6px;
+}
+
+.quantity button{
+  width:42px;
+  height:38px;
+  border:0;
+  border-radius:7px;
   background:var(--gold);
   color:#000;
-  border:0;
-  border-radius:8px;
+  font-size:23px;
   font-weight:bold;
   cursor:pointer;
 }
 
-/* ABOUT */
+.quantity span{
+  font-size:18px;
+  font-weight:bold;
+}
+
+/* ================= ABOUT ================= */
+
 .about{
   background:#101010;
 }
@@ -252,12 +280,12 @@ section{
 .about-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:50px;
+  gap:60px;
   align-items:center;
 }
 
 .about h2{
-  font-size:42px;
+  font-size:43px;
   margin-bottom:20px;
 }
 
@@ -267,25 +295,30 @@ section{
 
 .about p{
   color:#aaa;
-  line-height:1.8;
+  line-height:1.9;
 }
 
-/* REVIEWS */
+/* ================= REVIEWS ================= */
+
 .review-box{
   max-width:700px;
   margin:auto;
   background:#151515;
-  padding:30px;
-  border-radius:18px;
   border:1px solid #292929;
+  border-radius:18px;
+  padding:30px;
   text-align:center;
 }
 
 .stars{
-  font-size:35px;
+  margin:18px 0;
+  font-size:38px;
+}
+
+.stars span{
   color:#444;
   cursor:pointer;
-  margin:15px 0;
+  transition:.2s;
 }
 
 .stars span.active{
@@ -295,79 +328,82 @@ section{
 .review-box textarea{
   width:100%;
   height:110px;
-  resize:none;
-  background:#0b0b0b;
-  color:white;
+  background:#0a0a0a;
   border:1px solid #333;
   border-radius:10px;
+  color:white;
   padding:15px;
+  resize:none;
   outline:none;
 }
 
 .review-btn{
   margin-top:15px;
-  padding:13px 25px;
-  border:0;
+  padding:14px 25px;
   background:var(--gold);
+  border:0;
   border-radius:8px;
   font-weight:bold;
   cursor:pointer;
 }
 
-/* LOCATION */
+/* ================= LOCATION ================= */
+
 .location{
-  text-align:center;
   background:#0d0d0d;
+  text-align:center;
 }
 
 .location p{
   color:#aaa;
+  line-height:1.8;
   margin:15px auto 25px;
 }
 
 .map-btn{
   display:inline-block;
   padding:15px 25px;
-  background:#fff;
+  background:white;
   color:#000;
+  border-radius:9px;
   text-decoration:none;
-  border-radius:8px;
   font-weight:bold;
 }
 
-/* CART */
+/* ================= CART ================= */
+
 .cart{
   position:fixed;
   right:20px;
   bottom:20px;
-  z-index:1500;
+  z-index:2000;
 }
 
 .cart-button{
+  width:62px;
+  height:62px;
+  border-radius:50%;
   border:0;
   background:var(--gold);
-  color:#000;
-  width:60px;
-  height:60px;
-  border-radius:50%;
   font-size:24px;
   cursor:pointer;
-  box-shadow:0 5px 25px #000;
+  box-shadow:0 8px 30px #000;
 }
 
 .cart-count{
   position:absolute;
-  top:-5px;
   right:-3px;
+  top:-4px;
+  width:23px;
+  height:23px;
   background:#e53935;
   color:white;
-  width:22px;
-  height:22px;
   border-radius:50%;
-  font-size:12px;
   display:flex;
   align-items:center;
   justify-content:center;
+  font-size:12px;
+  font-weight:bold;
 }
 
 .cart-panel{
@@ -375,50 +411,147 @@ section{
   position:absolute;
   right:0;
   bottom:75px;
-  width:330px;
-  max-height:500px;
+  width:350px;
+  max-height:520px;
   overflow:auto;
   background:#151515;
   border:1px solid #333;
-  border-radius:15px;
-  padding:20px;
+  border-radius:17px;
+  padding:22px;
+  box-shadow:0 15px 50px #000;
 }
 
 .cart-panel.show{
   display:block;
 }
 
-.cart-panel h3{
-  margin-bottom:15px;
-}
-
 .cart-item{
-  border-bottom:1px solid #333;
-  padding:10px 0;
   display:flex;
   justify-content:space-between;
-  gap:10px;
+  align-items:center;
+  gap:12px;
+  padding:14px 0;
+  border-bottom:1px solid #2b2b2b;
+}
+
+.cart-controls{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.cart-controls button{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:6px;
+  background:var(--gold);
+  cursor:pointer;
+  font-size:18px;
+  font-weight:bold;
 }
 
 .total{
-  font-size:20px;
-  font-weight:bold;
   color:var(--gold);
+  font-size:21px;
+  font-weight:bold;
   margin:20px 0;
 }
 
 .checkout{
   width:100%;
-  padding:14px;
-  background:#25D366;
-  color:white;
+  padding:15px;
+  background:var(--green);
   border:0;
-  border-radius:8px;
+  border-radius:9px;
+  color:white;
   font-weight:bold;
   cursor:pointer;
 }
 
-/* FOOTER */
+/* ================= CHECKOUT MODAL ================= */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:3000;
+  background:rgba(0,0,0,.88);
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:100%;
+  max-width:500px;
+  background:#151515;
+  border:1px solid #333;
+  border-radius:18px;
+  padding:25px;
+  max-height:90vh;
+  overflow:auto;
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.close{
+  background:none;
+  border:0;
+  color:white;
+  font-size:25px;
+  cursor:pointer;
+}
+
+.form-group{
+  margin-bottom:16px;
+}
+
+.form-group label{
+  display:block;
+  margin-bottom:7px;
+  font-weight:bold;
+}
+
+.form-group input,
+.form-group textarea{
+  width:100%;
+  padding:14px;
+  background:#090909;
+  color:white;
+  border:1px solid #333;
+  border-radius:9px;
+  outline:none;
+}
+
+.form-group textarea{
+  height:100px;
+  resize:none;
+}
+
+.whatsapp-order{
+  width:100%;
+  padding:16px;
+  background:var(--green);
+  color:white;
+  border:0;
+  border-radius:9px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* ================= FOOTER ================= */
+
 footer{
   text-align:center;
   padding:35px 20px;
@@ -430,8 +563,10 @@ footer strong{
   color:var(--gold);
 }
 
-/* MOBILE */
-@media(max-width:800px){
+/* ================= MOBILE ================= */
+
+@media(max-width:850px){
+
   nav{
     display:none;
   }
@@ -445,463 +580,1192 @@ footer strong{
   }
 
   .about h2{
-    font-size:34px;
+    font-size:35px;
   }
 
+}
+
+@media(max-width:500px){
+
   .cart-panel{
-    width:290px;
+    width:calc(100vw - 30px);
+    right:-5px;
   }
+
+  .hero h1{
+    font-size:50px;
+  }
+
 }
 </style>
 </head>
 
 <body>
 
+<!-- ================= NAVIGATION ================= -->
+
 <header>
-  <div class="nav">
-    <div class="logo">THE ROYAL <span>PLACE</span></div>
 
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#menu">Menu</a>
-      <a href="#reviews">Reviews</a>
-      <a href="#location">Location</a>
-    </nav>
-  </div>
-</header>
+<div class="nav">
 
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-content">
+<div class="logo">
+THE ROYAL <span>PLACE</span>
+</div>
 
-    <div class="badge">CHILI'S BAR & GRILL</div>
-
-    <h1>
-      Welcome To<br>
-      <span>The Royal Place</span>
-    </h1>
-
-    <p>
-      Great food. Good vibes. Royal moments.
-      Discover delicious meals and refreshing drinks
-      made for unforgettable experiences.
-    </p>
-
-    <div class="buttons">
-      <a href="#menu" class="btn btn-gold">Explore Menu</a>
-
-      <a
-        href="https://wa.me/2348134595298?text=Hello%20The%20Royal%20Place%2C%20I%20would%20like%20to%20place%20an%20order."
-        class="btn btn-dark"
-        target="_blank">
-        Order on WhatsApp
-      </a>
-    </div>
-
-  </div>
-</section>
-
-<!-- MENU -->
-<section id="menu">
-  <div class="container">
-
-    <div class="section-title">
-      <h2>Our <span>Menu</span></h2>
-      <p>Freshly prepared. Beautifully served.</p>
-    </div>
-
-    <div class="menu-grid">
-
-      <!-- FOOD 1 -->
-      <div class="food-card">
-        <div class="food-image">
-          <!-- Replace with your image -->
-          FOOD IMAGE 01
-        </div>
-        <div class="food-info">
-          <h3>Royal Special</h3>
-          <p>Delicious signature meal prepared with fresh ingredients.</p>
-          <div class="price">₦8,500</div>
-          <button class="add-btn" onclick="addToCart('Royal Special',8500)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 2 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 02</div>
-        <div class="food-info">
-          <h3>Grilled Chicken</h3>
-          <p>Juicy grilled chicken served with our special sides.</p>
-          <div class="price">₦7,500</div>
-          <button class="add-btn" onclick="addToCart('Grilled Chicken',7500)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 3 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 03</div>
-        <div class="food-info">
-          <h3>Royal Jollof</h3>
-          <p>Rich and flavorful jollof rice prepared Royal Place style.</p>
-          <div class="price">₦6,500</div>
-          <button class="add-btn" onclick="addToCart('Royal Jollof',6500)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 4 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 04</div>
-        <div class="food-info">
-          <h3>BBQ Platter</h3>
-          <p>A tasty platter perfect for sharing with friends.</p>
-          <div class="price">₦12,000</div>
-          <button class="add-btn" onclick="addToCart('BBQ Platter',12000)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 5 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 05</div>
-        <div class="food-info">
-          <h3>Royal Burger</h3>
-          <p>Loaded burger with fresh toppings and our special sauce.</p>
-          <div class="price">₦6,000</div>
-          <button class="add-btn" onclick="addToCart('Royal Burger',6000)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 6 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 06</div>
-        <div class="food-info">
-          <h3>Loaded Fries</h3>
-          <p>Crispy fries loaded with delicious toppings.</p>
-          <div class="price">₦4,500</div>
-          <button class="add-btn" onclick="addToCart('Loaded Fries',4500)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 7 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 07</div>
-        <div class="food-info">
-          <h3>Seafood Special</h3>
-          <p>A premium seafood dish for seafood lovers.</p>
-          <div class="price">₦13,500</div>
-          <button class="add-btn" onclick="addToCart('Seafood Special',13500)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 8 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 08</div>
-        <div class="food-info">
-          <h3>Chicken Wings</h3>
-          <p>Crispy wings tossed in a delicious signature sauce.</p>
-          <div class="price">₦6,500</div>
-          <button class="add-btn" onclick="addToCart('Chicken Wings',6500)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 9 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 09</div>
-        <div class="food-info">
-          <h3>Royal Pasta</h3>
-          <p>Perfectly cooked pasta with our creamy special sauce.</p>
-          <div class="price">₦7,000</div>
-          <button class="add-btn" onclick="addToCart('Royal Pasta',7000)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-      <!-- FOOD 10 -->
-      <div class="food-card">
-        <div class="food-image">FOOD IMAGE 10</div>
-        <div class="food-info">
-          <h3>Chef's Special</h3>
-          <p>Ask about today's special creation from our kitchen.</p>
-          <div class="price">₦10,000</div>
-          <button class="add-btn" onclick="addToCart('Chef Special',10000)">
-            Add to Order
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section class="about">
-  <div class="container about-grid">
-
-    <div>
-      <h2>A Taste Of <span>Royalty</span></h2>
-      <p>
-        At The Royal Place, every meal is prepared to give you
-        a memorable dining experience. Whether you're coming
-        for a quick meal, hanging out with friends, or celebrating
-        something special, we've got you covered.
-      </p>
-    </div>
-
-    <div>
-      <h2>Good Food.<br><span>Great Moments.</span></h2>
-    </div>
-
-  </div>
-</section>
-
-<!-- REVIEWS -->
-<section id="reviews">
-  <div class="container">
-
-    <div class="section-title">
-      <h2>Rate Your <span>Experience ⭐</span></h2>
-      <p>Tell us what you think about The Royal Place.</p>
-    </div>
-
-    <div class="review-box">
-
-      <h3>How was your experience?</h3>
-
-      <div class="stars" id="stars">
-        <span onclick="rate(1)">★</span>
-        <span onclick="rate(2)">★</span>
-        <span onclick="rate(3)">★</span>
-        <span onclick="rate(4)">★</span>
-        <span onclick="rate(5)">★</span>
-      </div>
-
-      <textarea
-        id="reviewText"
-        placeholder="Write your review here..."></textarea>
-
-      <button class="review-btn" onclick="submitReview()">
-        ⭐ Submit Review
-      </button>
-
-      <p id="reviewMessage" style="margin-top:15px;color:#aaa;"></p>
-
-    </div>
-  </div>
-</section>
-
-<!-- LOCATION -->
-<section class="location" id="location">
-
-  <div class="container">
-
-    <div class="section-title">
-      <h2>Find <span>Us 📍</span></h2>
-    </div>
-
-    <p>
-      Concord Hotel Road, New Owerri,<br>
-      Owerri 460281, Imo State, Nigeria
-    </p>
-
-    <!-- Opens Google Maps -->
-    <a
-      class="map-btn"
-      href="https://www.google.com/maps/search/?api=1&query=Concord+Hotel+Road%2C+New+Owerri%2C+Owerri+460281%2C+Imo"
-      target="_blank">
-      📍 Open in Google Maps
-    </a>
-
-  </div>
-
-</section>
-
-<!-- CART -->
-<div class="cart">
-
-  <div class="cart-panel" id="cartPanel">
-
-    <h3>🛒 Your Order</h3>
-
-    <div id="cartItems">
-      <p style="color:#777;">Your order is empty.</p>
-    </div>
-
-    <div class="total">
-      Total: ₦<span id="total">0</span>
-    </div>
-
-    <button class="checkout" onclick="checkout()">
-      CHECK OUT ON WHATSAPP
-    </button>
-
-  </div>
-
-  <button class="cart-button" onclick="toggleCart()">
-    🛒
-    <span class="cart-count" id="cartCount">0</span>
-  </button>
+<nav>
+<a href="#home">Home</a>
+<a href="#menu">Menu</a>
+<a href="#reviews">Reviews</a>
+<a href="#location">Location</a>
+</nav>
 
 </div>
 
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero" id="home">
+
+<div class="hero-content">
+
+<div class="badge">
+CHILI'S BAR & GRILL
+</div>
+
+<h1>
+Welcome To<br>
+<span>The Royal Place</span>
+</h1>
+
+<p>
+Great food. Good vibes. Royal moments.
+Enjoy delicious meals, refreshing drinks and
+an unforgettable dining experience.
+</p>
+
+<div class="buttons">
+
+<a href="#menu" class="btn btn-gold">
+Explore Menu
+</a>
+
+<a
+href="https://wa.me/2348134595298?text=Hello%20The%20Royal%20Place%2C%20I%20would%20like%20to%20place%20an%20order."
+target="_blank"
+class="btn btn-dark">
+WhatsApp Us
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= MENU ================= -->
+
+<section id="menu">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>
+Our <span>Menu</span>
+</h2>
+
+<p>
+Choose your meal and select how many you want.
+</p>
+
+</div>
+
+
+<div class="menu-grid">
+
+
+<!-- FOOD 1 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 01
+</div>
+
+<div class="food-info">
+
+<h3>Royal Special</h3>
+
+<p>
+Our signature meal prepared with fresh ingredients.
+</p>
+
+<div class="price">
+₦8,500
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Royal Special',8500,-1)">
+−
+</button>
+
+<span id="qty-Royal Special">
+0
+</span>
+
+<button onclick="changeItem('Royal Special',8500,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 2 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 02
+</div>
+
+<div class="food-info">
+
+<h3>Grilled Chicken</h3>
+
+<p>
+Juicy grilled chicken served with delicious sides.
+</p>
+
+<div class="price">
+₦7,500
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Grilled Chicken',7500,-1)">
+−
+</button>
+
+<span id="qty-Grilled Chicken">
+0
+</span>
+
+<button onclick="changeItem('Grilled Chicken',7500,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 3 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 03
+</div>
+
+<div class="food-info">
+
+<h3>Royal Jollof</h3>
+
+<p>
+Rich and flavorful jollof rice prepared Royal Place style.
+</p>
+
+<div class="price">
+₦6,500
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Royal Jollof',6500,-1)">
+−
+</button>
+
+<span id="qty-Royal Jollof">
+0
+</span>
+
+<button onclick="changeItem('Royal Jollof',6500,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 4 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 04
+</div>
+
+<div class="food-info">
+
+<h3>BBQ Platter</h3>
+
+<p>
+A delicious platter perfect for sharing.
+</p>
+
+<div class="price">
+₦12,000
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('BBQ Platter',12000,-1)">
+−
+</button>
+
+<span id="qty-BBQ Platter">
+0
+</span>
+
+<button onclick="changeItem('BBQ Platter',12000,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 5 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 05
+</div>
+
+<div class="food-info">
+
+<h3>Royal Burger</h3>
+
+<p>
+Loaded burger with fresh toppings and special sauce.
+</p>
+
+<div class="price">
+₦6,000
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Royal Burger',6000,-1)">
+−
+</button>
+
+<span id="qty-Royal Burger">
+0
+</span>
+
+<button onclick="changeItem('Royal Burger',6000,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 6 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 06
+</div>
+
+<div class="food-info">
+
+<h3>Loaded Fries</h3>
+
+<p>
+Crispy fries loaded with delicious toppings.
+</p>
+
+<div class="price">
+₦4,500
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Loaded Fries',4500,-1)">
+−
+</button>
+
+<span id="qty-Loaded Fries">
+0
+</span>
+
+<button onclick="changeItem('Loaded Fries',4500,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 7 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 07
+</div>
+
+<div class="food-info">
+
+<h3>Seafood Special</h3>
+
+<p>
+A premium seafood dish for seafood lovers.
+</p>
+
+<div class="price">
+₦13,500
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Seafood Special',13500,-1)">
+−
+</button>
+
+<span id="qty-Seafood Special">
+0
+</span>
+
+<button onclick="changeItem('Seafood Special',13500,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 8 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 08
+</div>
+
+<div class="food-info">
+
+<h3>Chicken Wings</h3>
+
+<p>
+Crispy wings tossed in our signature sauce.
+</p>
+
+<div class="price">
+₦6,500
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Chicken Wings',6500,-1)">
+−
+</button>
+
+<span id="qty-Chicken Wings">
+0
+</span>
+
+<button onclick="changeItem('Chicken Wings',6500,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 9 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 09
+</div>
+
+<div class="food-info">
+
+<h3>Royal Pasta</h3>
+
+<p>
+Perfectly cooked pasta with our creamy special sauce.
+</p>
+
+<div class="price">
+₦7,000
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Royal Pasta',7000,-1)">
+−
+</button>
+
+<span id="qty-Royal Pasta">
+0
+</span>
+
+<button onclick="changeItem('Royal Pasta',7000,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOD 10 -->
+
+<div class="food-card">
+
+<div class="food-image">
+FOOD IMAGE 10
+</div>
+
+<div class="food-info">
+
+<h3>Chef's Special</h3>
+
+<p>
+Ask about today's special creation from our kitchen.
+</p>
+
+<div class="price">
+₦10,000
+</div>
+
+<div class="quantity">
+
+<button onclick="changeItem('Chef Special',10000,-1)">
+−
+</button>
+
+<span id="qty-Chef Special">
+0
+</span>
+
+<button onclick="changeItem('Chef Special',10000,1)">
++
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+
+<section class="about">
+
+<div class="container about-grid">
+
+<div>
+
+<h2>
+A Taste Of <span>Royalty</span>
+</h2>
+
+<p>
+At The Royal Place, every meal is prepared to give
+you a memorable dining experience. Whether you're
+coming for a quick meal, hanging out with friends,
+or celebrating something special, we've got you covered.
+</p>
+
+</div>
+
+<div>
+
+<h2>
+Good Food.<br>
+<span>Great Moments.</span>
+</h2>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= REVIEWS ================= -->
+
+<section id="reviews">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>
+Rate Your <span>Experience ⭐</span>
+</h2>
+
+<p>
+Tell us what you think about The Royal Place.
+</p>
+
+</div>
+
+
+<div class="review-box">
+
+<h3>
+How was your experience?
+</h3>
+
+
+<div class="stars" id="stars">
+
+<span onclick="rate(1)">★</span>
+<span onclick="rate(2)">★</span>
+<span onclick="rate(3)">★</span>
+<span onclick="rate(4)">★</span>
+<span onclick="rate(5)">★</span>
+
+</div>
+
+
+<textarea
+id="reviewText"
+placeholder="Write your review here...">
+</textarea>
+
+
+<button
+class="review-btn"
+onclick="submitReview()">
+
+⭐ Submit Review
+
+</button>
+
+
+<p
+id="reviewMessage"
+style="margin-top:15px;color:#aaa;">
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= LOCATION ================= -->
+
+<section class="location" id="location">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>
+Find <span>Us 📍</span>
+</h2>
+
+</div>
+
+<p>
+Concord Hotel Road, New Owerri,<br>
+Owerri 460281, Imo State, Nigeria
+</p>
+
+
+<a
+href="https://www.google.com/maps/search/?api=1&query=Concord+Hotel+Road%2C+New+Owerri%2C+Owerri+460281%2C+Imo"
+target="_blank"
+class="map-btn">
+
+📍 Open in Google Maps
+
+</a>
+
+</div>
+
+</section>
+
+
+<!-- ================= CART ================= -->
+
+<div class="cart">
+
+<div class="cart-panel" id="cartPanel">
+
+<h3>
+🛒 Your Order
+</h3>
+
+<div id="cartItems">
+
+<p style="color:#777;">
+Your order is empty.
+</p>
+
+</div>
+
+<div class="total">
+
+Total: ₦<span id="total">0</span>
+
+</div>
+
+<button
+class="checkout"
+onclick="openCheckout()">
+
+CHECK OUT
+
+</button>
+
+</div>
+
+
+<button
+class="cart-button"
+onclick="toggleCart()">
+
+🛒
+
+<span
+class="cart-count"
+id="cartCount">
+
+0
+
+</span>
+
+</button>
+
+</div>
+
+
+<!-- ================= CHECKOUT MODAL ================= -->
+
+<div
+class="modal"
+id="checkoutModal">
+
+<div class="modal-box">
+
+<div class="modal-header">
+
+<h2>
+Checkout
+</h2>
+
+<button
+class="close"
+onclick="closeCheckout()">
+
+✕
+
+</button>
+
+</div>
+
+
+<p style="color:#aaa;margin-bottom:20px;">
+
+Enter your details below and send your
+order directly to The Royal Place.
+
+</p>
+
+
+<div class="form-group">
+
+<label>
+Full Name
+</label>
+
+<input
+id="customerName"
+type="text"
+placeholder="Enter your full name">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Phone Number
+</label>
+
+<input
+id="customerPhone"
+type="tel"
+placeholder="e.g. 08134595298">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Customer / Delivery Address
+</label>
+
+<textarea
+id="customerAddress"
+placeholder="Enter your full address">
+</textarea>
+
+</div>
+
+
+<button
+class="whatsapp-order"
+onclick="sendOrder()">
+
+💬 ORDER ON WHATSAPP
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
 <footer>
-  © 2026 <strong>The Royal Place</strong> — Chili's Bar & Grill
+
+© 2026
+<strong>The Royal Place</strong>
+— Chili's Bar & Grill
+
 </footer>
+
 
 <script>
 
-let cart = [];
+/* ================= CART DATA ================= */
+
+let cart = {};
+
 let selectedRating = 0;
 
-/* ADD TO CART */
-function addToCart(name, price){
 
-  cart.push({
-    name:name,
-    price:price
-  });
+/* ================= CHANGE ITEM ================= */
+
+function changeItem(name, price, amount){
+
+  if(!cart[name]){
+
+    cart[name] = {
+      name:name,
+      price:price,
+      quantity:0
+    };
+
+  }
+
+
+  cart[name].quantity += amount;
+
+
+  if(cart[name].quantity <= 0){
+
+    delete cart[name];
+
+  }
+
+
+  updateQuantityDisplay();
 
   updateCart();
 
-  document.getElementById("cartPanel").classList.add("show");
 }
 
-/* UPDATE CART */
+
+/* ================= QUANTITY DISPLAY ================= */
+
+function updateQuantityDisplay(){
+
+  const allItems = [
+
+    "Royal Special",
+    "Grilled Chicken",
+    "Royal Jollof",
+    "BBQ Platter",
+    "Royal Burger",
+    "Loaded Fries",
+    "Seafood Special",
+    "Chicken Wings",
+    "Royal Pasta",
+    "Chef Special"
+
+  ];
+
+
+  allItems.forEach(name => {
+
+    const element =
+      document.getElementById("qty-" + name);
+
+    if(element){
+
+      element.textContent =
+        cart[name] ? cart[name].quantity : 0;
+
+    }
+
+  });
+
+}
+
+
+/* ================= UPDATE CART ================= */
+
 function updateCart(){
 
-  const items = document.getElementById("cartItems");
-  const count = document.getElementById("cartCount");
-  const total = document.getElementById("total");
+  const items =
+    document.getElementById("cartItems");
 
-  count.textContent = cart.length;
+  const count =
+    document.getElementById("cartCount");
 
-  if(cart.length === 0){
+  const totalElement =
+    document.getElementById("total");
+
+
+  let totalItems = 0;
+
+  let totalPrice = 0;
+
+
+  Object.values(cart).forEach(item => {
+
+    totalItems += item.quantity;
+
+    totalPrice +=
+      item.price * item.quantity;
+
+  });
+
+
+  count.textContent = totalItems;
+
+  totalElement.textContent =
+    totalPrice.toLocaleString();
+
+
+  if(Object.keys(cart).length === 0){
 
     items.innerHTML =
       '<p style="color:#777;">Your order is empty.</p>';
 
-    total.textContent = "0";
     return;
+
   }
 
+
   let html = "";
-  let sum = 0;
 
-  cart.forEach((item,index)=>{
 
-    sum += item.price;
+  Object.values(cart).forEach(item => {
 
     html += `
+
       <div class="cart-item">
-        <span>${item.name}</span>
-        <span>
-          ₦${item.price.toLocaleString()}
+
+        <div>
+
+          <strong>
+            ${item.name}
+          </strong>
+
+          <div style="color:#aaa;margin-top:5px;">
+
+            ₦${item.price.toLocaleString()}
+            each
+
+          </div>
+
+        </div>
+
+
+        <div class="cart-controls">
+
           <button
-            onclick="removeItem(${index})"
-            style="background:none;border:0;color:#f55;cursor:pointer;">
-            ✕
+          onclick="changeItem('${item.name}',${item.price},-1)">
+          −
           </button>
-        </span>
+
+          <strong>
+            ${item.quantity}
+          </strong>
+
+          <button
+          onclick="changeItem('${item.name}',${item.price},1)">
+          +
+          </button>
+
+        </div>
+
       </div>
+
     `;
+
   });
 
+
   items.innerHTML = html;
-  total.textContent = sum.toLocaleString();
+
 }
 
-/* REMOVE ITEM */
-function removeItem(index){
 
-  cart.splice(index,1);
-  updateCart();
-}
+/* ================= CART TOGGLE ================= */
 
-/* TOGGLE CART */
 function toggleCart(){
 
   document
-    .getElementById("cartPanel")
-    .classList.toggle("show");
+  .getElementById("cartPanel")
+  .classList.toggle("show");
+
 }
 
-/* CHECKOUT */
-function checkout(){
 
-  if(cart.length === 0){
+/* ================= OPEN CHECKOUT ================= */
 
-    alert("Please add something to your order first.");
+function openCheckout(){
+
+  if(Object.keys(cart).length === 0){
+
+    alert(
+      "Please add a meal to your order first."
+    );
+
     return;
+
   }
 
+
+  document
+  .getElementById("checkoutModal")
+  .classList.add("show");
+
+}
+
+
+/* ================= CLOSE CHECKOUT ================= */
+
+function closeCheckout(){
+
+  document
+  .getElementById("checkoutModal")
+  .classList.remove("show");
+
+}
+
+
+/* ================= SEND WHATSAPP ORDER ================= */
+
+function sendOrder(){
+
+  const name =
+    document
+    .getElementById("customerName")
+    .value
+    .trim();
+
+
+  const phone =
+    document
+    .getElementById("customerPhone")
+    .value
+    .trim();
+
+
+  const address =
+    document
+    .getElementById("customerAddress")
+    .value
+    .trim();
+
+
+  if(
+    name === "" ||
+    phone === "" ||
+    address === ""
+  ){
+
+    alert(
+      "Please fill in your name, phone number and address."
+    );
+
+    return;
+
+  }
+
+
   let message =
-    "Hello The Royal Place, I would like to place an order:%0A%0A";
+    "🍽️ *NEW ORDER - THE ROYAL PLACE*%0A%0A";
+
+
+  message +=
+    "👤 *Customer:* " +
+    encodeURIComponent(name) +
+    "%0A";
+
+
+  message +=
+    "📱 *Phone:* " +
+    encodeURIComponent(phone) +
+    "%0A";
+
+
+  message +=
+    "📍 *Address:* " +
+    encodeURIComponent(address) +
+    "%0A%0A";
+
+
+  message +=
+    "🛒 *ORDER:*%0A";
+
 
   let total = 0;
 
-  cart.forEach(item=>{
+
+  Object.values(cart).forEach(item => {
+
+    const itemTotal =
+      item.price * item.quantity;
+
+
+    total += itemTotal;
+
 
     message +=
-      "• " + item.name +
-      " - ₦" + item.price.toLocaleString() +
+      "• " +
+      encodeURIComponent(item.name) +
+      " × " +
+      item.quantity +
+      " — ₦" +
+      itemTotal.toLocaleString() +
       "%0A";
 
-    total += item.price;
   });
 
+
   message +=
-    "%0A*Total: ₦" +
+    "%0A💰 *TOTAL: ₦" +
     total.toLocaleString() +
     "*";
 
+
+  const whatsappURL =
+    "https://wa.me/2348134595298?text=" +
+    message;
+
+
   window.open(
-    "https://wa.me/2348134595298?text=" + message,
+    whatsappURL,
     "_blank"
   );
+
 }
 
-/* STAR RATING */
+
+/* ================= STAR RATING ================= */
+
 function rate(number){
 
   selectedRating = number;
 
+
   const stars =
-    document.querySelectorAll("#stars span");
+    document.querySelectorAll(
+      "#stars span"
+    );
+
 
   stars.forEach((star,index)=>{
 
     if(index < number){
+
       star.classList.add("active");
+
     }else{
+
       star.classList.remove("active");
+
     }
 
   });
+
 }
 
-/* REVIEW */
+
+/* ================= REVIEW ================= */
+
 function submitReview(){
 
   const review =
-    document.getElementById("reviewText").value.trim();
+    document
+    .getElementById("reviewText")
+    .value
+    .trim();
+
 
   const message =
-    document.getElementById("reviewMessage");
+    document.getElementById(
+      "reviewMessage"
+    );
+
 
   if(selectedRating === 0){
 
@@ -909,7 +1773,9 @@ function submitReview(){
       "Please select a star rating ⭐";
 
     return;
+
   }
+
 
   if(review === ""){
 
@@ -917,14 +1783,20 @@ function submitReview(){
       "Please write a short review.";
 
     return;
+
   }
+
 
   message.textContent =
     "Thank you for your " +
     selectedRating +
     "-star review! ⭐";
 
-  document.getElementById("reviewText").value = "";
+
+  document.getElementById(
+    "reviewText"
+  ).value = "";
+
 }
 
 </script>
