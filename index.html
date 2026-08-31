@@ -3,1229 +3,753 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Royal Place (Chili's Bar & Grill)</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>The Royal Place - Order Food Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root { --gold:#d4a853; --gold-light:#f0d78c; --gold-dark:#b8941f; --burgundy:#6b1c1c; --burgundy-dark:#3d0e0e; --cream:#faf6f0; --dark:#1a1a1a; --text:#2c2c2c; }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Poppins',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
-.hero { position:relative; height:100vh; min-height:700px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-.hero-bg { position:absolute; inset:0; background:linear-gradient(135deg,var(--burgundy-dark) 0%,var(--burgundy) 50%,#8b2323 100%); }
-.hero-bg::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a853' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); opacity:0.5; }
-.floating-orb { position:absolute; border-radius:50%; background:radial-gradient(circle,rgba(212,168,83,0.15) 0%,transparent 70%); animation:floatOrb 8s ease-in-out infinite; }
-.floating-orb:nth-child(1){width:400px;height:400px;top:-100px;left:-100px;animation-delay:0s;}
-.floating-orb:nth-child(2){width:300px;height:300px;bottom:-50px;right:-50px;animation-delay:2s;}
-.floating-orb:nth-child(3){width:200px;height:200px;top:50%;left:60%;animation-delay:4s;}
-@keyframes floatOrb { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-30px) scale(1.1);} }
-.hero-content { position:relative; z-index:2; text-align:center; padding:0 20px; max-width:900px; }
-.hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(212,168,83,0.15); border:1px solid rgba(212,168,83,0.3); padding:8px 24px; border-radius:50px; color:var(--gold-light); font-size:0.85rem; letter-spacing:3px; text-transform:uppercase; margin-bottom:30px; backdrop-filter:blur(10px); }
-.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,6vw,5rem); font-weight:900; color:#fff; line-height:1.1; margin-bottom:10px; text-shadow:0 4px 30px rgba(0,0,0,0.3); }
-.hero h1 span { color:var(--gold); display:block; font-size:0.6em; font-weight:400; letter-spacing:8px; margin-top:10px; text-transform:uppercase; }
-.hero-divider { width:80px; height:3px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:25px auto; }
-.hero-tagline { color:rgba(255,255,255,0.7); font-size:1.1rem; font-weight:300; letter-spacing:1px; margin-bottom:40px; }
-.hero-cta { display:inline-flex; align-items:center; gap:12px; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--burgundy-dark); padding:16px 40px; border-radius:50px; font-weight:600; font-size:1rem; text-decoration:none; box-shadow:0 10px 40px rgba(212,168,83,0.4); transition:all 0.3s ease; }
-.hero-cta:hover { transform:translateY(-3px); box-shadow:0 15px 50px rgba(212,168,83,0.5); }
-.scroll-indicator { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); z-index:2; animation:bounce 2s infinite; }
-.scroll-indicator i { color:var(--gold); font-size:1.5rem; }
-@keyframes bounce { 0%,20%,50%,80%,100%{transform:translateX(-50%) translateY(0);} 40%{transform:translateX(-50%) translateY(-15px);} 60%{transform:translateX(-50%) translateY(-8px);} }
-nav { position:fixed; top:0; left:0; right:0; z-index:1000; padding:20px 40px; display:flex; justify-content:space-between; align-items:center; transition:all 0.4s ease; }
-nav.scrolled { background:rgba(26,26,26,0.95); backdrop-filter:blur(20px); padding:15px 40px; box-shadow:0 4px 30px rgba(0,0,0,0.2); }
-.nav-logo { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--gold); }
-.nav-links { display:flex; gap:30px; list-style:none; }
-.nav-links a { color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.9rem; font-weight:500; letter-spacing:1px; transition:color 0.3s; position:relative; }
-.nav-links a::after { content:''; position:absolute; bottom:-5px; left:0; width:0; height:2px; background:var(--gold); transition:width 0.3s; }
-.nav-links a:hover { color:var(--gold); }
-.nav-links a:hover::after { width:100%; }
-section { padding:100px 20px; }
-.container { max-width:1200px; margin:0 auto; }
-.section-header { text-align:center; margin-bottom:60px; }
-.section-header h2 { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3rem); color:var(--burgundy); margin-bottom:15px; }
-.section-header p { color:#777; font-size:1rem; max-width:500px; margin:0 auto; }
-.section-line { width:60px; height:3px; background:var(--gold); margin:15px auto 0; }
-.about { background:#fff; position:relative; }
-.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
-.about-img { position:relative; border-radius:20px; overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.15); }
-.about-img img { width:100%; height:450px; object-fit:cover; display:block; }
-.about-img::before { content:''; position:absolute; top:-20px; left:-20px; right:20px; bottom:20px; border:3px solid var(--gold); border-radius:20px; z-index:-1; }
-.about-text h3 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--burgundy); margin-bottom:20px; }
-.about-text p { color:#666; line-height:1.8; margin-bottom:20px; }
-.about-features { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:30px; }
-.about-feature { display:flex; align-items:center; gap:12px; }
-.about-feature i { width:45px; height:45px; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.1rem; flex-shrink:0; }
-.about-feature span { font-weight:600; color:var(--burgundy); font-size:0.95rem; }
-.menu { background:var(--cream); }
-.menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:30px; }
-.menu-card { background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 10px 40px rgba(0,0,0,0.06); transition:all 0.4s ease; position:relative; }
-.menu-card:hover { transform:translateY(-10px); box-shadow:0 25px 60px rgba(0,0,0,0.12); }
-.menu-card-img { position:relative; height:220px; overflow:hidden; }
-.menu-card-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.6s ease; }
-.menu-card:hover .menu-card-img img { transform:scale(1.1); }
-.menu-card-badge { position:absolute; top:15px; left:15px; background:linear-gradient(135deg,var(--burgundy),var(--burgundy-dark)); color:#fff; padding:6px 16px; border-radius:50px; font-size:0.75rem; font-weight:600; letter-spacing:1px; }
-.menu-card-badge.hot { background:linear-gradient(135deg,#c0392b,#922b21); }
-.menu-card-badge.new { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--burgundy-dark); }
-.menu-card-body { padding:25px; }
-.menu-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
-.menu-card-header h4 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--burgundy); }
-.menu-card-price { font-size:1.2rem; font-weight:700; color:var(--gold-dark); }
-.menu-card-body>p { color:#888; font-size:0.9rem; line-height:1.6; }
-.quantity-selector { display:flex; align-items:center; gap:0; margin:15px 0; justify-content:center; }
-.qty-btn { width:36px; height:36px; border:2px solid var(--gold); background:#fff; color:var(--burgundy); font-size:1rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
-.qty-btn:first-child { border-radius:10px 0 0 10px; border-right:none; }
-.qty-btn:last-child { border-radius:0 10px 10px 0; border-left:none; }
-.qty-btn:hover { background:var(--gold); color:#fff; }
-.qty-input { width:50px; height:36px; border:2px solid var(--gold); text-align:center; font-weight:700; font-size:1rem; color:var(--burgundy); background:#fff; outline:none; }
-.qty-label { font-size:0.8rem; color:#999; margin-right:10px; font-weight:500; }
-.reviews-section { margin-top:20px; padding-top:20px; border-top:1px solid #f0f0f0; }
-.reviews-toggle { display:flex; align-items:center; justify-content:space-between; cursor:pointer; padding:8px 0; }
-.reviews-toggle span { font-size:0.9rem; font-weight:600; color:var(--burgundy); }
-.reviews-toggle i { color:var(--gold); transition:transform 0.3s; }
-.reviews-toggle.active i { transform:rotate(180deg); }
-.reviews-list { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
-.reviews-list.open { max-height:600px; }
-.review-item { background:#fafafa; border-radius:12px; padding:12px 15px; margin-bottom:10px; }
-.review-header { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
-.review-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; font-weight:700; }
-.review-name { font-weight:600; font-size:0.85rem; color:var(--burgundy); }
-.review-stars { color:var(--gold); font-size:0.7rem; margin-left:auto; }
-.review-text { font-size:0.85rem; color:#666; line-height:1.5; }
-.review-form { margin-top:15px; padding-top:15px; border-top:1px dashed #e0e0e0; }
-.review-form h5 { font-size:0.9rem; color:var(--burgundy); margin-bottom:10px; }
-.review-form input,.review-form textarea { width:100%; padding:10px 14px; border:1px solid #ddd; border-radius:10px; font-family:'Poppins',sans-serif; font-size:0.85rem; margin-bottom:10px; outline:none; transition:border-color 0.3s; }
-.review-form input:focus,.review-form textarea:focus { border-color:var(--gold); }
-.review-form textarea { resize:vertical; min-height:60px; }
-.star-rating-input { display:flex; gap:5px; margin-bottom:10px; }
-.star-rating-input i { font-size:1.1rem; color:#ddd; cursor:pointer; transition:color 0.2s; }
-.star-rating-input i.active,.star-rating-input i:hover { color:var(--gold); }
-.review-submit-btn { background:linear-gradient(135deg,var(--burgundy),var(--burgundy-dark)); color:#fff; border:none; padding:10px 24px; border-radius:50px; font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.3s; }
-.review-submit-btn:hover { transform:scale(1.05); box-shadow:0 5px 20px rgba(107,28,28,0.3); }
-.menu-card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding-top:15px; border-top:1px solid #f0f0f0; }
-.menu-card-rating { display:flex; align-items:center; gap:5px; color:var(--gold); font-size:0.9rem; }
-.menu-card-order { background:linear-gradient(135deg,var(--burgundy),var(--burgundy-dark)); color:#fff; border:none; padding:10px 24px; border-radius:50px; font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.3s; }
-.menu-card-order:hover { transform:scale(1.05); box-shadow:0 8px 25px rgba(107,28,28,0.3); }
-.cart-sidebar { position:fixed; top:0; right:-420px; width:420px; max-width:100%; height:100vh; background:#fff; box-shadow:-10px 0 40px rgba(0,0,0,0.15); z-index:2000; transition:right 0.4s ease; display:flex; flex-direction:column; }
-.cart-sidebar.open { right:0; }
-.cart-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1999; opacity:0; visibility:hidden; transition:all 0.3s; }
-.cart-overlay.open { opacity:1; visibility:visible; }
-.cart-header { padding:25px; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center; }
-.cart-header h3 { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--burgundy); }
-.cart-close { width:40px; height:40px; border:none; background:#f5f5f5; border-radius:50%; cursor:pointer; font-size:1.1rem; color:var(--burgundy); transition:all 0.3s; }
-.cart-close:hover { background:var(--burgundy); color:#fff; }
-.cart-items { flex:1; overflow-y:auto; padding:20px; }
-.cart-empty { text-align:center; padding:60px 20px; color:#aaa; }
-.cart-empty i { font-size:3rem; margin-bottom:15px; color:#ddd; }
-.cart-item { display:flex; gap:15px; padding:15px; background:#fafafa; border-radius:15px; margin-bottom:12px; align-items:center; }
-.cart-item img { width:60px; height:60px; border-radius:10px; object-fit:cover; }
-.cart-item-info { flex:1; }
-.cart-item-info h5 { font-size:0.95rem; color:var(--burgundy); margin-bottom:4px; }
-.cart-item-info span { font-size:0.85rem; color:var(--gold-dark); font-weight:600; }
-.cart-item-qty { font-size:0.8rem; color:#999; }
-.cart-item-remove { width:32px; height:32px; border:none; background:#ffebee; color:#c0392b; border-radius:8px; cursor:pointer; transition:all 0.2s; }
-.cart-item-remove:hover { background:#c0392b; color:#fff; }
-.cart-footer { padding:25px; border-top:1px solid #f0f0f0; background:#fff; }
-.cart-total { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-.cart-total span:first-child { font-size:1rem; color:#666; }
-.cart-total span:last-child { font-size:1.4rem; font-weight:700; color:var(--burgundy); }
-.checkout-btn { width:100%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--burgundy-dark); border:none; padding:16px; border-radius:15px; font-weight:700; font-size:1rem; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center; gap:10px; }
-.checkout-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(212,168,83,0.4); }
-.cart-float-btn { position:fixed; bottom:30px; right:30px; width:60px; height:60px; background:linear-gradient(135deg,var(--burgundy),var(--burgundy-dark)); border:none; border-radius:50%; color:#fff; font-size:1.3rem; cursor:pointer; box-shadow:0 10px 30px rgba(107,28,28,0.4); z-index:1500; transition:all 0.3s; display:flex; align-items:center; justify-content:center; }
-.cart-float-btn:hover { transform:scale(1.1); }
-.cart-count { position:absolute; top:-5px; right:-5px; width:24px; height:24px; background:var(--gold); color:var(--burgundy-dark); border-radius:50%; font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
-.checkout-modal { position:fixed; inset:0; z-index:3000; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:all 0.3s; }
-.checkout-modal.open { opacity:1; visibility:visible; }
-.checkout-modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.6); }
-.checkout-modal-content { position:relative; background:#fff; border-radius:25px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; margin:20px; padding:35px; box-shadow:0 30px 60px rgba(0,0,0,0.2); transform:translateY(30px); transition:transform 0.3s; }
-.checkout-modal.open .checkout-modal-content { transform:translateY(0); }
-.checkout-modal-header { text-align:center; margin-bottom:25px; }
-.checkout-modal-header h3 { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--burgundy); }
-.checkout-modal-header p { color:#888; font-size:0.9rem; margin-top:5px; }
-.form-group { margin-bottom:18px; }
-.form-group label { display:block; font-size:0.85rem; font-weight:600; color:var(--burgundy); margin-bottom:6px; }
-.form-group input,.form-group textarea { width:100%; padding:14px 16px; border:2px solid #eee; border-radius:12px; font-family:'Poppins',sans-serif; font-size:0.95rem; outline:none; transition:border-color 0.3s; }
-.form-group input:focus,.form-group textarea:focus { border-color:var(--gold); }
-.form-group textarea { resize:vertical; min-height:80px; }
-.order-summary { background:#fafafa; border-radius:15px; padding:20px; margin:20px 0; }
-.order-summary h4 { font-size:1rem; color:var(--burgundy); margin-bottom:15px; }
-.order-summary-item { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed #e0e0e0; font-size:0.9rem; }
-.order-summary-item:last-child { border-bottom:none; font-weight:700; color:var(--burgundy); font-size:1.1rem; margin-top:10px; padding-top:15px; border-top:2px solid var(--gold); }
-.whatsapp-btn { width:100%; background:linear-gradient(135deg,#25D366,#128C7E); color:#fff; border:none; padding:16px; border-radius:15px; font-weight:700; font-size:1rem; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center; gap:10px; margin-top:10px; }
-.whatsapp-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(37,211,102,0.4); }
-.checkout-close { position:absolute; top:20px; right:20px; width:36px; height:36px; border:none; background:#f5f5f5; border-radius:50%; cursor:pointer; font-size:1rem; color:var(--burgundy); transition:all 0.3s; }
-.checkout-close:hover { background:var(--burgundy); color:#fff; }
-.info-section { background:#fff; }
-.info-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
-.info-card { background:linear-gradient(135deg,#fff 0%,#faf6f0 100%); border:1px solid rgba(212,168,83,0.2); border-radius:20px; padding:40px 30px; text-align:center; transition:all 0.4s ease; position:relative; overflow:hidden; }
-.info-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--gold),var(--gold-dark)); }
-.info-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(0,0,0,0.08); }
-.info-icon { width:70px; height:70px; background:linear-gradient(135deg,var(--burgundy),var(--burgundy-dark)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:1.5rem; color:var(--gold); }
-.info-card h3 { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--burgundy); margin-bottom:12px; }
-.info-card p { color:#777; font-size:0.95rem; line-height:1.7; }
-.info-card a { color:var(--gold-dark); text-decoration:none; font-weight:600; transition:color 0.3s; }
-.info-card a:hover { color:var(--burgundy); }
-.map-section { padding:0; }
-.map-container { width:100%; height:400px; border:none; }
-footer { background:linear-gradient(135deg,var(--burgundy-dark),var(--burgundy)); color:#fff; padding:60px 20px 30px; }
-.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:50px; max-width:1200px; margin:0 auto 50px; }
-.footer-brand h3 { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--gold); margin-bottom:15px; }
-.footer-brand p { color:rgba(255,255,255,0.6); line-height:1.8; font-size:0.95rem; }
-.footer-links h4 { font-size:1rem; color:var(--gold); margin-bottom:20px; letter-spacing:2px; text-transform:uppercase; }
-.footer-links ul { list-style:none; }
-.footer-links li { margin-bottom:12px; }
-.footer-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:0.9rem; transition:color 0.3s; }
-.footer-links a:hover { color:var(--gold); }
-.footer-social { display:flex; gap:15px; margin-top:20px; }
-.footer-social a { width:45px; height:45px; border:1px solid rgba(212,168,83,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:1.1rem; transition:all 0.3s; }
-.footer-social a:hover { background:var(--gold); color:var(--burgundy-dark); transform:translateY(-3px); }
-.footer-bottom { text-align:center; padding-top:30px; border-top:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.4); font-size:0.85rem; }
-.fade-in { opacity:0; transform:translateY(40px); transition:all 0.8s ease; }
-.fade-in.visible { opacity:1; transform:translateY(0); }
-@media(max-width:900px){ .about-grid{grid-template-columns:1fr;} .info-grid{grid-template-columns:1fr;} .footer-grid{grid-template-columns:1fr;text-align:center;} .footer-social{justify-content:center;} .nav-links{display:none;} .cart-sidebar{width:100%;} }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#ffc244;--primary-dark:#e6ac00;--dark:#1a1a2e;--darker:#12121f;--card:#1e1e32;--card-hover:#252540;--text:#f0f0f5;--text-muted:#9a9ab0;--border:#2a2a45;--green:#00c853;--red:#ff5252}
+body{font-family:'Inter',sans-serif;background:var(--darker);color:var(--text);min-height:100vh}
+.header{background:var(--dark);padding:12px 20px;position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.4);border-bottom:1px solid var(--border)}
+.logo{font-weight:900;font-size:1.3rem;color:var(--primary);display:flex;align-items:center;gap:8px}
+.logo i{font-size:1.1rem}
+.header-right{display:flex;align-items:center;gap:15px}
+.cart-btn{background:var(--primary);color:var(--dark);border:none;padding:10px 18px;border-radius:30px;font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s}
+.cart-btn:hover{background:var(--primary-dark);transform:scale(1.05)}
+.cart-btn .count{background:var(--dark);color:var(--primary);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem}
+.hero{margin-top:60px;background:linear-gradient(135deg,var(--dark) 0%,#1a1a3e 50%,var(--darker) 100%);padding:40px 20px;text-align:center;border-bottom:1px solid var(--border)}
+.hero h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;margin-bottom:8px}
+.hero h1 span{color:var(--primary)}
+.hero p{color:var(--text-muted);font-size:1rem;margin-bottom:20px}
+.location-bar{max-width:550px;margin:0 auto;background:var(--card);border:2px solid var(--border);border-radius:15px;padding:14px 20px;display:flex;align-items:center;gap:12px;transition:border-color 0.3s}
+.location-bar:hover{border-color:var(--primary)}
+.location-bar i{color:var(--primary);font-size:1.2rem}
+.location-bar span{flex:1;text-align:left;font-size:0.9rem;color:var(--text);line-height:1.4}
+.location-bar a{color:var(--primary);font-size:0.8rem;font-weight:700;text-decoration:none;white-space:nowrap}
+.search-section{padding:20px;background:var(--dark);border-bottom:1px solid var(--border);position:sticky;top:60px;z-index:100}
+.search-bar{max-width:600px;margin:0 auto;background:var(--card);border:2px solid var(--border);border-radius:30px;padding:4px;display:flex;align-items:center;gap:10px}
+.search-bar i{color:var(--text-muted);margin-left:15px}
+.search-bar input{flex:1;background:transparent;border:none;padding:12px;color:var(--text);font-size:1rem;outline:none;font-family:'Inter',sans-serif}
+.search-bar input::placeholder{color:var(--text-muted)}
+.categories{padding:25px 20px;background:var(--darker)}
+.categories h2{font-size:1.1rem;font-weight:700;margin-bottom:15px;padding:0 5px}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.cat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 15px;text-align:center;cursor:pointer;transition:all 0.3s}
+.cat-card:hover{background:var(--card-hover);border-color:var(--primary);transform:translateY(-3px)}
+.cat-card i{font-size:2rem;color:var(--primary);margin-bottom:10px;display:block}
+.cat-card span{font-weight:600;font-size:0.9rem}
+.rest-header{padding:30px 20px 15px;background:var(--darker)}
+.rest-header h2{font-size:1.4rem;font-weight:800;margin-bottom:5px}
+.rest-header p{color:var(--text-muted);font-size:0.9rem}
+.rest-info{display:flex;gap:20px;margin-top:12px;flex-wrap:wrap}
+.rest-info span{display:flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--text-muted)}
+.rest-info span i{color:var(--primary);font-size:0.8rem}
+.menu-section{padding:0 20px 30px;background:var(--darker)}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
+.food-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;display:flex;flex-direction:column}
+.food-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+.food-img{height:160px;overflow:hidden;position:relative}
+.food-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s}
+.food-card:hover .food-img img{transform:scale(1.08)}
+.food-badge{position:absolute;top:10px;left:10px;background:var(--primary);color:var(--dark);padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:800;text-transform:uppercase}
+.food-body{padding:15px;flex:1;display:flex;flex-direction:column}
+.food-body h4{font-size:1rem;font-weight:700;margin-bottom:5px}
+.food-body p{color:var(--text-muted);font-size:0.8rem;line-height:1.5;margin-bottom:12px;flex:1}
+.food-footer{display:flex;justify-content:space-between;align-items:center}
+.food-price{font-size:1.1rem;font-weight:800;color:var(--primary)}
+.add-btn{background:var(--primary);color:var(--dark);border:none;width:36px;height:36px;border-radius:50%;font-size:1.2rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.add-btn:hover{background:var(--primary-dark);transform:scale(1.1)}
+.qty-box{display:flex;align-items:center;gap:0;border:2px solid var(--primary);border-radius:10px;overflow:hidden}
+.qty-box button{width:32px;height:32px;background:transparent;border:none;color:var(--primary);font-size:1rem;font-weight:700;cursor:pointer}
+.qty-box button:hover{background:rgba(255,194,68,0.1)}
+.qty-box input{width:40px;height:32px;background:transparent;border:none;border-left:2px solid var(--primary);border-right:2px solid var(--primary);text-align:center;color:var(--text);font-weight:700;font-size:0.9rem;outline:none}
+.reviews-btn{background:transparent;border:none;color:var(--text-muted);font-size:0.8rem;cursor:pointer;margin-top:10px;display:flex;align-items:center;gap:5px;transition:color 0.2s}
+.reviews-btn:hover{color:var(--primary)}
+.reviews-panel{max-height:0;overflow:hidden;transition:max-height 0.4s ease;margin-top:10px}
+.reviews-panel.open{max-height:500px}
+.review-tag{background:rgba(255,194,68,0.1);border:1px solid rgba(255,194,68,0.2);border-radius:10px;padding:10px;margin-bottom:8px}
+.review-tag strong{color:var(--primary);font-size:0.8rem}
+.review-tag p{color:var(--text-muted);font-size:0.75rem;margin-top:3px}
+.review-input{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;margin-top:10px}
+.review-input input,.review-input textarea{width:100%;background:transparent;border:none;color:var(--text);font-size:0.8rem;outline:none;margin-bottom:8px;font-family:'Inter',sans-serif}
+.review-input input::placeholder,.review-input textarea::placeholder{color:var(--text-muted)}
+.review-input textarea{resize:vertical;min-height:50px}
+.star-row{display:flex;gap:4px;margin-bottom:8px}
+.star-row i{color:var(--border);cursor:pointer;font-size:0.9rem;transition:color 0.2s}
+.star-row i.active,.star-row i:hover{color:var(--primary)}
+.review-input button{background:var(--primary);color:var(--dark);border:none;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer}
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;opacity:0;visibility:hidden;transition:all 0.3s}
+.cart-overlay.show{opacity:1;visibility:visible}
+.cart-drawer{position:fixed;top:0;right:-100%;width:100%;max-width:420px;height:100vh;background:var(--dark);z-index:2001;transition:right 0.35s ease;display:flex;flex-direction:column;border-left:1px solid var(--border)}
+.cart-drawer.show{right:0}
+.cart-head{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.cart-head h3{font-size:1.2rem;font-weight:800}
+.cart-head button{background:transparent;border:none;color:var(--text-muted);font-size:1.3rem;cursor:pointer;width:36px;height:36px;border-radius:50%;transition:all 0.2s}
+.cart-head button:hover{background:var(--card);color:var(--text)}
+.cart-list{flex:1;overflow-y:auto;padding:15px}
+.cart-empty{text-align:center;padding:50px 20px;color:var(--text-muted)}
+.cart-empty i{font-size:3rem;margin-bottom:15px;color:var(--border)}
+.cart-item{display:flex;gap:12px;padding:12px;background:var(--card);border-radius:12px;margin-bottom:10px;align-items:center;border:1px solid var(--border)}
+.cart-item img{width:55px;height:55px;border-radius:10px;object-fit:cover}
+.cart-item-info{flex:1}
+.cart-item-info h5{font-size:0.9rem;margin-bottom:3px}
+.cart-item-info span{color:var(--primary);font-weight:700;font-size:0.85rem}
+.cart-item-info .qty{color:var(--text-muted);font-size:0.75rem;font-weight:400}
+.del-btn{background:transparent;border:none;color:var(--red);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:0.9rem}
+.del-btn:hover{background:rgba(255,82,82,0.1)}
+.cart-foot{padding:20px;border-top:1px solid var(--border);background:var(--dark)}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.cart-total span:first-child{color:var(--text-muted)}
+.cart-total span:last-child{font-size:1.3rem;font-weight:800;color:var(--primary)}
+.checkout-btn{width:100%;background:var(--green);color:#fff;border:none;padding:15px;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.2s}
+.checkout-btn:hover{background:#00b248;transform:translateY(-2px)}
+.checkout-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:3000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.3s}
+.checkout-overlay.show{opacity:1;visibility:visible}
+.checkout-box{background:var(--dark);border:1px solid var(--border);border-radius:20px;width:100%;max-width:480px;margin:20px;padding:30px;max-height:90vh;overflow-y:auto;position:relative}
+.checkout-box h2{font-size:1.4rem;font-weight:800;margin-bottom:5px;text-align:center}
+.checkout-box>p{color:var(--text-muted);font-size:0.9rem;text-align:center;margin-bottom:25px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text-muted)}
+.form-group input,.form-group textarea{width:100%;padding:14px 16px;background:var(--card);border:2px solid var(--border);border-radius:12px;color:var(--text);font-size:0.95rem;outline:none;transition:border-color 0.3s;font-family:'Inter',sans-serif}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--primary)}
+.form-group textarea{resize:vertical;min-height:80px}
+.order-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin:20px 0}
+.order-box h4{font-size:0.95rem;font-weight:700;margin-bottom:12px;color:var(--primary)}
+.order-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border);font-size:0.9rem}
+.order-row:last-child{border-bottom:none;font-weight:800;color:var(--primary);font-size:1.1rem;margin-top:8px;padding-top:12px;border-top:2px solid var(--primary)}
+.whatsapp-btn{width:100%;background:var(--green);color:#fff;border:none;padding:16px;border-radius:12px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
+.whatsapp-btn:hover{background:#00b248;transform:translateY(-2px)}
+.whatsapp-btn i{font-size:1.3rem}
+.close-x{position:absolute;top:15px;right:15px;background:var(--card);border:none;color:var(--text-muted);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;transition:all 0.2s}
+.close-x:hover{background:var(--border);color:var(--text)}
+.footer{background:var(--dark);border-top:1px solid var(--border);padding:40px 20px 20px}
+.footer-grid{max-width:800px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.footer-brand h3{color:var(--primary);font-size:1.3rem;margin-bottom:8px}
+.footer-brand p{color:var(--text-muted);font-size:0.85rem;line-height:1.6}
+.footer-social{display:flex;gap:12px;margin-top:15px}
+.footer-social a{width:40px;height:40px;background:var(--card);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);text-decoration:none;transition:all 0.2s}
+.footer-social a:hover{background:var(--primary);color:var(--dark);border-color:var(--primary)}
+.footer-links h4{color:var(--text);font-size:0.95rem;margin-bottom:12px}
+.footer-links a{display:block;color:var(--text-muted);text-decoration:none;font-size:0.85rem;margin-bottom:8px;transition:color 0.2s}
+.footer-links a:hover{color:var(--primary)}
+.footer-copy{text-align:center;padding-top:20px;margin-top:20px;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+@media(max-width:600px){.cat-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr}.hero h1{font-size:1.6rem}}
 </style>
 </head>
 <body>
 
-<nav id="navbar">
-    <div class="nav-logo">The Royal Place</div>
-    <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#menu">Menu</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
-</nav>
-
-<section class="hero" id="home">
-    <div class="hero-bg"></div>
-    <div class="floating-orb"></div>
-    <div class="floating-orb"></div>
-    <div class="floating-orb"></div>
-    <div class="hero-content">
-        <div class="hero-badge"><i class="fas fa-crown"></i> Est. 2024</div>
-        <h1>The Royal Place <span>Chili's Bar & Grill</span></h1>
-        <div class="hero-divider"></div>
-        <p class="hero-tagline">Where Every Bite is a Royal Experience</p>
-        <a href="#menu" class="hero-cta"><i class="fas fa-utensils"></i> Explore Our Menu</a>
+<div class="header">
+    <div class="logo"><i class="fas fa-crown"></i> The Royal Place</div>
+    <div class="header-right">
+        <button class="cart-btn" onclick="toggleCart()">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Cart</span>
+            <span class="count" id="cartCount">0</span>
+        </button>
     </div>
-    <div class="scroll-indicator"><i class="fas fa-chevron-down"></i></div>
-</section>
+</div>
 
-<section class="about" id="about">
-    <div class="container">
-        <div class="about-grid fade-in">
-            <div class="about-img"><img src="restaurant-interior.jpg" alt="The Royal Place Interior"></div>
-            <div class="about-text">
-                <h3>A Taste of Royalty in Every Dish</h3>
-                <p>Welcome to The Royal Place — Chili's Bar & Grill, where we blend the warmth of Nigerian hospitality with world-class culinary excellence. Nestled in the heart of New Owerri, our restaurant offers an unforgettable dining experience.</p>
-                <p>From sizzling grilled specialties to our signature chili-infused creations, every dish is crafted with passion and the finest ingredients. Whether you're here for a casual lunch, a romantic dinner, or a celebration with friends, we promise an experience fit for royalty.</p>
-                <div class="about-features">
-                    <div class="about-feature"><i class="fas fa-fire"></i><span>Live Grill Station</span></div>
-                    <div class="about-feature"><i class="fas fa-wine-glass"></i><span>Premium Bar</span></div>
-                    <div class="about-feature"><i class="fas fa-music"></i><span>Live Music Nights</span></div>
-                    <div class="about-feature"><i class="fas fa-car"></i><span>Ample Parking</span></div>
-                </div>
-            </div>
-        </div>
+<div class="hero">
+    <h1>Order from <span>The Royal Place</span></h1>
+    <p>Chili's Bar & Grill - Premium food delivered to you</p>
+    <div class="location-bar">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Southern Centre Tangent Arterial Highway, near Concorde Ave, New Owerri, Owerri</span>
+        <a href="https://www.google.com/maps/search/?api=1&query=The+Royal+Place+Chilis+Bar+Grill+Owerri" target="_blank">Find Us</a>
     </div>
-</section>
+</div>
 
-<section class="menu" id="menu">
-    <div class="container">
-        <div class="section-header fade-in">
-            <h2>Our Royal Menu</h2>
-            <p>Handcrafted dishes made with love and the finest ingredients</p>
-            <div class="section-line"></div>
-        </div>
-        <div class="menu-grid">
-<div class="menu-card fade-in" data-id="1" data-name="Royal Grilled Chicken" data-price="8500" data-img="food1.jpg">
-    <div class="menu-card-img">
+<div class="search-section">
+    <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search for food..." onkeyup="searchFood()">
+    </div>
+</div>
+
+<div class="categories">
+    <h2>Categories</h2>
+    <div class="cat-grid">
+        <div class="cat-card" onclick="filterCat('all')"><i class="fas fa-utensils"></i><span>All</span></div>
+        <div class="cat-card" onclick="filterCat('grill')"><i class="fas fa-fire"></i><span>Grill</span></div>
+        <div class="cat-card" onclick="filterCat('soup')"><i class="fas fa-bowl-food"></i><span>Soups</span></div>
+        <div class="cat-card" onclick="filterCat('rice')"><i class="fas fa-bowl-rice"></i><span>Rice</span></div>
+        <div class="cat-card" onclick="filterCat('special')"><i class="fas fa-star"></i><span>Specials</span></div>
+        <div class="cat-card" onclick="filterCat('new')"><i class="fas fa-bolt"></i><span>New</span></div>
+    </div>
+</div>
+
+<div class="rest-header">
+    <h2>The Royal Place Menu</h2>
+    <p>Chili's Bar & Grill</p>
+    <div class="rest-info">
+        <span><i class="fas fa-star"></i> 4.8 (120+ reviews)</span>
+        <span><i class="fas fa-clock"></i> 25-40 min</span>
+        <span><i class="fas fa-motorcycle"></i> Free delivery</span>
+        <span><i class="fas fa-phone"></i> 0813 459 5298</span>
+    </div>
+</div>
+
+<div class="menu-section" id="menuSection">
+    <div class="menu-grid" id="menuGrid">
+<div class="food-card" data-cat="grill" data-name="royal grilled chicken">
+    <div class="food-img">
         <img src="food1.jpg" alt="Royal Grilled Chicken">
-        <span class="menu-card-badge hot">Chef's Special</span>
+        <span class="food-badge">Popular</span>
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Royal Grilled Chicken</h4>
-            <span class="menu-card-price">₦8,500</span>
+    <div class="food-body">
+        <h4>Royal Grilled Chicken</h4>
+        <p>Juicy grilled chicken with royal spice blend, jollof rice & coleslaw</p>
+        <div class="food-footer">
+            <span class="food-price">₦8,500</span>
+            <div class="qty-box">
+                <button onclick="changeQty(1,-1)">−</button>
+                <input type="number" id="qty-1" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(1,1)">+</button>
+            </div>
+            <button class="add-btn" onclick="addToCart(1,'Royal Grilled Chicken',8500,'food1.jpg')">+</button>
         </div>
-        <p>Juicy grilled chicken marinated in our secret royal spice blend, served with jollof rice and coleslaw.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(1,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-1" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(1,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                <span style="color:#888;margin-left:5px;">4.5</span>
-            </div>
-            <button class="menu-card-order" onclick="addToCart(1)">Add to Cart</button>
-        </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(1)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (3)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-1">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">JC</div>
-                <span class="review-name">John Chukwu</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">Best grilled chicken in Owerri! The spices are incredible.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">AN</div>
-                <span class="review-name">Amara Nwosu</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
-            </div>
-            <p class="review-text">Delicious but a bit spicy for me. Still loved it!</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">MO</div>
-                <span class="review-name">Michael Obi</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">My go-to order every time. Never disappoints!</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-1">
-                        <i class="fas fa-star" onclick="setRating(1,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(1,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(1,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(1,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(1,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-1">
-                    <textarea placeholder="Share your experience..." id="review-text-1"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(1)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(1)">
+            <i class="fas fa-comment"></i> Reviews (2)
+        </button>
+        <div class="reviews-panel" id="revs-1">
+            <div class="review-tag"><strong>John C. ★★★★★</strong><p>Best grilled chicken in Owerri!</p></div><div class="review-tag"><strong>Amara N. ★★★★</strong><p>Delicious but spicy</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-1">
+                    <i class="fas fa-star" onclick="setStar(1,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(1,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(1,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(1,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(1,5)"></i>
                 </div>
+                <input type="text" id="rname-1" placeholder="Your name">
+                <textarea id="rtext-1" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(1)">Post Review</button>
             </div>
         </div>
     </div>
-</div>
-<div class="menu-card fade-in" data-id="2" data-name="Spicy Goat Meat Peppersoup" data-price="6000" data-img="food2.jpg">
-    <div class="menu-card-img">
-        <img src="food2.jpg" alt="Spicy Goat Meat Peppersoup">
-        <span class="menu-card-badge new">New</span>
+</div><div class="food-card" data-cat="soup" data-name="goat meat peppersoup">
+    <div class="food-img">
+        <img src="food2.jpg" alt="Goat Meat Peppersoup">
+        <span class="food-badge">New</span>
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Spicy Goat Meat Peppersoup</h4>
-            <span class="menu-card-price">₦6,000</span>
-        </div>
-        <p>Traditional Nigerian goat meat peppersoup with aromatic spices, utazi leaves, and fresh pepper.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(2,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-2" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(2,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                <span style="color:#888;margin-left:5px;">5.0</span>
+    <div class="food-body">
+        <h4>Goat Meat Peppersoup</h4>
+        <p>Traditional peppersoup with aromatic spices & fresh pepper</p>
+        <div class="food-footer">
+            <span class="food-price">₦6,000</span>
+            <div class="qty-box">
+                <button onclick="changeQty(2,-1)">−</button>
+                <input type="number" id="qty-2" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(2,1)">+</button>
             </div>
-            <button class="menu-card-order" onclick="addToCart(2)">Add to Cart</button>
+            <button class="add-btn" onclick="addToCart(2,'Goat Meat Peppersoup',6000,'food2.jpg')">+</button>
         </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(2)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (2)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-2">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">EO</div>
-                <span class="review-name">Emeka Okafor</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">This peppersoup is fire! Perfect for cold evenings.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">BI</div>
-                <span class="review-name">Blessing Ibe</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">Best peppersoup I've had in Imo State. Highly recommend!</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-2">
-                        <i class="fas fa-star" onclick="setRating(2,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(2,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(2,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(2,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(2,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-2">
-                    <textarea placeholder="Share your experience..." id="review-text-2"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(2)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(2)">
+            <i class="fas fa-comment"></i> Reviews (1)
+        </button>
+        <div class="reviews-panel" id="revs-2">
+            <div class="review-tag"><strong>Emeka O. ★★★★★</strong><p>Fire! Perfect for cold evenings</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-2">
+                    <i class="fas fa-star" onclick="setStar(2,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(2,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(2,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(2,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(2,5)"></i>
                 </div>
+                <input type="text" id="rname-2" placeholder="Your name">
+                <textarea id="rtext-2" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(2)">Post Review</button>
             </div>
         </div>
     </div>
-</div>
-<div class="menu-card fade-in" data-id="3" data-name="Jollof Rice & Fried Plantain" data-price="5500" data-img="food3.jpg">
-    <div class="menu-card-img">
-        <img src="food3.jpg" alt="Jollof Rice & Fried Plantain">
-        
+</div><div class="food-card" data-cat="rice" data-name="jollof rice & plantain">
+    <div class="food-img">
+        <img src="food3.jpg" alt="Jollof Rice & Plantain">
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Jollof Rice & Fried Plantain</h4>
-            <span class="menu-card-price">₦5,500</span>
-        </div>
-        <p>Smoky party jollof rice served with sweet fried plantain, coleslaw, and your choice of protein.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(3,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-3" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(3,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                <span style="color:#888;margin-left:5px;">4.0</span>
+    <div class="food-body">
+        <h4>Jollof Rice & Plantain</h4>
+        <p>Smoky party jollof with sweet fried plantain & protein</p>
+        <div class="food-footer">
+            <span class="food-price">₦5,500</span>
+            <div class="qty-box">
+                <button onclick="changeQty(3,-1)">−</button>
+                <input type="number" id="qty-3" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(3,1)">+</button>
             </div>
-            <button class="menu-card-order" onclick="addToCart(3)">Add to Cart</button>
+            <button class="add-btn" onclick="addToCart(3,'Jollof Rice & Plantain',5500,'food3.jpg')">+</button>
         </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(3)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (1)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-3">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">FA</div>
-                <span class="review-name">Fatima Abdullahi</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
-            </div>
-            <p class="review-text">The jollof has that perfect smoky flavor. Loved it!</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-3">
-                        <i class="fas fa-star" onclick="setRating(3,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(3,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(3,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(3,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(3,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-3">
-                    <textarea placeholder="Share your experience..." id="review-text-3"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(3)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(3)">
+            <i class="fas fa-comment"></i> Reviews (1)
+        </button>
+        <div class="reviews-panel" id="revs-3">
+            <div class="review-tag"><strong>Fatima A. ★★★★</strong><p>Perfect smoky flavor</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-3">
+                    <i class="fas fa-star" onclick="setStar(3,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(3,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(3,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(3,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(3,5)"></i>
                 </div>
+                <input type="text" id="rname-3" placeholder="Your name">
+                <textarea id="rtext-3" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(3)">Post Review</button>
             </div>
         </div>
     </div>
-</div>
-<div class="menu-card fade-in" data-id="4" data-name="Suya Platter" data-price="7500" data-img="food4.jpg">
-    <div class="menu-card-img">
+</div><div class="food-card" data-cat="grill" data-name="suya platter">
+    <div class="food-img">
         <img src="food4.jpg" alt="Suya Platter">
-        <span class="menu-card-badge hot">Popular</span>
+        <span class="food-badge">Popular</span>
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Suya Platter</h4>
-            <span class="menu-card-price">₦7,500</span>
+    <div class="food-body">
+        <h4>Suya Platter</h4>
+        <p>Assorted beef, chicken & ram suya with yaji spice</p>
+        <div class="food-footer">
+            <span class="food-price">₦7,500</span>
+            <div class="qty-box">
+                <button onclick="changeQty(4,-1)">−</button>
+                <input type="number" id="qty-4" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(4,1)">+</button>
+            </div>
+            <button class="add-btn" onclick="addToCart(4,'Suya Platter',7500,'food4.jpg')">+</button>
         </div>
-        <p>Assorted grilled suya — beef, chicken, and ram — seasoned with yaji spice, onions, and tomatoes.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(4,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-4" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(4,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                <span style="color:#888;margin-left:5px;">4.7</span>
-            </div>
-            <button class="menu-card-order" onclick="addToCart(4)">Add to Cart</button>
-        </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(4)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (4)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-4">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">BI</div>
-                <span class="review-name">Blessing Ibe</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">The suya here is top-tier! Better than street suya.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">KO</div>
-                <span class="review-name">Kelechi Onyeka</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">Perfect for sharing with friends. Highly recommend!</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">TA</div>
-                <span class="review-name">Tolu Adeyemi</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
-            </div>
-            <p class="review-text">Great flavors but I wish there was more chicken suya.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">NU</div>
-                <span class="review-name">Ngozi Uche</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">Absolutely delicious! The yaji spice is on point.</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-4">
-                        <i class="fas fa-star" onclick="setRating(4,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(4,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(4,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(4,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(4,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-4">
-                    <textarea placeholder="Share your experience..." id="review-text-4"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(4)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(4)">
+            <i class="fas fa-comment"></i> Reviews (2)
+        </button>
+        <div class="reviews-panel" id="revs-4">
+            <div class="review-tag"><strong>Blessing I. ★★★★★</strong><p>Top-tier suya!</p></div><div class="review-tag"><strong>Kelechi O. ★★★★★</strong><p>Great for sharing</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-4">
+                    <i class="fas fa-star" onclick="setStar(4,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(4,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(4,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(4,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(4,5)"></i>
                 </div>
+                <input type="text" id="rname-4" placeholder="Your name">
+                <textarea id="rtext-4" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(4)">Post Review</button>
             </div>
         </div>
     </div>
-</div>
-<div class="menu-card fade-in" data-id="5" data-name="Seafood Okra Soup" data-price="9000" data-img="food5.jpg">
-    <div class="menu-card-img">
+</div><div class="food-card" data-cat="soup" data-name="seafood okra soup">
+    <div class="food-img">
         <img src="food5.jpg" alt="Seafood Okra Soup">
-        
+        <span class="food-badge">Special</span>
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Seafood Okra Soup</h4>
-            <span class="menu-card-price">₦9,000</span>
-        </div>
-        <p>Rich okra soup loaded with fresh prawns, crabs, and fish, served with pounded yam or eba.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(5,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-5" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(5,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                <span style="color:#888;margin-left:5px;">4.9</span>
+    <div class="food-body">
+        <h4>Seafood Okra Soup</h4>
+        <p>Rich okra with prawns, crabs & fish. Served with pounded yam</p>
+        <div class="food-footer">
+            <span class="food-price">₦9,000</span>
+            <div class="qty-box">
+                <button onclick="changeQty(5,-1)">−</button>
+                <input type="number" id="qty-5" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(5,1)">+</button>
             </div>
-            <button class="menu-card-order" onclick="addToCart(5)">Add to Cart</button>
+            <button class="add-btn" onclick="addToCart(5,'Seafood Okra Soup',9000,'food5.jpg')">+</button>
         </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(5)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (2)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-5">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">NU</div>
-                <span class="review-name">Ngozi Uche</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">The seafood is so fresh! This soup is heavenly.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">JC</div>
-                <span class="review-name">John Chukwu</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">Best okra soup in Owerri. The crabs are massive!</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-5">
-                        <i class="fas fa-star" onclick="setRating(5,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(5,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(5,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(5,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(5,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-5">
-                    <textarea placeholder="Share your experience..." id="review-text-5"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(5)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(5)">
+            <i class="fas fa-comment"></i> Reviews (1)
+        </button>
+        <div class="reviews-panel" id="revs-5">
+            <div class="review-tag"><strong>Ngozi U. ★★★★★</strong><p>Seafood is so fresh!</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-5">
+                    <i class="fas fa-star" onclick="setStar(5,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(5,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(5,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(5,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(5,5)"></i>
                 </div>
+                <input type="text" id="rname-5" placeholder="Your name">
+                <textarea id="rtext-5" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(5)">Post Review</button>
             </div>
         </div>
     </div>
 </div>
-<div class="menu-card fade-in" data-id="6" data-name="Chili's Special Burger" data-price="6500" data-img="food6.jpg">
-    <div class="menu-card-img">
+<div class="food-card" data-cat="special" data-name="chili's special burger">
+    <div class="food-img">
         <img src="food6.jpg" alt="Chili's Special Burger">
-        <span class="menu-card-badge new">New</span>
+        <span class="food-badge">New</span>
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Chili's Special Burger</h4>
-            <span class="menu-card-price">₦6,500</span>
-        </div>
-        <p>Double beef patty with melted cheese, caramelized onions, lettuce, tomato, and our signature chili sauce.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(6,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-6" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(6,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                <span style="color:#888;margin-left:5px;">4.6</span>
+    <div class="food-body">
+        <h4>Chili's Special Burger</h4>
+        <p>Double beef patty, cheese, caramelized onions & chili sauce</p>
+        <div class="food-footer">
+            <span class="food-price">₦6,500</span>
+            <div class="qty-box">
+                <button onclick="changeQty(6,-1)">−</button>
+                <input type="number" id="qty-6" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(6,1)">+</button>
             </div>
-            <button class="menu-card-order" onclick="addToCart(6)">Add to Cart</button>
+            <button class="add-btn" onclick="addToCart(6,'Chili's Special Burger',6500,'food6.jpg')">+</button>
         </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(6)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (1)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-6">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">EO</div>
-                <span class="review-name">Emeka Okafor</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">This burger is massive and juicy! Worth every naira.</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-6">
-                        <i class="fas fa-star" onclick="setRating(6,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(6,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(6,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(6,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(6,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-6">
-                    <textarea placeholder="Share your experience..." id="review-text-6"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(6)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(6)">
+            <i class="fas fa-comment"></i> Reviews (1)
+        </button>
+        <div class="reviews-panel" id="revs-6">
+            <div class="review-tag"><strong>Emeka O. ★★★★★</strong><p>Massive and juicy!</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-6">
+                    <i class="fas fa-star" onclick="setStar(6,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(6,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(6,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(6,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(6,5)"></i>
                 </div>
+                <input type="text" id="rname-6" placeholder="Your name">
+                <textarea id="rtext-6" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(6)">Post Review</button>
             </div>
         </div>
     </div>
-</div>
-<div class="menu-card fade-in" data-id="7" data-name="Ofada Rice & Ayamase" data-price="7000" data-img="food7.jpg">
-    <div class="menu-card-img">
+</div><div class="food-card" data-cat="rice" data-name="ofada rice & ayamase">
+    <div class="food-img">
         <img src="food7.jpg" alt="Ofada Rice & Ayamase">
-        
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Ofada Rice & Ayamase</h4>
-            <span class="menu-card-price">₦7,000</span>
-        </div>
-        <p>Authentic Ofada rice served with spicy ayamase sauce, assorted meat, and boiled eggs.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(7,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-7" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(7,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                <span style="color:#888;margin-left:5px;">4.2</span>
+    <div class="food-body">
+        <h4>Ofada Rice & Ayamase</h4>
+        <p>Authentic Ofada rice with spicy ayamase & assorted meat</p>
+        <div class="food-footer">
+            <span class="food-price">₦7,000</span>
+            <div class="qty-box">
+                <button onclick="changeQty(7,-1)">−</button>
+                <input type="number" id="qty-7" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(7,1)">+</button>
             </div>
-            <button class="menu-card-order" onclick="addToCart(7)">Add to Cart</button>
+            <button class="add-btn" onclick="addToCart(7,'Ofada Rice & Ayamase',7000,'food7.jpg')">+</button>
         </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(7)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (2)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-7">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">TA</div>
-                <span class="review-name">Tolu Adeyemi</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
-            </div>
-            <p class="review-text">Real Ofada rice! The ayamase is perfectly spicy.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">MO</div>
-                <span class="review-name">Michael Obi</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
-            </div>
-            <p class="review-text">Good portion size. Very filling and tasty.</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-7">
-                        <i class="fas fa-star" onclick="setRating(7,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(7,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(7,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(7,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(7,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-7">
-                    <textarea placeholder="Share your experience..." id="review-text-7"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(7)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(7)">
+            <i class="fas fa-comment"></i> Reviews (1)
+        </button>
+        <div class="reviews-panel" id="revs-7">
+            <div class="review-tag"><strong>Tolu A. ★★★★</strong><p>Real Ofada rice!</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-7">
+                    <i class="fas fa-star" onclick="setStar(7,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(7,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(7,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(7,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(7,5)"></i>
                 </div>
+                <input type="text" id="rname-7" placeholder="Your name">
+                <textarea id="rtext-7" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(7)">Post Review</button>
             </div>
         </div>
     </div>
-</div>
-<div class="menu-card fade-in" data-id="8" data-name="Grilled Catfish & Yam" data-price="8000" data-img="food8.jpg">
-    <div class="menu-card-img">
+</div><div class="food-card" data-cat="grill" data-name="grilled catfish & yam">
+    <div class="food-img">
         <img src="food8.jpg" alt="Grilled Catfish & Yam">
-        <span class="menu-card-badge hot">Best Seller</span>
+        <span class="food-badge">Best Seller</span>
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Grilled Catfish & Yam</h4>
-            <span class="menu-card-price">₦8,000</span>
+    <div class="food-body">
+        <h4>Grilled Catfish & Yam</h4>
+        <p>Whole grilled catfish with pepper sauce & fried yam</p>
+        <div class="food-footer">
+            <span class="food-price">₦8,000</span>
+            <div class="qty-box">
+                <button onclick="changeQty(8,-1)">−</button>
+                <input type="number" id="qty-8" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(8,1)">+</button>
+            </div>
+            <button class="add-btn" onclick="addToCart(8,'Grilled Catfish & Yam',8000,'food8.jpg')">+</button>
         </div>
-        <p>Whole grilled catfish seasoned with pepper sauce, served with fried yam and pepper dip.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(8,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-8" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(8,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                <span style="color:#888;margin-left:5px;">5.0</span>
-            </div>
-            <button class="menu-card-order" onclick="addToCart(8)">Add to Cart</button>
-        </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(8)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (3)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-8">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">FA</div>
-                <span class="review-name">Fatima Abdullahi</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">The catfish is perfectly grilled. So flavorful!</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">AN</div>
-                <span class="review-name">Amara Nwosu</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">My favorite dish here. The pepper dip is amazing.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">KO</div>
-                <span class="review-name">Kelechi Onyeka</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">Best seller for a reason! Must try.</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-8">
-                        <i class="fas fa-star" onclick="setRating(8,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(8,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(8,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(8,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(8,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-8">
-                    <textarea placeholder="Share your experience..." id="review-text-8"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(8)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(8)">
+            <i class="fas fa-comment"></i> Reviews (2)
+        </button>
+        <div class="reviews-panel" id="revs-8">
+            <div class="review-tag"><strong>Fatima A. ★★★★★</strong><p>Perfectly grilled!</p></div><div class="review-tag"><strong>Amara N. ★★★★★</strong><p>My favorite dish</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-8">
+                    <i class="fas fa-star" onclick="setStar(8,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(8,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(8,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(8,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(8,5)"></i>
                 </div>
+                <input type="text" id="rname-8" placeholder="Your name">
+                <textarea id="rtext-8" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(8)">Post Review</button>
             </div>
         </div>
     </div>
-</div>
-<div class="menu-card fade-in" data-id="9" data-name="Efo Riro & Pounded Yam" data-price="6500" data-img="food9.jpg">
-    <div class="menu-card-img">
+</div><div class="food-card" data-cat="soup" data-name="efo riro & pounded yam">
+    <div class="food-img">
         <img src="food9.jpg" alt="Efo Riro & Pounded Yam">
-        
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Efo Riro & Pounded Yam</h4>
-            <span class="menu-card-price">₦6,500</span>
-        </div>
-        <p>Rich vegetable stew with assorted meat and smoked fish, served with smooth pounded yam.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(9,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-9" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(9,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                <span style="color:#888;margin-left:5px;">4.8</span>
+    <div class="food-body">
+        <h4>Efo Riro & Pounded Yam</h4>
+        <p>Rich vegetable stew with assorted meat & smooth pounded yam</p>
+        <div class="food-footer">
+            <span class="food-price">₦6,500</span>
+            <div class="qty-box">
+                <button onclick="changeQty(9,-1)">−</button>
+                <input type="number" id="qty-9" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(9,1)">+</button>
             </div>
-            <button class="menu-card-order" onclick="addToCart(9)">Add to Cart</button>
+            <button class="add-btn" onclick="addToCart(9,'Efo Riro & Pounded Yam',6500,'food9.jpg')">+</button>
         </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(9)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (2)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-9">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">MO</div>
-                <span class="review-name">Michael Obi</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">The efo riro reminds me of my grandma's cooking.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">JC</div>
-                <span class="review-name">John Chukwu</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">Perfect combination. The pounded yam is so smooth.</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-9">
-                        <i class="fas fa-star" onclick="setRating(9,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(9,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(9,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(9,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(9,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-9">
-                    <textarea placeholder="Share your experience..." id="review-text-9"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(9)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(9)">
+            <i class="fas fa-comment"></i> Reviews (1)
+        </button>
+        <div class="reviews-panel" id="revs-9">
+            <div class="review-tag"><strong>Michael O. ★★★★★</strong><p>Reminds me of grandma's cooking</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-9">
+                    <i class="fas fa-star" onclick="setStar(9,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(9,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(9,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(9,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(9,5)"></i>
                 </div>
+                <input type="text" id="rname-9" placeholder="Your name">
+                <textarea id="rtext-9" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(9)">Post Review</button>
             </div>
         </div>
     </div>
-</div>
-<div class="menu-card fade-in" data-id="10" data-name="Chili Wings & Fries" data-price="5000" data-img="food10.jpg">
-    <div class="menu-card-img">
+</div><div class="food-card" data-cat="special" data-name="chili wings & fries">
+    <div class="food-img">
         <img src="food10.jpg" alt="Chili Wings & Fries">
-        <span class="menu-card-badge new">New</span>
+        <span class="food-badge">New</span>
     </div>
-    <div class="menu-card-body">
-        <div class="menu-card-header">
-            <h4>Chili Wings & Fries</h4>
-            <span class="menu-card-price">₦5,000</span>
-        </div>
-        <p>Crispy chicken wings tossed in our signature chili glaze, served with seasoned fries and coleslaw.</p>
-        <div class="quantity-selector">
-            <span class="qty-label">Qty:</span>
-            <button class="qty-btn" onclick="changeQty(10,-1)">−</button>
-            <input type="number" class="qty-input" id="qty-10" value="1" min="1" max="50" readonly>
-            <button class="qty-btn" onclick="changeQty(10,1)">+</button>
-        </div>
-        <div class="menu-card-footer">
-            <div class="menu-card-rating">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                <span style="color:#888;margin-left:5px;">4.9</span>
+    <div class="food-body">
+        <h4>Chili Wings & Fries</h4>
+        <p>Crispy wings in chili glaze with seasoned fries & coleslaw</p>
+        <div class="food-footer">
+            <span class="food-price">₦5,000</span>
+            <div class="qty-box">
+                <button onclick="changeQty(10,-1)">−</button>
+                <input type="number" id="qty-10" value="1" min="1" max="50" readonly>
+                <button onclick="changeQty(10,1)">+</button>
             </div>
-            <button class="menu-card-order" onclick="addToCart(10)">Add to Cart</button>
+            <button class="add-btn" onclick="addToCart(10,'Chili Wings & Fries',5000,'food10.jpg')">+</button>
         </div>
-        <div class="reviews-section">
-            <div class="reviews-toggle" onclick="toggleReviews(10)">
-                <span><i class="fas fa-comments" style="margin-right:6px;"></i>Reviews (2)</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="reviews-list" id="reviews-10">
-                <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">TA</div>
-                <span class="review-name">Tolu Adeyemi</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">These wings are addictive! The chili glaze is perfect.</p>
-        </div><div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">BI</div>
-                <span class="review-name">Blessing Ibe</span>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            </div>
-            <p class="review-text">Great value for money. The fries are crispy too!</p>
-        </div>
-                <div class="review-form">
-                    <h5>Write a Review</h5>
-                    <div class="star-rating-input" id="stars-10">
-                        <i class="fas fa-star" onclick="setRating(10,1)"></i>
-                        <i class="fas fa-star" onclick="setRating(10,2)"></i>
-                        <i class="fas fa-star" onclick="setRating(10,3)"></i>
-                        <i class="fas fa-star" onclick="setRating(10,4)"></i>
-                        <i class="fas fa-star" onclick="setRating(10,5)"></i>
-                    </div>
-                    <input type="text" placeholder="Your Name" id="review-name-10">
-                    <textarea placeholder="Share your experience..." id="review-text-10"></textarea>
-                    <button class="review-submit-btn" onclick="submitReview(10)">Submit Review</button>
+        <button class="reviews-btn" onclick="toggleReviews(10)">
+            <i class="fas fa-comment"></i> Reviews (2)
+        </button>
+        <div class="reviews-panel" id="revs-10">
+            <div class="review-tag"><strong>Tolu A. ★★★★★</strong><p>Addictive wings!</p></div><div class="review-tag"><strong>Blessing I. ★★★★★</strong><p>Great value</p></div>
+            <div class="review-input">
+                <div class="star-row" id="stars-10">
+                    <i class="fas fa-star" onclick="setStar(10,1)"></i>
+                    <i class="fas fa-star" onclick="setStar(10,2)"></i>
+                    <i class="fas fa-star" onclick="setStar(10,3)"></i>
+                    <i class="fas fa-star" onclick="setStar(10,4)"></i>
+                    <i class="fas fa-star" onclick="setStar(10,5)"></i>
                 </div>
+                <input type="text" id="rname-10" placeholder="Your name">
+                <textarea id="rtext-10" placeholder="Write a review..."></textarea>
+                <button onclick="submitReview(10)">Post Review</button>
             </div>
         </div>
     </div>
 </div>
-
-        </div>
     </div>
-</section>
+</div>
 
-<!-- CART SIDEBAR -->
-<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
-<div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header">
-        <h3><i class="fas fa-shopping-cart" style="margin-right:10px;"></i>Your Cart</h3>
-        <button class="cart-close" onclick="closeCart()"><i class="fas fa-times"></i></button>
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+    <div class="cart-head">
+        <h3><i class="fas fa-shopping-bag"></i> Your Order</h3>
+        <button onclick="toggleCart()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="cart-items" id="cartItems">
+    <div class="cart-list" id="cartList">
         <div class="cart-empty">
             <i class="fas fa-shopping-basket"></i>
             <p>Your cart is empty</p>
-            <p style="font-size:0.85rem;">Add some delicious items!</p>
+            <p>Add some delicious food!</p>
         </div>
     </div>
-    <div class="cart-footer">
+    <div class="cart-foot">
         <div class="cart-total">
             <span>Total</span>
             <span id="cartTotal">₦0</span>
         </div>
         <button class="checkout-btn" onclick="openCheckout()">
-            <i class="fas fa-credit-card"></i> Proceed to Checkout
+            <i class="fas fa-credit-card"></i> Checkout
         </button>
     </div>
 </div>
 
-<button class="cart-float-btn" id="cartFloatBtn" onclick="openCart()">
-    <i class="fas fa-shopping-cart"></i>
-    <span class="cart-count" id="cartCount">0</span>
-</button>
-
-<!-- CHECKOUT MODAL -->
-<div class="checkout-modal" id="checkoutModal">
-    <div class="checkout-modal-overlay" onclick="closeCheckout()"></div>
-    <div class="checkout-modal-content">
-        <button class="checkout-close" onclick="closeCheckout()"><i class="fas fa-times"></i></button>
-        <div class="checkout-modal-header">
-            <h3>Complete Your Order</h3>
-            <p>Fill in your details and we'll send your order via WhatsApp</p>
+<div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-box">
+        <button class="close-x" onclick="closeCheckout()"><i class="fas fa-times"></i></button>
+        <h2>Complete Your Order</h2>
+        <p>Fill your details and we will send your order via WhatsApp</p>
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="cName" placeholder="Enter your name">
         </div>
         <div class="form-group">
-            <label><i class="fas fa-user" style="margin-right:6px;"></i>Your Name</label>
-            <input type="text" id="checkoutName" placeholder="Enter your full name">
+            <label>Phone Number</label>
+            <input type="tel" id="cPhone" placeholder="e.g. 0803 123 4567">
         </div>
         <div class="form-group">
-            <label><i class="fas fa-phone" style="margin-right:6px;"></i>Phone Number</label>
-            <input type="tel" id="checkoutPhone" placeholder="e.g. 0803 123 4567">
+            <label>Delivery Address</label>
+            <textarea id="cAddress" placeholder="Enter your delivery address"></textarea>
         </div>
-        <div class="form-group">
-            <label><i class="fas fa-map-marker-alt" style="margin-right:6px;"></i>Delivery Address</label>
-            <textarea id="checkoutAddress" placeholder="Enter your delivery address"></textarea>
-        </div>
-        <div class="order-summary" id="orderSummary">
+        <div class="order-box">
             <h4>Order Summary</h4>
-            <div id="orderSummaryItems"></div>
+            <div id="orderRows"></div>
         </div>
-        <button class="whatsapp-btn" onclick="sendOrderToWhatsApp()">
+        <button class="whatsapp-btn" onclick="sendWhatsApp()">
             <i class="fab fa-whatsapp"></i> Order on WhatsApp
         </button>
     </div>
 </div>
 
-<!-- CONTACT / INFO -->
-<section class="info-section" id="contact">
-    <div class="container">
-        <div class="section-header fade-in">
-            <h2>Get In Touch</h2>
-            <p>We'd love to hear from you. Reach out to us anytime!</p>
-            <div class="section-line"></div>
-        </div>
-        <div class="info-grid fade-in">
-            <div class="info-card">
-                <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
-                <h3>WhatsApp Us</h3>
-                <p>Chat with us directly on WhatsApp for orders, reservations, and inquiries.</p>
-                <p style="margin-top:15px;"><a href="https://wa.me/2348134595298" target="_blank">0813 459 5298</a></p>
-            </div>
-            <div class="info-card">
-                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-                <h3>Our Location</h3>
-                <p>Imo Concorde Hotel<br>Concorde Boulevard, Off Port Harcourt Road<br>New Owerri, Owerri 460281<br>Imo State, Nigeria</p>
-                <p style="margin-top:10px;"><a href="https://www.google.com/maps/search/?api=1&query=Imo+Concorde+Hotel+Owerri" target="_blank"><i class="fas fa-location-arrow"></i> Open in Google Maps</a></p>
-            </div>
-            <div class="info-card">
-                <div class="info-icon"><i class="fas fa-clock"></i></div>
-                <h3>Opening Hours</h3>
-                <p>Monday - Sunday<br><strong>10:00 AM - 11:00 PM</strong><br>Open every day for your cravings!</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- GOOGLE MAPS EMBED -->
-<section class="map-section">
-    <iframe class="map-container" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3971.5!2d7.02!3d5.48!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1042594b03c0ddbb%3A0xc45b4ad5aac2c1b3!2sImo%20Concorde%20Hotel!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-</section>
-
-<!-- FOOTER -->
-<footer>
+<div class="footer">
     <div class="footer-grid">
         <div class="footer-brand">
-            <h3>The Royal Place</h3>
-            <p>Chili's Bar & Grill — Where every meal is a celebration. Experience the finest flavors in a royal atmosphere at the heart of New Owerri.</p>
+            <h3><i class="fas fa-crown"></i> The Royal Place</h3>
+            <p>Chili's Bar & Grill - Where every meal is a celebration. Premium dining at the heart of New Owerri.</p>
             <div class="footer-social">
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
                 <a href="https://wa.me/2348134595298" target="_blank"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
         <div class="footer-links">
-            <h4>Quick Links</h4>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#menu">Our Menu</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
-        <div class="footer-links">
-            <h4>Contact</h4>
-            <ul>
-                <li><a href="https://wa.me/2348134595298" target="_blank">0813 459 5298</a></li>
-                <li><a href="https://www.google.com/maps/search/?api=1&query=Imo+Concorde+Hotel+Owerri" target="_blank">Imo Concorde Hotel</a></li>
-                <li><a href="#">New Owerri, Imo</a></li>
-            </ul>
+            <h4>Contact Us</h4>
+            <a href="https://wa.me/2348134595298" target="_blank"><i class="fab fa-whatsapp"></i> 0813 459 5298</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=The+Royal+Place+Chilis+Bar+Grill+Owerri" target="_blank"><i class="fas fa-map-marker-alt"></i> Southern Centre Tangent Arterial Highway, near Concorde Ave</a>
+            <a href="#"><i class="fas fa-clock"></i> Mon-Sun: 10AM - 11PM</a>
         </div>
     </div>
-    <div class="footer-bottom">
-        <p>&copy; 2024 The Royal Place (Chili's Bar & Grill). All rights reserved.</p>
+    <div class="footer-copy">
+        The Royal Place (Chili's Bar & Grill). All rights reserved.
     </div>
-</footer>
+</div>
 
 <script>
-// ===== NAVBAR SCROLL =====
-window.addEventListener('scroll', () => {
-    const navbar = document.getElementById('navbar');
-    if (window.scrollY > 50) navbar.classList.add('scrolled');
-    else navbar.classList.remove('scrolled');
-});
-
-// ===== SMOOTH SCROLL =====
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
-    });
-});
-
-// ===== FADE IN ON SCROLL =====
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-// ===== QUANTITY SELECTOR =====
-function changeQty(id, delta) {
-    const input = document.getElementById('qty-' + id);
-    let val = parseInt(input.value) + delta;
-    if (val < 1) val = 1;
-    if (val > 50) val = 50;
-    input.value = val;
-}
-
-// ===== REVIEWS TOGGLE =====
-function toggleReviews(id) {
-    const list = document.getElementById('reviews-' + id);
-    const toggle = list.previousElementSibling;
-    list.classList.toggle('open');
-    toggle.classList.toggle('active');
-}
-
-// ===== STAR RATING =====
-let currentRatings = {};
-function setRating(foodId, stars) {
-    currentRatings[foodId] = stars;
-    const container = document.getElementById('stars-' + foodId);
-    const starEls = container.querySelectorAll('i');
-    starEls.forEach((s, i) => {
-        if (i < stars) s.classList.add('active');
-        else s.classList.remove('active');
-    });
-}
-
-// ===== SUBMIT REVIEW =====
-function submitReview(foodId) {
-    const name = document.getElementById('review-name-' + foodId).value.trim();
-    const text = document.getElementById('review-text-' + foodId).value.trim();
-    const rating = currentRatings[foodId] || 5;
-    if (!name || !text) { alert('Please fill in your name and review.'); return; }
-
-    const list = document.getElementById('reviews-' + foodId);
-    const initials = name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-    let starsHtml = '';
-    for (let i = 0; i < 5; i++) {
-        starsHtml += i < rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-    }
-
-    const reviewDiv = document.createElement('div');
-    reviewDiv.className = 'review-item';
-    reviewDiv.innerHTML = `<div class="review-header">
-        <div class="review-avatar">${initials}</div>
-        <span class="review-name">${name}</span>
-        <div class="review-stars">${starsHtml}</div>
-    </div>
-    <p class="review-text">${text}</p>`;
-
-    list.insertBefore(reviewDiv, list.lastElementChild);
-    document.getElementById('review-name-' + foodId).value = '';
-    document.getElementById('review-text-' + foodId).value = '';
-    currentRatings[foodId] = 0;
-    setRating(foodId, 0);
-    alert('Thank you for your review!');
-}
-
-// ===== CART SYSTEM =====
 let cart = [];
+let stars = {};
 
-function addToCart(id) {
-    const card = document.querySelector(`[data-id="${id}"]`);
-    const name = card.dataset.name;
-    const price = parseInt(card.dataset.price);
-    const img = card.dataset.img;
-    const qty = parseInt(document.getElementById('qty-' + id).value);
-
-    const existing = cart.find(item => item.id === id);
-    if (existing) existing.qty += qty;
-    else cart.push({ id, name, price, img, qty });
-
-    updateCart();
-    openCart();
-
-    // Reset quantity
-    document.getElementById('qty-' + id).value = 1;
+function changeQty(id, d) {
+    let el = document.getElementById('qty-'+id);
+    let v = parseInt(el.value) + d;
+    if(v < 1) v = 1;
+    if(v > 50) v = 50;
+    el.value = v;
 }
 
-function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
+function addToCart(id, name, price, img) {
+    let qty = parseInt(document.getElementById('qty-'+id).value);
+    let found = cart.find(x => x.id === id);
+    if(found) found.qty += qty;
+    else cart.push({id, name, price, img, qty});
+    updateCart();
+    toggleCart();
+    document.getElementById('qty-'+id).value = 1;
+}
+
+function removeItem(id) {
+    cart = cart.filter(x => x.id !== id);
     updateCart();
 }
 
 function updateCart() {
-    const cartItems = document.getElementById('cartItems');
-    const cartCount = document.getElementById('cartCount');
-    const cartTotal = document.getElementById('cartTotal');
-
-    if (cart.length === 0) {
-        cartItems.innerHTML = `<div class="cart-empty">
-            <i class="fas fa-shopping-basket"></i>
-            <p>Your cart is empty</p>
-            <p style="font-size:0.85rem;">Add some delicious items!</p>
-        </div>`;
-        cartCount.textContent = '0';
-        cartTotal.textContent = '₦0';
+    let list = document.getElementById('cartList');
+    let count = document.getElementById('cartCount');
+    let total = document.getElementById('cartTotal');
+    if(cart.length === 0) {
+        list.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-basket"></i><p>Your cart is empty</p><p>Add some delicious food!</p></div>`;
+        count.textContent = '0';
+        total.textContent = '₦0';
         return;
     }
-
-    let total = 0;
-    let count = 0;
-    let html = '';
-
-    cart.forEach(item => {
-        const itemTotal = item.price * item.qty;
-        total += itemTotal;
-        count += item.qty;
-        html += `<div class="cart-item">
-            <img src="${item.img}" alt="${item.name}">
-            <div class="cart-item-info">
-                <h5>${item.name}</h5>
-                <span>₦${item.price.toLocaleString()}</span>
-                <div class="cart-item-qty">Qty: ${item.qty}</div>
-            </div>
-            <button class="cart-item-remove" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i></button>
-        </div>`;
+    let t = 0, c = 0, h = '';
+    cart.forEach(x => {
+        let it = x.price * x.qty;
+        t += it; c += x.qty;
+        h += `<div class="cart-item"><img src="${x.img}" alt="${x.name}"><div class="cart-item-info"><h5>${x.name}</h5><span>₦${x.price.toLocaleString()}</span><div class="qty">Qty: ${x.qty}</div></div><button class="del-btn" onclick="removeItem(${x.id})"><i class="fas fa-trash"></i></button></div>`;
     });
-
-    cartItems.innerHTML = html;
-    cartCount.textContent = count;
-    cartTotal.textContent = '₦' + total.toLocaleString();
+    list.innerHTML = h;
+    count.textContent = c;
+    total.textContent = '₦' + t.toLocaleString();
 }
 
-function openCart() {
-    document.getElementById('cartSidebar').classList.add('open');
-    document.getElementById('cartOverlay').classList.add('open');
+function toggleCart() {
+    document.getElementById('cartDrawer').classList.toggle('show');
+    document.getElementById('cartOverlay').classList.toggle('show');
 }
 
-function closeCart() {
-    document.getElementById('cartSidebar').classList.remove('open');
-    document.getElementById('cartOverlay').classList.remove('open');
-}
-
-// ===== CHECKOUT =====
 function openCheckout() {
-    if (cart.length === 0) { alert('Your cart is empty!'); return; }
-    closeCart();
-
-    let summaryHtml = '';
-    let total = 0;
-    cart.forEach(item => {
-        const itemTotal = item.price * item.qty;
-        total += itemTotal;
-        summaryHtml += `<div class="order-summary-item">
-            <span>${item.name} x${item.qty}</span>
-            <span>₦${itemTotal.toLocaleString()}</span>
-        </div>`;
-    });
-    summaryHtml += `<div class="order-summary-item"><span>Total</span><span>₦${total.toLocaleString()}</span></div>`;
-
-    document.getElementById('orderSummaryItems').innerHTML = summaryHtml;
-    document.getElementById('checkoutModal').classList.add('open');
+    if(cart.length === 0) { alert('Cart is empty!'); return; }
+    toggleCart();
+    let h = '', t = 0;
+    cart.forEach(x => { let it = x.price * x.qty; t += it; h += `<div class="order-row"><span>${x.name} x${x.qty}</span><span>₦${it.toLocaleString()}</span></div>`; });
+    h += `<div class="order-row"><span>Total</span><span>₦${t.toLocaleString()}</span></div>`;
+    document.getElementById('orderRows').innerHTML = h;
+    document.getElementById('checkoutOverlay').classList.add('show');
 }
 
 function closeCheckout() {
-    document.getElementById('checkoutModal').classList.remove('open');
+    document.getElementById('checkoutOverlay').classList.remove('show');
 }
 
-function sendOrderToWhatsApp() {
-    const name = document.getElementById('checkoutName').value.trim();
-    const phone = document.getElementById('checkoutPhone').value.trim();
-    const address = document.getElementById('checkoutAddress').value.trim();
+function sendWhatsApp() {
+    let n = document.getElementById('cName').value.trim();
+    let p = document.getElementById('cPhone').value.trim();
+    let a = document.getElementById('cAddress').value.trim();
+    if(!n || !p || !a) { alert('Fill all fields'); return; }
+    let msg = `*ORDER - The Royal Place*%0A%0A*Customer*%0AName: ${n}%0APhone: ${p}%0AAddress: ${a}%0A%0A*Items*%0A`;
+    let t = 0;
+    cart.forEach(x => { let it = x.price * x.qty; t += it; msg += `• ${x.name} x${x.qty} = ₦${it.toLocaleString()}%0A`; });
+    msg += `%0A*Total: ₦${t.toLocaleString()}*%0A%0AThank you!`;
+    window.open(`https://wa.me/2348134595298?text=${msg}`, '_blank');
+    cart = []; updateCart(); closeCheckout();
+    document.getElementById('cName').value = '';
+    document.getElementById('cPhone').value = '';
+    document.getElementById('cAddress').value = '';
+}
 
-    if (!name || !phone || !address) {
-        alert('Please fill in all fields (Name, Phone, and Address).');
-        return;
-    }
+function toggleReviews(id) {
+    document.getElementById('revs-'+id).classList.toggle('open');
+}
 
-    let message = `*NEW ORDER - The Royal Place (Chili's Bar & Grill)*%0A%0A`;
-    message += `*Customer Details:*%0A`;
-    message += `Name: ${name}%0A`;
-    message += `Phone: ${phone}%0A`;
-    message += `Address: ${address}%0A%0A`;
-    message += `*Order Items:*%0A`;
+function setStar(fid, s) {
+    stars[fid] = s;
+    let els = document.getElementById('stars-'+fid).querySelectorAll('i');
+    els.forEach((e,i) => { if(i < s) e.classList.add('active'); else e.classList.remove('active'); });
+}
 
-    let total = 0;
-    cart.forEach(item => {
-        const itemTotal = item.price * item.qty;
-        total += itemTotal;
-        message += `• ${item.name} x${item.qty} = ₦${itemTotal.toLocaleString()}%0A`;
+function submitReview(id) {
+    let n = document.getElementById('rname-'+id).value.trim();
+    let t = document.getElementById('rtext-'+id).value.trim();
+    let r = stars[id] || 5;
+    if(!n || !t) { alert('Fill name and review'); return; }
+    let panel = document.getElementById('revs-'+id);
+    let div = document.createElement('div');
+    div.className = 'review-tag';
+    div.innerHTML = `<strong>${n} ${'★'.repeat(r)}</strong><p>${t}</p>`;
+    panel.insertBefore(div, panel.lastElementChild);
+    document.getElementById('rname-'+id).value = '';
+    document.getElementById('rtext-'+id).value = '';
+    stars[id] = 0; setStar(id, 0);
+}
+
+function filterCat(cat) {
+    let cards = document.querySelectorAll('.food-card');
+    cards.forEach(c => {
+        if(cat === 'all' || c.dataset.cat === cat) c.style.display = 'flex';
+        else c.style.display = 'none';
     });
+}
 
-    message += `%0A*Total: ₦${total.toLocaleString()}*%0A`;
-    message += `%0AThank you!`;
-
-    window.open(`https://wa.me/2348134595298?text=${message}`, '_blank');
-
-    // Clear cart after sending
-    cart = [];
-    updateCart();
-    closeCheckout();
-    document.getElementById('checkoutName').value = '';
-    document.getElementById('checkoutPhone').value = '';
-    document.getElementById('checkoutAddress').value = '';
+function searchFood() {
+    let q = document.getElementById('searchInput').value.toLowerCase();
+    let cards = document.querySelectorAll('.food-card');
+    cards.forEach(c => {
+        if(c.dataset.name.includes(q)) c.style.display = 'flex';
+        else c.style.display = 'none';
+    });
 }
 </script>
 </body>
