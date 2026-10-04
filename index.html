@@ -2,755 +2,883 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Royal Place - Order Food Online</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>scar_belle's love life</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#ffc244;--primary-dark:#e6ac00;--dark:#1a1a2e;--darker:#12121f;--card:#1e1e32;--card-hover:#252540;--text:#f0f0f5;--text-muted:#9a9ab0;--border:#2a2a45;--green:#00c853;--red:#ff5252}
-body{font-family:'Inter',sans-serif;background:var(--darker);color:var(--text);min-height:100vh}
-.header{background:var(--dark);padding:12px 20px;position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.4);border-bottom:1px solid var(--border)}
-.logo{font-weight:900;font-size:1.3rem;color:var(--primary);display:flex;align-items:center;gap:8px}
-.logo i{font-size:1.1rem}
-.header-right{display:flex;align-items:center;gap:15px}
-.cart-btn{background:var(--primary);color:var(--dark);border:none;padding:10px 18px;border-radius:30px;font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s}
-.cart-btn:hover{background:var(--primary-dark);transform:scale(1.05)}
-.cart-btn .count{background:var(--dark);color:var(--primary);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem}
-.hero{margin-top:60px;background:linear-gradient(135deg,var(--dark) 0%,#1a1a3e 50%,var(--darker) 100%);padding:40px 20px;text-align:center;border-bottom:1px solid var(--border)}
-.hero h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;margin-bottom:8px}
-.hero h1 span{color:var(--primary)}
-.hero p{color:var(--text-muted);font-size:1rem;margin-bottom:20px}
-.location-bar{max-width:550px;margin:0 auto;background:var(--card);border:2px solid var(--border);border-radius:15px;padding:14px 20px;display:flex;align-items:center;gap:12px;transition:border-color 0.3s}
-.location-bar:hover{border-color:var(--primary)}
-.location-bar i{color:var(--primary);font-size:1.2rem}
-.location-bar span{flex:1;text-align:left;font-size:0.9rem;color:var(--text);line-height:1.4}
-.location-bar a{color:var(--primary);font-size:0.8rem;font-weight:700;text-decoration:none;white-space:nowrap}
-.search-section{padding:20px;background:var(--dark);border-bottom:1px solid var(--border);position:sticky;top:60px;z-index:100}
-.search-bar{max-width:600px;margin:0 auto;background:var(--card);border:2px solid var(--border);border-radius:30px;padding:4px;display:flex;align-items:center;gap:10px}
-.search-bar i{color:var(--text-muted);margin-left:15px}
-.search-bar input{flex:1;background:transparent;border:none;padding:12px;color:var(--text);font-size:1rem;outline:none;font-family:'Inter',sans-serif}
-.search-bar input::placeholder{color:var(--text-muted)}
-.categories{padding:25px 20px;background:var(--darker)}
-.categories h2{font-size:1.1rem;font-weight:700;margin-bottom:15px;padding:0 5px}
-.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
-.cat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 15px;text-align:center;cursor:pointer;transition:all 0.3s}
-.cat-card:hover{background:var(--card-hover);border-color:var(--primary);transform:translateY(-3px)}
-.cat-card i{font-size:2rem;color:var(--primary);margin-bottom:10px;display:block}
-.cat-card span{font-weight:600;font-size:0.9rem}
-.rest-header{padding:30px 20px 15px;background:var(--darker)}
-.rest-header h2{font-size:1.4rem;font-weight:800;margin-bottom:5px}
-.rest-header p{color:var(--text-muted);font-size:0.9rem}
-.rest-info{display:flex;gap:20px;margin-top:12px;flex-wrap:wrap}
-.rest-info span{display:flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--text-muted)}
-.rest-info span i{color:var(--primary);font-size:0.8rem}
-.menu-section{padding:0 20px 30px;background:var(--darker)}
-.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
-.food-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;display:flex;flex-direction:column}
-.food-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-.food-img{height:160px;overflow:hidden;position:relative}
-.food-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s}
-.food-card:hover .food-img img{transform:scale(1.08)}
-.food-badge{position:absolute;top:10px;left:10px;background:var(--primary);color:var(--dark);padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:800;text-transform:uppercase}
-.food-body{padding:15px;flex:1;display:flex;flex-direction:column}
-.food-body h4{font-size:1rem;font-weight:700;margin-bottom:5px}
-.food-body p{color:var(--text-muted);font-size:0.8rem;line-height:1.5;margin-bottom:12px;flex:1}
-.food-footer{display:flex;justify-content:space-between;align-items:center}
-.food-price{font-size:1.1rem;font-weight:800;color:var(--primary)}
-.add-btn{background:var(--primary);color:var(--dark);border:none;width:36px;height:36px;border-radius:50%;font-size:1.2rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
-.add-btn:hover{background:var(--primary-dark);transform:scale(1.1)}
-.qty-box{display:flex;align-items:center;gap:0;border:2px solid var(--primary);border-radius:10px;overflow:hidden}
-.qty-box button{width:32px;height:32px;background:transparent;border:none;color:var(--primary);font-size:1rem;font-weight:700;cursor:pointer}
-.qty-box button:hover{background:rgba(255,194,68,0.1)}
-.qty-box input{width:40px;height:32px;background:transparent;border:none;border-left:2px solid var(--primary);border-right:2px solid var(--primary);text-align:center;color:var(--text);font-weight:700;font-size:0.9rem;outline:none}
-.reviews-btn{background:transparent;border:none;color:var(--text-muted);font-size:0.8rem;cursor:pointer;margin-top:10px;display:flex;align-items:center;gap:5px;transition:color 0.2s}
-.reviews-btn:hover{color:var(--primary)}
-.reviews-panel{max-height:0;overflow:hidden;transition:max-height 0.4s ease;margin-top:10px}
-.reviews-panel.open{max-height:500px}
-.review-tag{background:rgba(255,194,68,0.1);border:1px solid rgba(255,194,68,0.2);border-radius:10px;padding:10px;margin-bottom:8px}
-.review-tag strong{color:var(--primary);font-size:0.8rem}
-.review-tag p{color:var(--text-muted);font-size:0.75rem;margin-top:3px}
-.review-input{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;margin-top:10px}
-.review-input input,.review-input textarea{width:100%;background:transparent;border:none;color:var(--text);font-size:0.8rem;outline:none;margin-bottom:8px;font-family:'Inter',sans-serif}
-.review-input input::placeholder,.review-input textarea::placeholder{color:var(--text-muted)}
-.review-input textarea{resize:vertical;min-height:50px}
-.star-row{display:flex;gap:4px;margin-bottom:8px}
-.star-row i{color:var(--border);cursor:pointer;font-size:0.9rem;transition:color 0.2s}
-.star-row i.active,.star-row i:hover{color:var(--primary)}
-.review-input button{background:var(--primary);color:var(--dark);border:none;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer}
-.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;opacity:0;visibility:hidden;transition:all 0.3s}
-.cart-overlay.show{opacity:1;visibility:visible}
-.cart-drawer{position:fixed;top:0;right:-100%;width:100%;max-width:420px;height:100vh;background:var(--dark);z-index:2001;transition:right 0.35s ease;display:flex;flex-direction:column;border-left:1px solid var(--border)}
-.cart-drawer.show{right:0}
-.cart-head{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.cart-head h3{font-size:1.2rem;font-weight:800}
-.cart-head button{background:transparent;border:none;color:var(--text-muted);font-size:1.3rem;cursor:pointer;width:36px;height:36px;border-radius:50%;transition:all 0.2s}
-.cart-head button:hover{background:var(--card);color:var(--text)}
-.cart-list{flex:1;overflow-y:auto;padding:15px}
-.cart-empty{text-align:center;padding:50px 20px;color:var(--text-muted)}
-.cart-empty i{font-size:3rem;margin-bottom:15px;color:var(--border)}
-.cart-item{display:flex;gap:12px;padding:12px;background:var(--card);border-radius:12px;margin-bottom:10px;align-items:center;border:1px solid var(--border)}
-.cart-item img{width:55px;height:55px;border-radius:10px;object-fit:cover}
-.cart-item-info{flex:1}
-.cart-item-info h5{font-size:0.9rem;margin-bottom:3px}
-.cart-item-info span{color:var(--primary);font-weight:700;font-size:0.85rem}
-.cart-item-info .qty{color:var(--text-muted);font-size:0.75rem;font-weight:400}
-.del-btn{background:transparent;border:none;color:var(--red);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:0.9rem}
-.del-btn:hover{background:rgba(255,82,82,0.1)}
-.cart-foot{padding:20px;border-top:1px solid var(--border);background:var(--dark)}
-.cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.cart-total span:first-child{color:var(--text-muted)}
-.cart-total span:last-child{font-size:1.3rem;font-weight:800;color:var(--primary)}
-.checkout-btn{width:100%;background:var(--green);color:#fff;border:none;padding:15px;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.2s}
-.checkout-btn:hover{background:#00b248;transform:translateY(-2px)}
-.checkout-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:3000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.3s}
-.checkout-overlay.show{opacity:1;visibility:visible}
-.checkout-box{background:var(--dark);border:1px solid var(--border);border-radius:20px;width:100%;max-width:480px;margin:20px;padding:30px;max-height:90vh;overflow-y:auto;position:relative}
-.checkout-box h2{font-size:1.4rem;font-weight:800;margin-bottom:5px;text-align:center}
-.checkout-box>p{color:var(--text-muted);font-size:0.9rem;text-align:center;margin-bottom:25px}
-.form-group{margin-bottom:18px}
-.form-group label{display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text-muted)}
-.form-group input,.form-group textarea{width:100%;padding:14px 16px;background:var(--card);border:2px solid var(--border);border-radius:12px;color:var(--text);font-size:0.95rem;outline:none;transition:border-color 0.3s;font-family:'Inter',sans-serif}
-.form-group input:focus,.form-group textarea:focus{border-color:var(--primary)}
-.form-group textarea{resize:vertical;min-height:80px}
-.order-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin:20px 0}
-.order-box h4{font-size:0.95rem;font-weight:700;margin-bottom:12px;color:var(--primary)}
-.order-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border);font-size:0.9rem}
-.order-row:last-child{border-bottom:none;font-weight:800;color:var(--primary);font-size:1.1rem;margin-top:8px;padding-top:12px;border-top:2px solid var(--primary)}
-.whatsapp-btn{width:100%;background:var(--green);color:#fff;border:none;padding:16px;border-radius:12px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
-.whatsapp-btn:hover{background:#00b248;transform:translateY(-2px)}
-.whatsapp-btn i{font-size:1.3rem}
-.close-x{position:absolute;top:15px;right:15px;background:var(--card);border:none;color:var(--text-muted);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;transition:all 0.2s}
-.close-x:hover{background:var(--border);color:var(--text)}
-.footer{background:var(--dark);border-top:1px solid var(--border);padding:40px 20px 20px}
-.footer-grid{max-width:800px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:30px}
-.footer-brand h3{color:var(--primary);font-size:1.3rem;margin-bottom:8px}
-.footer-brand p{color:var(--text-muted);font-size:0.85rem;line-height:1.6}
-.footer-social{display:flex;gap:12px;margin-top:15px}
-.footer-social a{width:40px;height:40px;background:var(--card);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);text-decoration:none;transition:all 0.2s}
-.footer-social a:hover{background:var(--primary);color:var(--dark);border-color:var(--primary)}
-.footer-links h4{color:var(--text);font-size:0.95rem;margin-bottom:12px}
-.footer-links a{display:block;color:var(--text-muted);text-decoration:none;font-size:0.85rem;margin-bottom:8px;transition:color 0.2s}
-.footer-links a:hover{color:var(--primary)}
-.footer-copy{text-align:center;padding-top:20px;margin-top:20px;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
-@media(max-width:600px){.cat-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr}.hero h1{font-size:1.6rem}}
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0b0f1a; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; user-select:none; }
+  #game { display:block; position:absolute; inset:0; }
+
+  /* ---------- HUD ---------- */
+  #hud { position:absolute; top:10px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:20; flex-wrap:wrap; justify-content:center; max-width:96vw; }
+  .pill { background:rgba(255,255,255,.94); border-radius:999px; padding:7px 14px; font-size:13px; font-weight:600; color:#1a2233; box-shadow:0 3px 10px rgba(0,0,0,.25); display:flex; align-items:center; gap:6px; white-space:nowrap; }
+  .pill b { color:#0a7a4a; }
+  .statbar { width:64px; height:8px; background:#e5e7eb; border-radius:6px; overflow:hidden; display:inline-block; }
+  .statbar i { display:block; height:100%; border-radius:6px; transition:width .4s; }
+
+  /* ---------- bottom nav ---------- */
+  #nav { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:6px; background:rgba(20,25,40,.92); padding:8px; border-radius:22px; z-index:20; box-shadow:0 8px 24px rgba(0,0,0,.4); }
+  #nav button { background:transparent; border:none; color:#cdd6e4; font-size:11px; font-weight:600; padding:6px 12px; border-radius:14px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; min-width:58px; }
+  #nav button span { font-size:20px; }
+  #nav button.active, #nav button:hover { background:#16a34a; color:#fff; }
+
+  /* ---------- chat ---------- */
+  #chatToggle { position:absolute; bottom:96px; right:12px; z-index:25; background:#7c3aed; color:#fff; border:none; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(124,58,237,.5); font-size:13px; }
+  #chatPanel { position:absolute; bottom:150px; right:12px; width:300px; max-width:82vw; height:340px; background:rgba(15,20,35,.96); border-radius:18px; z-index:25; display:none; flex-direction:column; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.08); }
+  #chatPanel.open { display:flex; }
+  #chatHead { padding:10px 14px; font-weight:700; color:#fff; font-size:13px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; justify-content:space-between; }
+  #chatHead .dot { color:#4ade80; }
+  #chatMsgs { flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px; }
+  .cmsg { background:rgba(255,255,255,.08); border-radius:12px; padding:7px 10px; color:#e5e7eb; font-size:12px; max-width:88%; }
+  .cmsg b { color:#a5b4fc; }
+  .cmsg.me { background:#16a34a; align-self:flex-end; color:#fff; }
+  .cmsg.me b { color:#dcfce7; }
+  #chatInput { display:flex; padding:8px; gap:6px; border-top:1px solid rgba(255,255,255,.08); }
+  #chatInput input { flex:1; background:rgba(255,255,255,.1); border:none; border-radius:10px; padding:8px 10px; color:#fff; font-size:12px; outline:none; }
+  #chatInput button { background:#7c3aed; border:none; color:#fff; border-radius:10px; padding:0 14px; font-weight:700; cursor:pointer; }
+
+  /* ---------- modal ---------- */
+  #modalWrap { position:absolute; inset:0; background:rgba(0,0,0,.55); z-index:40; display:none; align-items:flex-end; justify-content:center; }
+  #modalWrap.open { display:flex; }
+  #modal { background:#fff; width:100%; max-width:480px; max-height:78vh; overflow-y:auto; border-radius:26px 26px 0 0; padding:20px 18px 30px; animation:slideUp .28s ease; }
+  @keyframes slideUp { from { transform:translateY(60px); opacity:.4; } to { transform:translateY(0); opacity:1; } }
+  #modal h2 { font-size:20px; margin-bottom:4px; color:#111827; }
+  #modal .sub { color:#6b7280; font-size:13px; margin-bottom:14px; }
+  .act { width:100%; text-align:left; background:#f3f4f6; border:none; border-radius:14px; padding:13px 14px; margin-bottom:8px; cursor:pointer; font-size:14px; font-weight:600; color:#111827; display:flex; justify-content:space-between; align-items:center; transition:background .15s; }
+  .act:hover { background:#e5e7eb; }
+  .act small { color:#6b7280; font-weight:500; }
+  .act.green { background:#16a34a; color:#fff; } .act.green small { color:#dcfce7; }
+  .act.red { background:#fee2e2; color:#991b1b; }
+  .act:disabled { opacity:.45; cursor:not-allowed; }
+
+  /* ---------- toasts ---------- */
+  #toasts { position:absolute; top:64px; left:50%; transform:translateX(-50%); z-index:50; display:flex; flex-direction:column; gap:6px; align-items:center; pointer-events:none; width:92vw; }
+  .toast { background:rgba(17,24,39,.94); color:#fff; padding:10px 18px; border-radius:999px; font-size:13px; font-weight:600; box-shadow:0 6px 20px rgba(0,0,0,.4); animation:tin .3s ease; max-width:92vw; text-align:center; }
+  @keyframes tin { from { transform:translateY(-14px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+  #prompt { position:absolute; bottom:96px; left:50%; transform:translateX(-50%); z-index:15; background:rgba(17,24,39,.92); color:#fff; padding:9px 18px; border-radius:999px; font-size:13px; font-weight:600; display:none; }
+  #bigTitle { position:absolute; top:34%; left:0; right:0; text-align:center; z-index:60; pointer-events:none; opacity:0; transition:opacity .5s; }
+  #bigTitle h1 { font-size:34px; color:#fff; text-shadow:0 4px 20px rgba(0,0,0,.6); }
 </style>
 </head>
 <body>
+<canvas id="game"></canvas>
 
-<div class="header">
-    <div class="logo"><i class="fas fa-crown"></i> The Royal Place</div>
-    <div class="header-right">
-        <button class="cart-btn" onclick="toggleCart()">
-            <i class="fas fa-shopping-bag"></i>
-            <span>Cart</span>
-            <span class="count" id="cartCount">0</span>
-        </button>
-    </div>
-</div>
-
-<div class="hero">
-    <h1>Order from <span>The Royal Place</span></h1>
-    <p>Chili's Bar & Grill - Premium food delivered to you</p>
-    <div class="location-bar">
-        <i class="fas fa-map-marker-alt"></i>
-        <span>Southern Centre Tangent Arterial Highway, near Concorde Ave, New Owerri, Owerri</span>
-        <a href="https://www.google.com/maps/search/?api=1&query=The+Royal+Place+Chilis+Bar+Grill+Owerri" target="_blank">Find Us</a>
-    </div>
+<div id="hud">
+  <div class="pill">🌙 <span id="clock">8:00 AM</span></div>
+  <div class="pill">😊 <span class="statbar"><i id="bHappy" style="background:#f59e0b"></i></span></div>
+  <div class="pill">🍗 <span class="statbar"><i id="bHunger" style="background:#ef4444"></i></span></div>
+  <div class="pill">⚡ <span class="statbar"><i id="bEnergy" style="background:#3b82f6"></i></span></div>
+  <div class="pill">🧼 <span class="statbar"><i id="bHygiene" style="background:#06b6d4"></i></span></div>
+  <div class="pill">💰 <b id="money">₦100,000</b></div>
 </div>
 
-<div class="search-section">
-    <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Search for food..." onkeyup="searchFood()">
-    </div>
+<div id="prompt"></div>
+<div id="toasts"></div>
+<div id="bigTitle"><h1 id="bigTitleText"></h1></div>
+
+<div id="nav">
+  <button id="nMap" class="active"><span>🗺️</span>Map</button>
+  <button id="nTravel"><span>🚕</span>Travel</button>
+  <button id="nPhone"><span>📱</span>Phone</button>
+  <button id="nHome"><span>🏠</span>Home</button>
 </div>
 
-<div class="categories">
-    <h2>Categories</h2>
-    <div class="cat-grid">
-        <div class="cat-card" onclick="filterCat('all')"><i class="fas fa-utensils"></i><span>All</span></div>
-        <div class="cat-card" onclick="filterCat('grill')"><i class="fas fa-fire"></i><span>Grill</span></div>
-        <div class="cat-card" onclick="filterCat('soup')"><i class="fas fa-bowl-food"></i><span>Soups</span></div>
-        <div class="cat-card" onclick="filterCat('rice')"><i class="fas fa-bowl-rice"></i><span>Rice</span></div>
-        <div class="cat-card" onclick="filterCat('special')"><i class="fas fa-star"></i><span>Specials</span></div>
-        <div class="cat-card" onclick="filterCat('new')"><i class="fas fa-bolt"></i><span>New</span></div>
-    </div>
+<button id="chatToggle">💬 <span id="onlineCount">12</span> online</button>
+<div id="chatPanel">
+  <div id="chatHead"><span>👥 Lagos Chat <span class="dot">● live</span></span><span style="cursor:pointer" onclick="toggleChat()">✕</span></div>
+  <div id="chatMsgs"></div>
+  <div id="chatInput"><input id="chatText" placeholder="Say something..." maxlength="120"><button onclick="sendChat()">Send</button></div>
 </div>
 
-<div class="rest-header">
-    <h2>The Royal Place Menu</h2>
-    <p>Chili's Bar & Grill</p>
-    <div class="rest-info">
-        <span><i class="fas fa-star"></i> 4.8 (120+ reviews)</span>
-        <span><i class="fas fa-clock"></i> 25-40 min</span>
-        <span><i class="fas fa-motorcycle"></i> Fast delivery</span>
-        <span><i class="fas fa-phone"></i> 0813 459 5298</span>
-    </div>
-</div>
-
-<div class="menu-section" id="menuSection">
-    <div class="menu-grid" id="menuGrid">
-<div class="food-card" data-cat="grill" data-name="royal grilled chicken">
-    <div class="food-img">
-        <img src="food1.jpg" alt="Royal Grilled Chicken">
-        <span class="food-badge">Popular</span>
-    </div>
-    <div class="food-body">
-        <h4>Royal Grilled Chicken</h4>
-        <p>Juicy grilled chicken with royal spice blend, jollof rice & coleslaw</p>
-        <div class="food-footer">
-            <span class="food-price">₦8,500</span>
-            <div class="qty-box">
-                <button onclick="changeQty(1,-1)">−</button>
-                <input type="number" id="qty-1" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(1,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(1,'Royal Grilled Chicken',8500,'food1.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(1)">
-            <i class="fas fa-comment"></i> Reviews (2)
-        </button>
-        <div class="reviews-panel" id="revs-1">
-            <div class="review-tag"><strong>John C. ★★★★★</strong><p>Best grilled chicken in Owerri!</p></div><div class="review-tag"><strong>Amara N. ★★★★</strong><p>Delicious but spicy</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-1">
-                    <i class="fas fa-star" onclick="setStar(1,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(1,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(1,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(1,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(1,5)"></i>
-                </div>
-                <input type="text" id="rname-1" placeholder="Your name">
-                <textarea id="rtext-1" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(1)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div><div class="food-card" data-cat="soup" data-name="goat meat peppersoup">
-    <div class="food-img">
-        <img src="food2.jpg" alt="Goat Meat Peppersoup">
-        <span class="food-badge">New</span>
-    </div>
-    <div class="food-body">
-        <h4>Goat Meat Peppersoup</h4>
-        <p>Traditional peppersoup with aromatic spices & fresh pepper</p>
-        <div class="food-footer">
-            <span class="food-price">₦6,000</span>
-            <div class="qty-box">
-                <button onclick="changeQty(2,-1)">−</button>
-                <input type="number" id="qty-2" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(2,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(2,'Goat Meat Peppersoup',6000,'food2.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(2)">
-            <i class="fas fa-comment"></i> Reviews (1)
-        </button>
-        <div class="reviews-panel" id="revs-2">
-            <div class="review-tag"><strong>Emeka O. ★★★★★</strong><p>Fire! Perfect for cold evenings</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-2">
-                    <i class="fas fa-star" onclick="setStar(2,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(2,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(2,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(2,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(2,5)"></i>
-                </div>
-                <input type="text" id="rname-2" placeholder="Your name">
-                <textarea id="rtext-2" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(2)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div><div class="food-card" data-cat="rice" data-name="jollof rice & plantain">
-    <div class="food-img">
-        <img src="food3.jpg" alt="Jollof Rice & Plantain">
-    </div>
-    <div class="food-body">
-        <h4>Jollof Rice & Plantain</h4>
-        <p>Smoky party jollof with sweet fried plantain & protein</p>
-        <div class="food-footer">
-            <span class="food-price">₦5,500</span>
-            <div class="qty-box">
-                <button onclick="changeQty(3,-1)">−</button>
-                <input type="number" id="qty-3" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(3,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(3,'Jollof Rice & Plantain',5500,'food3.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(3)">
-            <i class="fas fa-comment"></i> Reviews (1)
-        </button>
-        <div class="reviews-panel" id="revs-3">
-            <div class="review-tag"><strong>Fatima A. ★★★★</strong><p>Perfect smoky flavor</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-3">
-                    <i class="fas fa-star" onclick="setStar(3,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(3,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(3,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(3,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(3,5)"></i>
-                </div>
-                <input type="text" id="rname-3" placeholder="Your name">
-                <textarea id="rtext-3" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(3)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div><div class="food-card" data-cat="grill" data-name="suya platter">
-    <div class="food-img">
-        <img src="food4.jpg" alt="Suya Platter">
-        <span class="food-badge">Popular</span>
-    </div>
-    <div class="food-body">
-        <h4>Suya Platter</h4>
-        <p>Assorted beef, chicken & ram suya with yaji spice</p>
-        <div class="food-footer">
-            <span class="food-price">₦7,500</span>
-            <div class="qty-box">
-                <button onclick="changeQty(4,-1)">−</button>
-                <input type="number" id="qty-4" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(4,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(4,'Suya Platter',7500,'food4.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(4)">
-            <i class="fas fa-comment"></i> Reviews (2)
-        </button>
-        <div class="reviews-panel" id="revs-4">
-            <div class="review-tag"><strong>Blessing I. ★★★★★</strong><p>Top-tier suya!</p></div><div class="review-tag"><strong>Kelechi O. ★★★★★</strong><p>Great for sharing</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-4">
-                    <i class="fas fa-star" onclick="setStar(4,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(4,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(4,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(4,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(4,5)"></i>
-                </div>
-                <input type="text" id="rname-4" placeholder="Your name">
-                <textarea id="rtext-4" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(4)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div><div class="food-card" data-cat="soup" data-name="seafood okra soup">
-    <div class="food-img">
-        <img src="food5.jpg" alt="Seafood Okra Soup">
-        <span class="food-badge">Special</span>
-    </div>
-    <div class="food-body">
-        <h4>Seafood Okra Soup</h4>
-        <p>Rich okra with prawns, crabs & fish. Served with pounded yam</p>
-        <div class="food-footer">
-            <span class="food-price">₦9,000</span>
-            <div class="qty-box">
-                <button onclick="changeQty(5,-1)">−</button>
-                <input type="number" id="qty-5" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(5,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(5,'Seafood Okra Soup',9000,'food5.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(5)">
-            <i class="fas fa-comment"></i> Reviews (1)
-        </button>
-        <div class="reviews-panel" id="revs-5">
-            <div class="review-tag"><strong>Ngozi U. ★★★★★</strong><p>Seafood is so fresh!</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-5">
-                    <i class="fas fa-star" onclick="setStar(5,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(5,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(5,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(5,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(5,5)"></i>
-                </div>
-                <input type="text" id="rname-5" placeholder="Your name">
-                <textarea id="rtext-5" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(5)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="food-card" data-cat="special" data-name="chili's special burger">
-    <div class="food-img">
-        <img src="food6.jpg" alt="Chili's Special Burger">
-        <span class="food-badge">New</span>
-    </div>
-    <div class="food-body">
-        <h4>Chili's Special Burger</h4>
-        <p>Double beef patty, cheese, caramelized onions & chili sauce</p>
-        <div class="food-footer">
-            <span class="food-price">₦6,500</span>
-            <div class="qty-box">
-                <button onclick="changeQty(6,-1)">−</button>
-                <input type="number" id="qty-6" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(6,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(6,'Chili's Special Burger',6500,'food6.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(6)">
-            <i class="fas fa-comment"></i> Reviews (1)
-        </button>
-        <div class="reviews-panel" id="revs-6">
-            <div class="review-tag"><strong>Emeka O. ★★★★★</strong><p>Massive and juicy!</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-6">
-                    <i class="fas fa-star" onclick="setStar(6,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(6,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(6,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(6,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(6,5)"></i>
-                </div>
-                <input type="text" id="rname-6" placeholder="Your name">
-                <textarea id="rtext-6" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(6)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div><div class="food-card" data-cat="rice" data-name="ofada rice & ayamase">
-    <div class="food-img">
-        <img src="food7.jpg" alt="Ofada Rice & Ayamase">
-    </div>
-    <div class="food-body">
-        <h4>Ofada Rice & Ayamase</h4>
-        <p>Authentic Ofada rice with spicy ayamase & assorted meat</p>
-        <div class="food-footer">
-            <span class="food-price">₦7,000</span>
-            <div class="qty-box">
-                <button onclick="changeQty(7,-1)">−</button>
-                <input type="number" id="qty-7" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(7,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(7,'Ofada Rice & Ayamase',7000,'food7.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(7)">
-            <i class="fas fa-comment"></i> Reviews (1)
-        </button>
-        <div class="reviews-panel" id="revs-7">
-            <div class="review-tag"><strong>Tolu A. ★★★★</strong><p>Real Ofada rice!</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-7">
-                    <i class="fas fa-star" onclick="setStar(7,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(7,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(7,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(7,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(7,5)"></i>
-                </div>
-                <input type="text" id="rname-7" placeholder="Your name">
-                <textarea id="rtext-7" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(7)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div><div class="food-card" data-cat="grill" data-name="grilled catfish & yam">
-    <div class="food-img">
-        <img src="food8.jpg" alt="Grilled Catfish & Yam">
-        <span class="food-badge">Best Seller</span>
-    </div>
-    <div class="food-body">
-        <h4>Grilled Catfish & Yam</h4>
-        <p>Whole grilled catfish with pepper sauce & fried yam</p>
-        <div class="food-footer">
-            <span class="food-price">₦8,000</span>
-            <div class="qty-box">
-                <button onclick="changeQty(8,-1)">−</button>
-                <input type="number" id="qty-8" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(8,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(8,'Grilled Catfish & Yam',8000,'food8.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(8)">
-            <i class="fas fa-comment"></i> Reviews (2)
-        </button>
-        <div class="reviews-panel" id="revs-8">
-            <div class="review-tag"><strong>Fatima A. ★★★★★</strong><p>Perfectly grilled!</p></div><div class="review-tag"><strong>Amara N. ★★★★★</strong><p>My favorite dish</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-8">
-                    <i class="fas fa-star" onclick="setStar(8,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(8,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(8,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(8,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(8,5)"></i>
-                </div>
-                <input type="text" id="rname-8" placeholder="Your name">
-                <textarea id="rtext-8" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(8)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div><div class="food-card" data-cat="soup" data-name="efo riro & pounded yam">
-    <div class="food-img">
-        <img src="food9.jpg" alt="Efo Riro & Pounded Yam">
-    </div>
-    <div class="food-body">
-        <h4>Efo Riro & Pounded Yam</h4>
-        <p>Rich vegetable stew with assorted meat & smooth pounded yam</p>
-        <div class="food-footer">
-            <span class="food-price">₦6,500</span>
-            <div class="qty-box">
-                <button onclick="changeQty(9,-1)">−</button>
-                <input type="number" id="qty-9" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(9,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(9,'Efo Riro & Pounded Yam',6500,'food9.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(9)">
-            <i class="fas fa-comment"></i> Reviews (1)
-        </button>
-        <div class="reviews-panel" id="revs-9">
-            <div class="review-tag"><strong>Michael O. ★★★★★</strong><p>Reminds me of grandma's cooking</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-9">
-                    <i class="fas fa-star" onclick="setStar(9,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(9,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(9,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(9,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(9,5)"></i>
-                </div>
-                <input type="text" id="rname-9" placeholder="Your name">
-                <textarea id="rtext-9" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(9)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div><div class="food-card" data-cat="special" data-name="chili wings & fries">
-    <div class="food-img">
-        <img src="food10.jpg" alt="Chili Wings & Fries">
-        <span class="food-badge">New</span>
-    </div>
-    <div class="food-body">
-        <h4>Chili Wings & Fries</h4>
-        <p>Crispy wings in chili glaze with seasoned fries & coleslaw</p>
-        <div class="food-footer">
-            <span class="food-price">₦5,000</span>
-            <div class="qty-box">
-                <button onclick="changeQty(10,-1)">−</button>
-                <input type="number" id="qty-10" value="1" min="1" max="50" readonly>
-                <button onclick="changeQty(10,1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(10,'Chili Wings & Fries',5000,'food10.jpg')">+</button>
-        </div>
-        <button class="reviews-btn" onclick="toggleReviews(10)">
-            <i class="fas fa-comment"></i> Reviews (2)
-        </button>
-        <div class="reviews-panel" id="revs-10">
-            <div class="review-tag"><strong>Tolu A. ★★★★★</strong><p>Addictive wings!</p></div><div class="review-tag"><strong>Blessing I. ★★★★★</strong><p>Great value</p></div>
-            <div class="review-input">
-                <div class="star-row" id="stars-10">
-                    <i class="fas fa-star" onclick="setStar(10,1)"></i>
-                    <i class="fas fa-star" onclick="setStar(10,2)"></i>
-                    <i class="fas fa-star" onclick="setStar(10,3)"></i>
-                    <i class="fas fa-star" onclick="setStar(10,4)"></i>
-                    <i class="fas fa-star" onclick="setStar(10,5)"></i>
-                </div>
-                <input type="text" id="rname-10" placeholder="Your name">
-                <textarea id="rtext-10" placeholder="Write a review..."></textarea>
-                <button onclick="submitReview(10)">Post Review</button>
-            </div>
-        </div>
-    </div>
-</div>
-    </div>
-</div>
-
-<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-<div class="cart-drawer" id="cartDrawer">
-    <div class="cart-head">
-        <h3><i class="fas fa-shopping-bag"></i> Your Order</h3>
-        <button onclick="toggleCart()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="cart-list" id="cartList">
-        <div class="cart-empty">
-            <i class="fas fa-shopping-basket"></i>
-            <p>Your cart is empty</p>
-            <p>Add some delicious food!</p>
-        </div>
-    </div>
-    <div class="cart-foot">
-        <div class="cart-total">
-            <span>Total</span>
-            <span id="cartTotal">₦0</span>
-        </div>
-        <button class="checkout-btn" onclick="openCheckout()">
-            <i class="fas fa-credit-card"></i> Checkout
-        </button>
-    </div>
-</div>
-
-<div class="checkout-overlay" id="checkoutOverlay">
-    <div class="checkout-box">
-        <button class="close-x" onclick="closeCheckout()"><i class="fas fa-times"></i></button>
-        <h2>Complete Your Order</h2>
-        <p>Fill your details and we will send your order via WhatsApp</p>
-        <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="cName" placeholder="Enter your name">
-        </div>
-        <div class="form-group">
-            <label>Phone Number</label>
-            <input type="tel" id="cPhone" placeholder="e.g. 0803 123 4567">
-        </div>
-        <div class="form-group">
-            <label>Delivery Address</label>
-            <textarea id="cAddress" placeholder="Enter your delivery address"></textarea>
-        </div>
-        <div class="order-box">
-            <h4>Order Summary</h4>
-            <div id="orderRows"></div>
-        </div>
-        <button class="whatsapp-btn" onclick="sendWhatsApp()">
-            <i class="fab fa-whatsapp"></i> Order on WhatsApp
-        </button>
-    </div>
-</div>
-
-<div class="footer">
-    <div class="footer-grid">
-        <div class="footer-brand">
-            <h3><i class="fas fa-crown"></i> The Royal Place</h3>
-            <p>Chili's Bar & Grill - Where every meal is a celebration. Premium dining at the heart of New Owerri.</p>
-            <div class="footer-social">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/2348134595298" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            </div>
-        </div>
-        <div class="footer-links">
-            <h4>Contact Us</h4>
-            <a href="https://wa.me/2348134595298" target="_blank"><i class="fab fa-whatsapp"></i> 0813 459 5298</a>
-            <a href="https://www.google.com/maps/search/?api=1&query=The+Royal+Place+Chilis+Bar+Grill+Owerri" target="_blank"><i class="fas fa-map-marker-alt"></i> Southern Centre Tangent Arterial Highway, near Concorde Ave</a>
-            <a href="#"><i class="fas fa-clock"></i> Mon-Sun: 10AM - 11PM</a>
-        </div>
-    </div>
-    <div class="footer-copy">
-        The Royal Place (Chili's Bar & Grill). All rights reserved.
-    </div>
+<div id="modalWrap" onclick="if(event.target===this)closeModal()">
+  <div id="modal"></div>
 </div>
 
 <script>
-let cart = [];
-let stars = {};
+/* =====================================================================
+   scar_belle's love life — a Lagos life simulator (single file)
+   ===================================================================== */
+const cv = document.getElementById('game');
+const cx = cv.getContext('2d');
+let W, H;
+function resize(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
+addEventListener('resize', resize); resize();
 
-function changeQty(id, d) {
-    let el = document.getElementById('qty-'+id);
-    let v = parseInt(el.value) + d;
-    if(v < 1) v = 1;
-    if(v > 50) v = 50;
-    el.value = v;
+const rand = (a,b)=>a+Math.random()*(b-a);
+const irand = (a,b)=>Math.floor(rand(a,b+1));
+const pick = a=>a[irand(0,a.length-1)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const fmt = n=>'₦'+Math.round(n).toLocaleString('en-NG');
+
+/* ---------------- STATE ---------------- */
+const DEF = {
+  money:100000, happy:80, hunger:75, energy:90, hygiene:85,
+  x:430, y:980, mode:'map', spouse:null, baby:false, married:false,
+  day:1, hour:8, jobLevel:1, shiftsDone:0, furniture:['bed','chair','cooler'],
+  met:[], thugRepelled:0, home:'Self-contain · Yaba'
+};
+let S = JSON.parse(localStorage.getItem('sb_lovelife')||'null') || JSON.parse(JSON.stringify(DEF));
+function save(){ localStorage.setItem('sb_lovelife', JSON.stringify(S)); }
+
+/* ---------------- WORLD ---------------- */
+const WORLD = { w:2600, h:1700 };
+// roads: horizontal & vertical strips
+const ROADS_H = [300, 700, 1100, 1450];
+const ROADS_V = [380, 900, 1400, 1900, 2300];
+const SIDE = 46; // sidewalk offset
+
+const LOCS = [
+  { id:'home',   name:'Home',            emoji:'🏠', x:430,  y:980,  color:'#fde68a' },
+  { id:'beach',  name:'Elegushi Beach',  emoji:'🏖️', x:2280, y:1420, color:'#fef3c7' },
+  { id:'office', name:'Corporate Office',emoji:'🏢', x:1500, y:340,  color:'#dbeafe' },
+  { id:'market', name:'Oja Market',      emoji:'🛒', x:980,  y:1120, color:'#dcfce7' },
+  { id:'club',   name:'Quilox Club',     emoji:'🎉', x:1950, y:720,  color:'#fae8ff' },
+  { id:'gym',    name:'i-Fitness Gym',   emoji:'💪', x:700,  y:360,  color:'#fee2e2' },
+  { id:'police', name:'Police Station',  emoji:'🚔', x:1200, y:1470, color:'#e0e7ff' },
+  { id:'church', name:'Love Chapel',     emoji:'💒', x:1660, y:1090, color:'#fce7f3' },
+  { id:'salon',  name:'Mama Bisi Salon', emoji:'💇', x:500,  y:690,  color:'#ffedd5' },
+  { id:'resto',  name:'Amala Shitta',    emoji:'🍲', x:1350, y:700,  color:'#fef9c3' },
+  { id:'shop',   name:'The Palms Mall',  emoji:'🛍️', x:2100, y:1080, color:'#f1f5f9' },
+];
+const loc = id=>LOCS.find(l=>l.id===id);
+
+/* fake online players */
+const NAMES = ['yung_omo','big_tunde','lagos_babe','kiki_wiz','dj_slim','ada_ng','chief_obi','sisi_naija','raptor_boy','mama_afia','oga_musa','temi_xx','dami_dre','nneka','koko_blaze','fine_boy_T','wendy_ng','jide_jr'];
+const PLAYERS = NAMES.map((n,i)=>({
+  name:n, x:rand(300,WORLD.w-300), y:rand(300,WORLD.h-300),
+  tx:0, ty:0, speed:rand(35,65), emoji:pick(['🧍','👩','👨','🧑','👱‍♀️','👱']),
+  color:pick(['#8d5524','#a0663a','#5d4037','#c68642','#4a2f22']),
+  idle:rand(0,10)
+}));
+PLAYERS.forEach(p=>{ p.tx=p.x; p.ty=p.y; });
+
+/* pedestrians (locals, denser crowd) */
+const PEDS = [];
+for(let i=0;i<28;i++){
+  PEDS.push({ x:rand(100,WORLD.w-100), y:pick(ROADS_H)+pick([-SIDE,SIDE]), dir:pick([-1,1]), speed:rand(25,55),
+    emoji:pick(['🧍','👩','👨','🧑']), color:pick(['#8d5524','#a0663a','#5d4037','#c68642','#3e2723']) });
 }
 
-function addToCart(id, name, price, img) {
-    let qty = parseInt(document.getElementById('qty-'+id).value);
-    let found = cart.find(x => x.id === id);
-    if(found) found.qty += qty;
-    else cart.push({id, name, price, img, qty});
-    updateCart();
-    toggleCart();
-    document.getElementById('qty-'+id).value = 1;
+/* cars */
+const CARS = [];
+for(let i=0;i<10;i++){
+  const lane = pick(ROADS_H);
+  CARS.push({ x:rand(0,WORLD.w), y:lane+pick([-16,16]), dir:pick([-1,1]), speed:rand(90,160),
+    color:pick(['#facc15','#f8fafc','#ef4444','#22c55e','#3b82f6']), kind:pick(['danfo','car','keke']) });
 }
 
-function removeItem(id) {
-    cart = cart.filter(x => x.id !== id);
-    updateCart();
+/* ---------------- TIME ---------------- */
+let timeAcc=0;
+function tickTime(dt){
+  timeAcc += dt;
+  if(timeAcc>=8){ timeAcc=0; S.hour++;
+    S.hunger=clamp(S.hunger-1.1,0,100); S.energy=clamp(S.energy-0.9,0,100);
+    S.hygiene=clamp(S.hygiene-0.7,0,100); S.happy=clamp(S.happy-0.35,0,100);
+    if(S.hour>=24){ S.hour=0; S.day++; }
+    if(S.hunger<=0||S.energy<=0){ S.happy=clamp(S.happy-3,0,100); }
+    updateHUD();
+  }
 }
 
-function updateCart() {
-    let list = document.getElementById('cartList');
-    let count = document.getElementById('cartCount');
-    let total = document.getElementById('cartTotal');
-    if(cart.length === 0) {
-        list.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-basket"></i><p>Your cart is empty</p><p>Add some delicious food!</p></div>`;
-        count.textContent = '0';
-        total.textContent = '₦0';
-        return;
+/* ---------------- HUD / UI helpers ---------------- */
+function updateHUD(){
+  document.getElementById('money').textContent = fmt(S.money);
+  document.getElementById('clock').textContent = fmtClock();
+  document.getElementById('bHappy').style.width = S.happy+'%';
+  document.getElementById('bHunger').style.width = S.hunger+'%';
+  document.getElementById('bEnergy').style.width = S.energy+'%';
+  document.getElementById('bHygiene').style.width = S.hygiene+'%';
+  save();
+}
+function fmtClock(){
+  const h=S.hour%24, ap=h<12?'AM':'PM', hh=((h+11)%12)+1;
+  return `${hh}:00 ${ap} · Day ${S.day}`;
+}
+function toast(msg, ms=2600){
+  const t=document.createElement('div'); t.className='toast'; t.innerHTML=msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=>{ t.style.opacity=0; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(),400); }, ms);
+}
+function bigTitle(txt){
+  const e=document.getElementById('bigTitle'); document.getElementById('bigTitleText').textContent=txt;
+  e.style.opacity=1; setTimeout(()=>e.style.opacity=0, 2200);
+}
+function openModal(html){ document.getElementById('modal').innerHTML=html; document.getElementById('modalWrap').classList.add('open'); }
+function closeModal(){ document.getElementById('modalWrap').classList.remove('open'); }
+function act(label, fn, cls='', sub=''){
+  return `<button class="act ${cls}" onclick="(${fn.toString()})()">${label}${sub?`<small>${sub}</small>`:''}</button>`;
+}
+
+/* ---------------- CHAT (simulated live players) ---------------- */
+const CHAT_LINES = [
+  "who dey go beach today? 🏖️","abeg who fit loan me 2k 😅","Lagos traffic wan kill person today",
+  "this game too sweet!","I just buy new furniture for my house 🛋️","who wonna host party tonight?",
+  "omo see money 💸","anybody don reach club?","I dey come market, make we link",
+  "my sim just marry o!! 💍","that thug collect my money for road 😭","police finally catch those boys, thank God",
+  "weather hot today 🥵","job shift done, paid!!","owambe loading this weekend 🎊"
+];
+let chatTimer=0, chatEvery=6;
+function pushChat(name, text, me=false){
+  const box=document.getElementById('chatMsgs');
+  const d=document.createElement('div'); d.className='cmsg'+(me?' me':'');
+  d.innerHTML=`<b>@${name}</b> ${text}`;
+  box.appendChild(d); box.scrollTop=box.scrollHeight;
+  while(box.children.length>40) box.firstChild.remove();
+}
+function replyChat(userText){
+  const t=userText.toLowerCase(); let r=null;
+  if(/(hello|hi|hey|good)/.test(t)) r=pick(["hellooo 😍","hey hey!","how you dey?","welcome!"]);
+  else if(/(party|owambe)/.test(t)) r=pick(["owambe!! 🎉","I'm down, where at?","host am, we dey come!"]);
+  else if(/(money|rich|broke|job)/.test(t)) r=pick(["go office do shift jare","hustle o 😤","I just collect salary 💰"]);
+  else if(/(marry|love|babe|boyfriend|girlfriend)/.test(t)) r=pick(["love is in the air 💕","go church go marry 😂","find bae for beach o"]);
+  else if(/(thug|rob|police)/.test(t)) r=pick(["those boys again?!","report them to police station","stay for main road o"]);
+  else if(/(house|rent)/.test(t)) r=pick(["Yaba soft 🔥","your house fine o","buy furniture from Palms Mall"]);
+  if(r) setTimeout(()=>pushChat(pick(NAMES), r), rand(1200,3200));
+}
+function sendChat(){
+  const i=document.getElementById('chatText'); const v=i.value.trim(); if(!v)return;
+  pushChat('scar_belle', v.replace(/</g,'&lt;'), true); i.value=''; replyChat(v);
+}
+document.getElementById('chatText').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChat(); });
+function toggleChat(){ document.getElementById('chatPanel').classList.toggle('open'); }
+document.getElementById('chatToggle').onclick=toggleChat;
+function chatTick(dt){
+  chatTimer+=dt;
+  if(chatTimer>chatEvery){ chatTimer=0; chatEvery=rand(5,12);
+    pushChat(pick(NAMES), pick(CHAT_LINES));
+    document.getElementById('onlineCount').textContent = irand(9,24);
+  }
+}
+
+/* ---------------- PLAYER movement ---------------- */
+const keys={};
+addEventListener('keydown',e=>{ keys[e.key.toLowerCase()]=true; if(e.key.toLowerCase()==='e') tryInteract(); });
+addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=false; });
+let clickTarget=null;
+cv.addEventListener('click',e=>{
+  if(S.mode!=='map') return;
+  const r=cv.getBoundingClientRect();
+  const wx=e.clientX - r.left + cam.x, wy=e.clientY - r.top + cam.y;
+  // clicked a location?
+  for(const l of LOCS){ if(Math.hypot(wx-l.x,wy-l.y)<60){ openLocMenu(l); return; } }
+  // clicked a player?
+  for(const p of PLAYERS){ if(Math.hypot(wx-p.x,wy-p.y)<30){ openPlayerMenu(p); return; } }
+  clickTarget={x:wx,y:wy};
+});
+let cam={x:0,y:0};
+function movePlayer(dt){
+  let dx=0,dy=0,sp=170;
+  if(keys['w']||keys['arrowup'])dy-=1;
+  if(keys['s']||keys['arrowdown'])dy+=1;
+  if(keys['a']||keys['arrowleft'])dx-=1;
+  if(keys['d']||keys['arrowright'])dx+=1;
+  if(dx||dy){ clickTarget=null; const m=Math.hypot(dx,dy); S.x+=dx/m*sp*dt; S.y+=dy/m*sp*dt; walking=true; }
+  else if(clickTarget){
+    const d=dist(S,clickTarget), m=Math.hypot(clickTarget.x-S.x,clickTarget.y-S.y)||1;
+    if(d>6){ S.x+=(clickTarget.x-S.x)/m*sp*dt; S.y+=(clickTarget.y-S.y)/m*sp*dt; walking=true; }
+    else { clickTarget=null; walking=false; }
+  } else walking=false;
+  S.x=clamp(S.x,40,WORLD.w-40); S.y=clamp(S.y,40,WORLD.h-40);
+}
+let walking=false, walkPhase=0;
+
+/* ---------------- INTERACTION ---------------- */
+let nearLoc=null;
+function scanNearby(){
+  nearLoc=null; let best=90;
+  for(const l of LOCS){ const d=dist(S,l); if(d<best){ best=d; nearLoc=l; } }
+  const p=document.getElementById('prompt');
+  if(S.mode==='map'){
+    if(nearLoc){ p.style.display='block'; p.textContent=`Press E — enter ${nearLoc.name} ${nearLoc.emoji}`; }
+    else p.style.display='none';
+  } else p.style.display='none';
+}
+function tryInteract(){ if(nearLoc && S.mode==='map') openLocMenu(nearLoc); }
+
+function openLocMenu(l){
+  switch(l.id){
+    case 'home': homeMenu(); break;
+    case 'beach': beachMenu(); break;
+    case 'office': officeMenu(); break;
+    case 'market': marketMenu(); break;
+    case 'club': clubMenu(); break;
+    case 'gym': gymMenu(); break;
+    case 'police': policeMenu(); break;
+    case 'church': churchMenu(); break;
+    case 'salon': salonMenu(); break;
+    case 'resto': restoMenu(); break;
+    case 'shop': shopMenu(); break;
+  }
+}
+
+/* ---------- HOME ---------- */
+function homeMenu(){
+  openModal(`
+    <h2>🏠 ${S.home}</h2><div class="sub">Your self-contain in Yaba. Rent paid weekly.</div>
+    ${act('🛏️ Sleep (restore energy)', ()=>{ doSleep(); },'green','free')}
+    ${act('🍳 Cook & eat from cooler', ()=>{ eatHome(); },'','uses food stock')}
+    ${act('🛋️ Buy furniture / groceries', ()=>{ shopMenu(true); })}
+    ${act('🎊 Host house party', ()=>{ hostParty('home'); })}
+    ${act('👶 Family', ()=>{ familyMenu(); })}
+    ${act('🚪 Step outside', ()=>{ closeModal(); })}
+  `);
+}
+function doSleep(){
+  closeModal(); S.energy=100; S.hygiene=clamp(S.hygiene+10,0,100);
+  S.hour=(S.hour+8)%24; if(S.hour<8) S.day++;
+  S.hunger=clamp(S.hunger-25,0,100);
+  bigTitle('☀️ Good morning, beautiful day in Lagos');
+  toast('You slept well. Energy full!'); updateHUD();
+}
+function eatHome(){
+  if(S.money<800){ toast('Not enough money for groceries (₦800)'); return; }
+  S.money-=800; S.hunger=clamp(S.hunger+45,0,100); S.happy=clamp(S.happy+4,0,100);
+  closeModal(); toast('🍛 You cooked a nice meal. Hunger restored!'); updateHUD();
+}
+function familyMenu(){
+  if(!S.married){
+    openModal(`<h2>💕 Family</h2><div class="sub">You're single. Go meet someone special! Try the beach or club — or chat with online players. 💒 Get married at the chapel.</div>${act('😌 Close',()=>closeModal())}`);
+    return;
+  }
+  openModal(`
+    <h2>💕 The ${S.spouse.name} Family</h2><div class="sub">Married to @${S.spouse.name} 💍</div>
+    ${S.baby
+      ? act('👶 Spend time with baby', ()=>{ S.happy=clamp(S.happy+15,0,100); S.energy=clamp(S.energy-10,0,100); closeModal(); toast('👶 Family time! Happiness up!'); updateHUD(); },'green')
+      : act('🍼 Try for a baby', ()=>{ tryForBaby(); },'green','private family moment')}
+    ${act('💑 Quality time with spouse', ()=>{ S.happy=clamp(S.happy+12,0,100); S.hunger=clamp(S.hunger-8,0,100); closeModal(); toast(`💑 Lovely evening with @${S.spouse.name}`); updateHUD(); })}
+    ${act('Back', ()=>homeMenu())}
+  `);
+}
+function tryForBaby(){
+  closeModal();
+  toast('💕 A beautiful private evening together...');
+  setTimeout(()=>{
+    if(Math.random()<0.65){ S.baby=true; bigTitle('👶 Congratulations! You\'re expecting!'); pushChat(S.spouse.name,'BABY ON THE WAY!! 🍼👶'); }
+    else toast('Not this time... try again another day 💕');
+    updateHUD();
+  }, 2500);
+}
+
+/* ---------- BEACH ---------- */
+function beachMenu(){
+  openModal(`
+    <h2>🏖️ Elegushi Beach · Lekki</h2><div class="sub">The bass is shaking the sand.</div>
+    ${act('🏊 Swim in the Atlantic', ()=>{ payTime(1500,8,'hunger',6,'🏊 You swam in the ocean!'); },'','₦1,500')}
+    ${act('🍢 Suya & Chapman on the sand', ()=>{ payTime(1200,10,'hunger',25,'🍢 That suya HIT different!'); },'','₦1,200')}
+    ${act('🐎 Ride a horse', ()=>{ payTime(3000,8,'happy',12,'🐎 Beach horse ride, so fancy!'); },'','₦3,000')}
+    ${act('🎉 Attend beach rave', ()=>{ beachRave(); },'green','₦2,500')}
+    ${act('📸 Beach photoshoot', ()=>{ payTime(5000,6,'happy',8,'📸 Pics for the gram!'); },'','₦5,000')}
+    ${act('Back to map', ()=>closeModal())}
+  `);
+}
+function payTime(cost, happy, stat, statAmt, msg){
+  if(S.money<cost){ toast('Not enough money!'); return; }
+  S.money-=cost; S.happy=clamp(S.happy+happy,0,100);
+  if(stat==='hunger') S.hunger=clamp(S.hunger+statAmt,0,100);
+  if(stat==='hygiene') S.hygiene=clamp(S.hygiene-statAmt,0,100);
+  closeModal(); toast(msg); updateHUD();
+}
+function beachRave(){
+  if(S.money<2500){ toast('Not enough money!'); return; }
+  S.money-=2500; S.happy=clamp(S.happy+22,0,100); S.energy=clamp(S.energy-15,0,100);
+  S.hour=(S.hour+3)%24;
+  closeModal(); bigTitle('🎉 BEACH RAVE!!'); pushChat(pick(NAMES),'rave at Elegushi is MAD 🔥');
+  toast('🎉 You danced till sunset!'); updateHUD();
+}
+
+/* ---------- JOBS ---------- */
+function officeMenu(){
+  const wage = 9000 + S.jobLevel*3500;
+  openModal(`
+    <h2>🏢 Corporate Office</h2><div class="sub">Hustle hard. Career level ${S.jobLevel} · ${S.shiftsDone} shifts completed.</div>
+    ${act(`💼 Work a shift (${fmt(wage)})`, ()=>{ workShift(wage); },'green','takes 4 hours')}
+    ${act('📈 Ask for promotion', ()=>{ promote(); })}
+    ${act('🗣️ Gist with coworkers', ()=>{ S.happy=clamp(S.happy+5,0,100); closeModal(); toast('🗣️ Office gist sweet die!'); updateHUD(); })}
+    ${act('Back', ()=>closeModal())}
+  `);
+}
+function workShift(wage){
+  closeModal();
+  bigTitle('💼 Working shift...');
+  setTimeout(()=>{
+    S.money+=wage; S.energy=clamp(S.energy-20,0,100); S.hunger=clamp(S.hunger-12,0,100);
+    S.happy=clamp(S.happy-3,0,100); S.hour=(S.hour+4)%24; S.shiftsDone++;
+    toast(`💼 Shift complete! Paid ${fmt(wage)}`); pushChat(pick(NAMES),'salary landed 💰 who dey hangout?'); updateHUD();
+  }, 4000);
+}
+function promote(){
+  if(S.shiftsDone < S.jobLevel*3){ toast(`Boss: "Do ${S.jobLevel*3 - S.shiftsDone} more shifts first."`); return; }
+  S.jobLevel++; closeModal(); bigTitle('📈 PROMOTED! Level '+S.jobLevel);
+  pushChat(pick(NAMES),'omo somebody got promoted! 🎉'); updateHUD();
+}
+function marketMenu(){
+  openModal(`
+    <h2>🛒 Oja Market</h2><div class="sub">Buy cheap, sell dear. Trader work available.</div>
+    ${act('🧺 Run a trading stall (₦4,000–₦9,000)', ()=>{ marketHustle(); },'green','takes 3 hours')}
+    ${act('🥬 Buy foodstuffs (₦1,500)', ()=>{ payTime(1500,3,'hunger',20,'🥬 Foodstuffs bought & munched!'); },'','cook at home')}
+    ${act('👗 Buy asoebi fabric (₦7,000)', ()=>{ payTime(7000,10,'hygiene',0,'👗 New drip acquired!'); },'','+happiness')}
+    ${act('Back', ()=>closeModal())}
+  `);
+}
+function marketHustle(){
+  closeModal(); bigTitle('🧺 Hustling at the market...');
+  setTimeout(()=>{
+    const earn=irand(4000,9000); S.money+=earn; S.energy=clamp(S.energy-15,0,100);
+    S.hunger=clamp(S.hunger-10,0,100); S.hour=(S.hour+3)%24;
+    toast(`🧺 Trading done! You earned ${fmt(earn)}`); updateHUD();
+  }, 3500);
+}
+
+/* ---------- CLUB / PARTY ---------- */
+function clubMenu(){
+  openModal(`
+    <h2>🎉 Quilox Club</h2><div class="sub">The bass is heavy. Bottles on bottles.</div>
+    ${act('🍾 Buy table & drinks (₦10,000)', ()=>{ clubNight(10000,25); },'green','night of fun')}
+    ${act('🥂 Light drinks (₦3,000)', ()=>{ clubNight(3000,12); })}
+    ${act('🎊 Host a party (₦25,000)', ()=>{ hostParty('club'); })}
+    ${act('💃 Just vibe on the dancefloor (₦1,000)', ()=>{ clubNight(1000,8); })}
+    ${act('Back', ()=>closeModal())}
+  `);
+}
+function clubNight(cost, happy){
+  if(S.money<cost){ toast('Bouncer: "Your money no reach." 😬'); return; }
+  S.money-=cost; S.happy=clamp(S.happy+happy,0,100); S.energy=clamp(S.energy-18,0,100);
+  S.hygiene=clamp(S.hygiene-8,0,100); S.hour=(S.hour+4)%24;
+  closeModal(); bigTitle('🎶 OWAMBE NIGHT');
+  pushChat(pick(NAMES),'Quilox tonight dey POP 🍾'); toast('🍾 What a night!'); updateHUD();
+}
+function hostParty(where){
+  const cost = where==='club'?25000:15000;
+  if(S.money<cost){ toast(`You need ${fmt(cost)} to host a party.`); return; }
+  S.money-=cost; S.happy=100; S.energy=clamp(S.energy-25,0,100);
+  closeModal(); bigTitle('🎊 YOUR PARTY IS LIT! 🔥');
+  const guests=irand(4,9);
+  for(let i=0;i<guests;i++) setTimeout(()=>pushChat(pick(NAMES), pick(['party madt!! 🎉','this host sabi! 🙌','owambe things 🥳','we dey your party!!','champagne dey flow 🍾'])), rand(600,4000));
+  toast(`🎊 ${guests} online players pulled up! You're the talk of Lagos!`);
+  S.happy=clamp(S.happy+20,0,100); updateHUD();
+}
+
+/* ---------- GYM ---------- */
+function gymMenu(){
+  openModal(`
+    <h2>💪 i-Fitness Gym</h2><div class="sub">Leg day every day. ₦2,000 per session.</div>
+    ${act('🏋️ Full workout', ()=>{ payTime(2000,10,'energy',18,'🏋️ Muscles loading... 💪 You feel great!'); },'green','-energy +happy')}
+    ${act('🏃 Cardio burn', ()=>{ payTime(1500,6,'energy',12,'🏃 You ran 5km!'); })}
+    ${act('🧖 Use the spa', ()=>{ payTime(4000,12,'hygiene',-30,'🧖 So fresh and so clean!'); },'','restores hygiene')}
+    ${act('Back', ()=>closeModal())}
+  `);
+}
+
+/* ---------- POLICE ---------- */
+function policeMenu(){
+  openModal(`
+    <h2>🚔 Police Station</h2><div class="sub">The boys in black. Report crimes here.</div>
+    ${act('🚨 Report street thugs', ()=>{
+        if(S.thugRepelled>0){ const r=S.thugRepelled*3000; S.money+=r; S.thugRepelled=0; closeModal(); toast(`🚔 Officers acted on your reports. Reward ${fmt(r)}!`); updateHUD(); }
+        else toast('Officer: "No open cases. Report thugs when they approach you."');
+      },'green','reward ₦3,000 each')}
+    ${act('🪪 Apply for side-hustle permit (₦5,000)', ()=>{ if(S.money>=5000){S.money-=5000; closeModal(); toast('🪪 Permit granted! Market hustle pays +20% now.'); updateHUD();} else toast('Not enough money.'); })}
+    ${act('Back', ()=>closeModal())}
+  `);
+}
+
+/* ---------- CHURCH / MARRIAGE ---------- */
+function churchMenu(){
+  if(!S.partner){
+    openModal(`
+      <h2>💒 Love Chapel</h2><div class="sub">Find your person first — build a relationship at the beach, club, or with online players. Then come back here 💍</div>
+      ${act('🙏 Pray (free)', ()=>{ S.happy=clamp(S.happy+6,0,100); closeModal(); toast('🙏 Peace of mind.'); updateHUD(); })}
+      ${act('Back', ()=>closeModal())}
+    `);
+    return;
+  }
+  const p=S.partner;
+  openModal(`
+    <h2>💒 Love Chapel</h2><div class="sub">You & @${p.name} · Relationship level ${p.level}/5</div>
+    ${p.level>=5
+      ? act(`💍 PROPOSE to @${p.name} (ring ₦50,000)`, ()=>{ propose(); },'green','forever starts here')
+      : `<div class="sub" style="margin-bottom:10px">Grow your relationship to level 5 to unlock proposal 💍 (date & gift @${p.name})</div>`}
+    ${act('💑 Go on a date (₦8,000)', ()=>{ datePartner(p); })}
+    ${act('🎁 Buy a gift (₦10,000)', ()=>{ giftPartner(p); })}
+    ${act('💔 Break up', ()=>{ breakUp(); },'red')}
+    ${act('Back', ()=>closeModal())}
+  `);
+}
+function datePartner(p){
+  if(S.money<8000){ toast('Not enough money for a date!'); return; }
+  S.money-=8000; p.level=clamp(p.level+1,0,5); S.happy=clamp(S.happy+18,0,100);
+  S.hour=(S.hour+3)%24;
+  closeModal(); bigTitle('💑 DATE NIGHT');
+  pushChat(p.name,'best date ever 😍💕'); toast(`💑 @${p.name} is falling for you! (lvl ${p.level}/5)`); updateHUD();
+}
+function giftPartner(p){
+  if(S.money<10000){ toast('Not enough money for a gift!'); return; }
+  S.money-=10000; p.level=clamp(p.level+1,0,5);
+  closeModal(); pushChat(p.name,'omggg a gift?! I love it!! 🥺💕'); toast(`🎁 @${p.name} loved the gift! (lvl ${p.level}/5)`); updateHUD();
+}
+function propose(){
+  if(S.money<50000){ toast('The ring costs ₦50,000!'); return; }
+  S.money-=50000; closeModal(); bigTitle('💍 SHE SAID YES!!');
+  S.married=true; S.spouse=S.partner; S.partner=null;
+  pushChat(S.spouse.name,'I SAID YES!!! 💍💒'); pushChat(pick(NAMES),'wedding loading!!! 🥳');
+  setTimeout(()=>bigTitle('💒 Just Married!'), 2600);
+  toast('💒 Congratulations! You are now married.'); updateHUD();
+}
+function breakUp(){
+  const n=S.partner.name; S.partner=null; closeModal();
+  pushChat(n,'...wow. okay. 💔'); toast('💔 You broke up with @'+n); updateHUD();
+}
+
+/* ---------- SALON / RESTO / SHOP ---------- */
+function salonMenu(){
+  openModal(`
+    <h2>💇 Mama Bisi's Salon</h2><div class="sub">Look good, feel good.</div>
+    ${act('💇 New hairstyle (₦5,000)', ()=>{ payTime(5000,12,'hygiene',-15,'💇 You look FIRE! 🔥'); },'green')}
+    ${act('💅 Mani-pedi (₦4,000)', ()=>{ payTime(4000,8,'hygiene',-20,'💅 Hands soft like butter'); })}
+    ${act('Back', ()=>closeModal())}
+  `);
+}
+function restoMenu(){
+  openModal(`
+    <h2>🍲 Amala Shitta</h2><div class="sub">Correct amala & ewedu. Chop life!</div>
+    ${act('🍲 Full amala combo (₦2,500)', ()=>{ payTime(2500,8,'hunger',45,'🍲 Belly FULL! That amala sweet!'); },'green')}
+    ${act('🍚 Light rice (₦1,200)', ()=>{ payTime(1200,4,'hunger',25,'🍚 Nice quick meal'); })}
+    ${act('Back', ()=>closeModal())}
+  `);
+}
+function shopMenu(fromHome){
+  openModal(`
+    <h2>🛍️ The Palms Mall</h2><div class="sub">Shop till you drop.</div>
+    ${act('🛋️ Buy sofa (₦30,000)', ()=>{ buyItem('sofa',30000); })}
+    ${act('📺 Buy TV (₦45,000)', ()=>{ buyItem('tv',45000); })}
+    ${act('🧊 Buy fridge (₦25,000)', ()=>{ buyItem('fridge',25000); })}
+    ${act('👟 New sneakers (₦12,000)', ()=>{ payTime(12000,10,'hygiene',0,'👟 Fresh kicks!'); })}
+    ${act('Back', ()=>{ closeModal(); if(fromHome) homeMenu(); })}
+  `);
+}
+function buyItem(name, cost){
+  if(S.furniture.includes(name)){ toast('You already own that.'); return; }
+  if(S.money<cost){ toast('Not enough money!'); return; }
+  S.money-=cost; S.furniture.push(name); S.happy=clamp(S.happy+6,0,100);
+  toast(`🛍️ ${name} delivered to your house!`); updateHUD(); save();
+}
+
+/* ---------- PLAYER interaction (romance / chat) ---------- */
+function openPlayerMenu(p){
+  if(S.married){
+    openModal(`<h2>${p.emoji} @${p.name}</h2><div class="sub">Online player</div>
+      ${act('💬 Chat', ()=>{ closeModal(); toggleChat(); pushChat('scar_belle',`hi @${p.name} 😊`,true); setTimeout(()=>pushChat(p.name,pick(['hey hey! 😄','hello hello','how far!'])),1200); })}
+      ${act('😌 Close',()=>closeModal())}`);
+    return;
+  }
+  const isPartner = S.partner && S.partner.name===p.name;
+  openModal(`
+    <h2>${p.emoji} @${p.name}</h2><div class="sub">Online player · ${irand(1,60)}m away</div>
+    ${isPartner
+      ? `<div class="sub">💕 This is your boo! Visit the 💒 chapel to date, gift & propose.</div>`
+      : act('💘 Ask to be your boo', ()=>{ askOut(p); },'green')}
+    ${act('💬 Chat', ()=>{ closeModal(); toggleChat(); pushChat('scar_belle',`hi @${p.name} 👋`,true); setTimeout(()=>pushChat(p.name,pick(['hey!! 😍','hiii','yo yo','hello dear'])),1300); })}
+    ${act('🎁 Send ₦5,000 gift', ()=>{ if(S.money>=5000){S.money-=5000; if(S.partner&&S.partner.name===p.name){S.partner.level=clamp(S.partner.level+1,0,5); pushChat(p.name,'aww you too sweet! 💕');} else pushChat(p.name,'omgg thank you!! 🥺'); toast('🎁 Gift sent!'); updateHUD();} else toast('Not enough money!'); })}
+    ${act('😌 Close',()=>closeModal())}
+  `);
+}
+function askOut(p){
+  if(S.partner){ toast(`You're already dating @${S.partner.name}! Break up first.`); return; }
+  if(Math.random()<0.75){
+    S.partner={name:p.name, level:1};
+    closeModal(); bigTitle('💘 IT\'S A MATCH!');
+    pushChat(p.name,'yessss I go be your boo 😍💕');
+    pushChat(pick(NAMES),'new couple alert!!! 🥳');
+    toast(`💘 You're now dating @${p.name}! Build it at the 💒 chapel.`);
+  } else {
+    pushChat(p.name,pick(['lol I just see you as a friend 😅','hmm let me think about it','maybe later jare 😂']));
+    toast('😅 They said not yet... try gifting or chatting first.');
+  }
+  updateHUD();
+}
+
+/* ---------- TRAVEL ---------- */
+const MODES = [
+  { id:'trek',  name:'Trek',  icon:'🚶', cost:0,    speed:55, max:20 },
+  { id:'keke',  name:'Keke',  icon:'🛺', cost:100,  speed:170 },
+  { id:'danfo', name:'Danfo', icon:'🚌', cost:100,  speed:190 },
+  { id:'okada', name:'Okada', icon:'🏍️', cost:350,  speed:320 },
+  { id:'cab',   name:'Cab',   icon:'🚕', cost:650,  speed:520 },
+];
+let travelling=null;
+function travelMenu(){
+  let rows='';
+  for(const l of LOCS){
+    if(l.id==='home' && dist(S,l)<100) continue;
+    rows += `<button class="act" onclick="pickMode('${l.id}')"><span>${l.emoji} ${l.name}</span><small>${Math.round(dist(S,l)/10)*10}m away</small></button>`;
+  }
+  openModal(`<h2>🚕 Travel</h2><div class="sub">Where to? (pick a destination)</div>${rows}`);
+}
+function pickMode(destId){
+  const d = dist(S, loc(destId));
+  let rows='';
+  for(const m of MODES){
+    const t = m.id==='trek' ? Math.min(m.max, d/60) : d/m.speed;
+    rows += `<button class="act ${m.id==='cab'?'green':''}" onclick="startTravel('${destId}','${m.id}')"><span>${m.icon} ${m.name}</span><small>${m.cost?fmt(m.cost):'Free'} · ${t.toFixed(0)}s</small></button>`;
+  }
+  openModal(`<h2>${loc(destId).emoji} ${loc(destId).name}</h2><div class="sub">Choose transport (trekking max 20s)</div>${rows}<button class="act" onclick="travelMenu()">⬅ Back</button>`);
+}
+function startTravel(destId, modeId){
+  const m = MODES.find(x=>x.id===modeId), l = loc(destId);
+  if(S.money<m.cost){ toast(`You need ${fmt(m.cost)} for ${m.name}.`); return; }
+  S.money-=m.cost; updateHUD(); closeModal();
+  const d = dist(S,l);
+  const dur = m.id==='trek' ? Math.min(m.max, d/60) : clamp(d/m.speed, 1.2, 15);
+  travelling = { from:{x:S.x,y:S.y}, to:l, t:0, dur, mode:m };
+  bigTitle(`${m.icon} ${m.name} ride...`);
+}
+function travelTick(dt){
+  if(!travelling) return false;
+  const tr=travelling; tr.t+=dt;
+  const k=clamp(tr.t/tr.dur,0,1);
+  const e = k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2; // easeInOut
+  S.x = tr.from.x + (tr.to.x-tr.from.x)*e;
+  S.y = tr.from.y + (tr.to.y-tr.from.y)*e;
+  walking = tr.mode.id==='trek';
+  if(k>=1){
+    travelling=null; walking=false;
+    toast(`📍 Arrived: ${tr.to.name} ${tr.to.emoji}`);
+    if(tr.to.id==='beach') pushChat(pick(NAMES),'welcome to the beach!! 🏖️');
+    openLocMenu(tr.to);
+  }
+  return true;
+}
+
+/* ---------- THUG EVENTS ---------- */
+let thugCooldown=30, thugActive=null;
+function thugTick(dt){
+  if(thugActive) return;
+  thugCooldown-=dt;
+  const night = S.hour>=20||S.hour<5;
+  if(thugCooldown<=0){
+    thugCooldown = night? rand(40,90) : rand(90,180);
+    // don't trigger in safe zones
+    if(dist(S,loc('police'))<250 || dist(S,loc('home'))<200) return;
+    if(Math.random()<(night?0.75:0.35)){
+      thugActive={name:pick(['Shina','Rambo','Eku','Kazeem']), demand:irand(2000,8000)};
+      openModal(`
+        <h2>😈 Street Thug: "${thugActive.name}"</h2>
+        <div class="sub">"Oga, drop ${fmt(thugActive.demand)} make we no wound you."</div>
+        ${act(`💸 Pay ${fmt(thugActive.demand)}`, ()=>{ S.money=Math.max(0,S.money-thugActive.demand); toast(`😈 You paid ${fmt(thugActive.demand)}... painful.`); thugActive=null; updateHUD(); closeModal(); })}
+        ${act('🏃 Run for your life!', ()=>{ if(Math.random()<0.6){ toast('🏃 You escaped!'); } else { const fine=irand(1000,3000); S.money=Math.max(0,S.money-fine); S.energy=clamp(S.energy-15,0,100); toast(`😈 They caught you! Took ${fmt(fine)} and you got roughed up.`);} thugActive=null; updateHUD(); closeModal(); })}
+        ${act('🚔 Call the police', ()=>{ S.thugRepelled++; toast('🚔 Police dispatched! Report filed. Go to station later for reward.'); pushChat(pick(NAMES),'police dey come that axis o'); thugActive=null; updateHUD(); closeModal(); })}
+      `);
     }
-    let t = 0, c = 0, h = '';
-    cart.forEach(x => {
-        let it = x.price * x.qty;
-        t += it; c += x.qty;
-        h += `<div class="cart-item"><img src="${x.img}" alt="${x.name}"><div class="cart-item-info"><h5>${x.name}</h5><span>₦${x.price.toLocaleString()}</span><div class="qty">Qty: ${x.qty}</div></div><button class="del-btn" onclick="removeItem(${x.id})"><i class="fas fa-trash"></i></button></div>`;
-    });
-    list.innerHTML = h;
-    count.textContent = c;
-    total.textContent = '₦' + t.toLocaleString();
+  }
 }
 
-function toggleCart() {
-    document.getElementById('cartDrawer').classList.toggle('show');
-    document.getElementById('cartOverlay').classList.toggle('show');
+/* ---------- PHONE ---------- */
+function phoneMenu(){
+  openModal(`
+    <h2>📱 scar_belle's phone</h2><div class="sub">Sunday vibes in Lagos</div>
+    ${act('💼 <b>Jobs</b>', ()=>toast('💼 Visit 🏢 Office for salary work, or 🛒 Market for trading hustle'))}
+    ${act('🏦 <b>Bank</b> — balance: '+fmt(S.money), ()=>{ toast(`🏦 Balance: ${fmt(S.money)}`); })}
+    ${act('💕 <b>Status</b> — '+(S.married?`Married to @${S.spouse.name}`+(S.baby?' · expecting 👶':''):S.partner?`Dating @${S.partner.name} (lvl ${S.partner.level}/5)`:'Single & ready 😏'), ()=>{ closeModal(); familyMenu(); })}
+    ${act('📖 <b>How to play</b>', ()=>howTo())}
+    ${act('🗑️ <b>Restart life</b>', ()=>{ if(confirm('Start a new life? Current progress will be lost.')){ localStorage.removeItem('sb_lovelife'); location.reload(); } },'red')}
+    ${act('Close', ()=>closeModal())}
+  `);
+}
+function howTo(){
+  openModal(`<h2>📖 How to play</h2><div class="sub">
+  🚶 Move with <b>WASD / arrows</b> or click anywhere to walk. Click buildings & players to interact.<br><br>
+  💼 <b>Work</b> at the Office or Market to earn money. Keep 🍗 hunger, ⚡ energy, 🧼 hygiene & 😊 happiness up or you'll feel awful.<br><br>
+  💘 Click <b>online players</b>, ask them out, date at the 💒 chapel, propose at level 5, marry, then start a family 👶.<br><br>
+  🎉 Host parties, hit the club & beach. 😈 Watch out for thugs at night — report them at 🚔 for rewards.<br><br>
+  🚕 Use Travel for keke, danfo, okada & cab — trekking takes max 20 seconds.</div>
+  ${act('Got it!', ()=>closeModal(),'green')}`);
 }
 
-function openCheckout() {
-    if(cart.length === 0) { alert('Cart is empty!'); return; }
-    toggleCart();
-    let h = '', t = 0;
-    cart.forEach(x => { let it = x.price * x.qty; t += it; h += `<div class="order-row"><span>${x.name} x${x.qty}</span><span>₦${it.toLocaleString()}</span></div>`; });
-    h += `<div class="order-row"><span>Total</span><span>₦${t.toLocaleString()}</span></div>`;
-    document.getElementById('orderRows').innerHTML = h;
-    document.getElementById('checkoutOverlay').classList.add('show');
+/* ---------------- NAV ---------------- */
+document.getElementById('nTravel').onclick=travelMenu;
+document.getElementById('nPhone').onclick=phoneMenu;
+document.getElementById('nHome').onclick=()=>{ if(dist(S,loc('home'))<120) homeMenu(); else { pickMode('home'); } };
+document.getElementById('nMap').onclick=()=>{ toast('🗺️ You are the golden avatar. Explore!'); };
+
+/* ---------------- DRAWING ---------------- */
+function drawHuman(x,y,color,scale=1,phase=0,emoji){
+  cx.save(); cx.translate(x,y);
+  const bob = Math.sin(phase)*2*scale;
+  // shadow
+  cx.fillStyle='rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(0,14*scale,12*scale,4*scale,0,0,7); cx.fill();
+  // legs
+  cx.strokeStyle='#1f2937'; cx.lineWidth=5*scale; cx.lineCap='round';
+  const lp = Math.sin(phase)*7*scale;
+  cx.beginPath(); cx.moveTo(-3*scale,2*scale+bob*.3); cx.lineTo(-3*scale+lp,14*scale); cx.stroke();
+  cx.beginPath(); cx.moveTo(3*scale,2*scale+bob*.3); cx.lineTo(3*scale-lp,14*scale); cx.stroke();
+  // body
+  cx.fillStyle=color.shirt||'#facc15';
+  roundRect(-8*scale,-20*scale+bob*.3,16*scale,22*scale,6*scale); cx.fill();
+  // head
+  cx.fillStyle=color.skin||'#8d5524';
+  cx.beginPath(); cx.arc(0,-28*scale+bob*.3,8*scale,0,7); cx.fill();
+  cx.fillStyle='#111'; cx.beginPath(); cx.arc(0,-31*scale+bob*.3,8*scale,Math.PI,2*Math.PI); cx.fill();
+  cx.restore();
+}
+function roundRect(x,y,w,h,r){ cx.beginPath(); cx.moveTo(x+r,y); cx.arcTo(x+w,y,x+w,y+h,r); cx.arcTo(x+w,y+h,x,y+h,r); cx.arcTo(x,y+h,x,y,r); cx.arcTo(x,y,x+w,y,r); cx.closePath(); }
+
+function drawWorld(){
+  // grass base
+  cx.fillStyle='#9ccc65'; cx.fillRect(0,0,WORLD.w,WORLD.h);
+  // lagoon
+  cx.fillStyle='#4fc3f7';
+  cx.fillRect(2050,1200,600,520);
+  cx.fillStyle='#0288d1'; cx.font='bold 34px sans-serif'; cx.fillText('LAGOS LAGOON 🌊', 2080, 1290);
+  // sand near beach
+  cx.fillStyle='#ffe082'; cx.fillRect(2050,1120,600,90);
+  // roads
+  cx.fillStyle='#78909c';
+  for(const y of ROADS_H) cx.fillRect(0,y-28,WORLD.w,56);
+  for(const x of ROADS_V) cx.fillRect(x-28,0,56,WORLD.h);
+  // road dashes
+  cx.strokeStyle='rgba(255,255,255,.6)'; cx.lineWidth=3; cx.setLineDash([24,20]);
+  for(const y of ROADS_H){ cx.beginPath(); cx.moveTo(0,y); cx.lineTo(WORLD.w,y); cx.stroke(); }
+  for(const x of ROADS_V){ cx.beginPath(); cx.moveTo(x,0); cx.lineTo(x,WORLD.h); cx.stroke(); }
+  cx.setLineDash([]);
+  // sidewalks
+  cx.fillStyle='rgba(255,255,255,.25)';
+  for(const y of ROADS_H){ cx.fillRect(0,y-38,WORLD.w,6); cx.fillRect(0,y+32,WORLD.w,6); }
+}
+function drawLoc(l){
+  // plot
+  cx.fillStyle=l.color; cx.strokeStyle='rgba(0,0,0,.15)'; cx.lineWidth=2;
+  roundRect(l.x-55,l.y-45,110,90,14); cx.fill(); cx.stroke();
+  cx.font='40px sans-serif'; cx.textAlign='center';
+  cx.fillText(l.emoji,l.x,l.y+6);
+  // label
+  cx.font='600 13px sans-serif';
+  const tw=cx.measureText(l.name).width+18;
+  cx.fillStyle='rgba(255,255,255,.95)';
+  roundRect(l.x-tw/2,l.y-78,tw,24,12); cx.fill();
+  cx.fillStyle='#1f2937'; cx.fillText(l.name,l.x,l.y-61);
+  cx.textAlign='left';
+}
+function drawPlayerCharacter(){
+  const moving = walking || travelling;
+  if(moving) walkPhase += 0.15;
+  // crown if rich
+  if(S.money>=1000000){ cx.font='22px sans-serif'; cx.fillText('👑',S.x-11,S.y-52); }
+  drawHuman(S.x,S.y,{shirt:'#fbbf24',skin:'#8d5524'},1.15,walkPhase);
+  // ring indicator if married
+  if(S.married){ cx.font='14px sans-serif'; cx.fillText('💍',S.x+12,S.y-38); }
+  if(S.baby){ cx.font='13px sans-serif'; cx.fillText('👶',S.x-24,S.y-38); }
+  // name
+  cx.font='700 12px sans-serif'; cx.textAlign='center';
+  cx.fillStyle='#0a7a4a'; cx.fillText('@scar_belle (you)',S.x,S.y-58);
+  cx.textAlign='left';
+}
+function drawNPCs(){
+  for(const p of PEDS){
+    p.x += p.dir*p.speed*0.016;
+    if(p.x<0)p.x=WORLD.w; if(p.x>WORLD.w)p.x=0;
+    drawHuman(p.x,p.y,{shirt:'#94a3b8',skin:p.color},0.95,p.x*0.05);
+  }
+}
+function drawPlayers(dt){
+  for(const p of PLAYERS){
+    p.idle+=dt;
+    if(p.idle>rand(4,9) || dist(p,{x:p.tx,y:p.ty})<10){
+      p.idle=0; p.tx=clamp(p.x+rand(-260,260),100,WORLD.w-100); p.ty=clamp(p.y+rand(-260,260),100,WORLD.h-100);
+      // prefer sidewalks
+      if(Math.random()<0.5) p.ty=pick(ROADS_H)+pick([-SIDE,SIDE]);
+    }
+    const d=dist(p,{x:p.tx,y:p.ty});
+    if(d>4){ const m=Math.hypot(p.tx-p.x,p.ty-p.y); p.x+=p.tx-p.x>=0?1:-1; p.x+=( (p.tx-p.x)/m )*p.speed*dt; p.y+=( (p.ty-p.y)/m )*p.speed*dt; }
+    const isBoo = (S.partner&&S.partner.name===p.name)||(S.spouse&&S.spouse.name===p.name);
+    drawHuman(p.x,p.y,{shirt:pickShirt(p),skin:p.color},1.0,p.x*0.05);
+    cx.font='600 11px sans-serif'; cx.textAlign='center';
+    cx.fillStyle=isBoo?'#e11d48':'#374151';
+    cx.fillText('@'+p.name+(isBoo?' 💕':''),p.x,p.y-48);
+    cx.textAlign='left';
+  }
+}
+const SHIRTCACHE={};
+function pickShirt(p){ if(!SHIRTCACHE[p.name]) SHIRTCACHE[p.name]=pick(['#f472b6','#60a5fa','#34d399','#f87171','#a78bfa','#fbbf24']); return SHIRTCACHE[p.name]; }
+function drawCars(){
+  for(const c of CARS){
+    c.x += c.dir*c.speed*0.016;
+    if(c.dir>0 && c.x>WORLD.w+60) c.x=-60;
+    if(c.dir<0 && c.x<-60) c.x=WORLD.w+60;
+    cx.save(); cx.translate(c.x,c.y); if(c.dir<0)cx.scale(-1,1);
+    if(c.kind==='keke'){
+      cx.fillStyle='#facc15'; roundRect(-16,-10,32,20,5); cx.fill();
+      cx.fillStyle='#111'; cx.beginPath(); cx.arc(-8,12,5,0,7); cx.arc(8,12,5,0,7); cx.fill();
+    } else {
+      cx.fillStyle=c.color; roundRect(-22,-11,44,22,7); cx.fill();
+      cx.fillStyle='rgba(180,220,255,.9)'; roundRect(-8,-9,16,10,3); cx.fill();
+      cx.fillStyle='#111'; cx.beginPath(); cx.arc(-12,12,5,0,7); cx.arc(12,12,5,0,7); cx.fill();
+    }
+    cx.restore();
+  }
+}
+function drawHouseInterior(){
+  // cozy room
+  cx.fillStyle='#7c4a1e'; cx.fillRect(0,0,W,H);
+  cx.fillStyle='#a86b32'; cx.fillRect(0,0,W,H*0.62);
+  cx.fillStyle='#d9a05b';
+  for(let i=0;i<12;i++)for(let j=0;j<8;j++){ if((i+j)%2===0){ cx.fillRect(i*140-((j%2)*70),H*0.62+j*50,140,50); } }
+  // furniture
+  const items={ bed:['🛏️',.2,.66], chair:['🪑',.45,.74], cooler:['🧊',.8,.68], sofa:['🛋️',.6,.66], tv:['📺',.5,.45], fridge:['🧊',.9,.6] };
+  cx.textAlign='center';
+  for(const f of S.furniture){ const it=items[f]; if(!it)continue; cx.font=(f==='tv'?'90px':'110px')+' sans-serif'; cx.fillText(it[0],W*it[1],H*it[2]); }
+  // spouse & baby
+  if(S.married){ cx.font='90px sans-serif'; cx.fillText('🧑🏾',W*0.32,H*0.72);
+    cx.font='600 13px sans-serif'; cx.fillStyle='#fff'; cx.fillText('@'+S.spouse.name+' 💍',W*0.32,H*0.76); }
+  if(S.baby){ cx.font='44px sans-serif'; cx.fillText('👶',W*0.4,H*0.76); }
+  cx.font='bold 26px sans-serif'; cx.fillStyle='#fff';
+  cx.fillText('🏠 '+S.home+'  ·  click Phone → Home menu',W/2,60);
+  cx.textAlign='left';
 }
 
-function closeCheckout() {
-    document.getElementById('checkoutOverlay').classList.remove('show');
+/* ---------------- MAIN LOOP ---------------- */
+let last=0;
+function loop(t){
+  const dt=Math.min(0.05,(t-last)/1000||0.016); last=t;
+  tickTime(dt); chatTick(dt); thugTick(dt);
+
+  if(S.mode==='map'){
+    if(!travelTick(dt)) movePlayer(dt);
+    scanNearby();
+    // camera
+    cam.x = clamp(S.x-W/2,0,Math.max(0,WORLD.w-W));
+    cam.y = clamp(S.y-H/2,0,Math.max(0,WORLD.h-H));
+    cx.save(); cx.translate(-cam.x,-cam.y);
+    drawWorld();
+    for(const l of LOCS) drawLoc(l);
+    drawNPCs(); drawCars(); drawPlayers(dt);
+    drawPlayerCharacter();
+    // travel vehicle overlay
+    if(travelling && travelling.mode.id!=='trek'){
+      cx.font='42px sans-serif'; cx.textAlign='center';
+      cx.fillText(travelling.mode.icon,S.x,S.y-8); cx.textAlign='left';
+    }
+    cx.restore();
+  } else {
+    drawHouseInterior();
+  }
+  requestAnimationFrame(loop);
 }
 
-function sendWhatsApp() {
-    let n = document.getElementById('cName').value.trim();
-    let p = document.getElementById('cPhone').value.trim();
-    let a = document.getElementById('cAddress').value.trim();
-    if(!n || !p || !a) { alert('Fill all fields'); return; }
-    let msg = `*ORDER - The Royal Place*%0A%0A*Customer*%0AName: ${n}%0APhone: ${p}%0AAddress: ${a}%0A%0A*Items*%0A`;
-    let t = 0;
-    cart.forEach(x => { let it = x.price * x.qty; t += it; msg += `• ${x.name} x${x.qty} = ₦${it.toLocaleString()}%0A`; });
-    msg += `%0A*Total: ₦${t.toLocaleString()}*%0A%0AThank you!`;
-    window.open(`https://wa.me/2348134595298?text=${msg}`, '_blank');
-    cart = []; updateCart(); closeCheckout();
-    document.getElementById('cName').value = '';
-    document.getElementById('cPhone').value = '';
-    document.getElementById('cAddress').value = '';
-}
-
-function toggleReviews(id) {
-    document.getElementById('revs-'+id).classList.toggle('open');
-}
-
-function setStar(fid, s) {
-    stars[fid] = s;
-    let els = document.getElementById('stars-'+fid).querySelectorAll('i');
-    els.forEach((e,i) => { if(i < s) e.classList.add('active'); else e.classList.remove('active'); });
-}
-
-function submitReview(id) {
-    let n = document.getElementById('rname-'+id).value.trim();
-    let t = document.getElementById('rtext-'+id).value.trim();
-    let r = stars[id] || 5;
-    if(!n || !t) { alert('Fill name and review'); return; }
-    let panel = document.getElementById('revs-'+id);
-    let div = document.createElement('div');
-    div.className = 'review-tag';
-    div.innerHTML = `<strong>${n} ${'★'.repeat(r)}</strong><p>${t}</p>`;
-    panel.insertBefore(div, panel.lastElementChild);
-    document.getElementById('rname-'+id).value = '';
-    document.getElementById('rtext-'+id).value = '';
-    stars[id] = 0; setStar(id, 0);
-}
-
-function filterCat(cat) {
-    let cards = document.querySelectorAll('.food-card');
-    cards.forEach(c => {
-        if(cat === 'all' || c.dataset.cat === cat) c.style.display = 'flex';
-        else c.style.display = 'none';
-    });
-}
-
-function searchFood() {
-    let q = document.getElementById('searchInput').value.toLowerCase();
-    let cards = document.querySelectorAll('.food-card');
-    cards.forEach(c => {
-        if(c.dataset.name.includes(q)) c.style.display = 'flex';
-        else c.style.display = 'none';
-    });
-}
+/* ---------------- BOOT ---------------- */
+updateHUD();
+bigTitle("💕 scar_belle's love life");
+pushChat('system','👋 Welcome to Lagos! Find work, find love, live large.');
+setTimeout(()=>pushChat(pick(NAMES),'new here? welcome!! 🎉'), 2500);
+setTimeout(()=>toast('🚶 Move: WASD / click · Press E near buildings · Everyone you see is "online" — click them!'), 1500);
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>
+'''
+import os
+os.makedirs('/mnt/agents/output', exist_ok=True)
+with open('/mnt/agents/output/scar_belles_love_life.html','w') as f:
+    f.write(game_code)
+print('written', len(game_code), 'chars')
