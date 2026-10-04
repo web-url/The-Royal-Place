@@ -5,880 +5,589 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>scar_belle's love life</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html,body { width:100%; height:100%; overflow:hidden; background:#0b0f1a; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; user-select:none; }
-  #game { display:block; position:absolute; inset:0; }
-
-  /* ---------- HUD ---------- */
-  #hud { position:absolute; top:10px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:20; flex-wrap:wrap; justify-content:center; max-width:96vw; }
-  .pill { background:rgba(255,255,255,.94); border-radius:999px; padding:7px 14px; font-size:13px; font-weight:600; color:#1a2233; box-shadow:0 3px 10px rgba(0,0,0,.25); display:flex; align-items:center; gap:6px; white-space:nowrap; }
-  .pill b { color:#0a7a4a; }
-  .statbar { width:64px; height:8px; background:#e5e7eb; border-radius:6px; overflow:hidden; display:inline-block; }
-  .statbar i { display:block; height:100%; border-radius:6px; transition:width .4s; }
-
-  /* ---------- bottom nav ---------- */
-  #nav { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:6px; background:rgba(20,25,40,.92); padding:8px; border-radius:22px; z-index:20; box-shadow:0 8px 24px rgba(0,0,0,.4); }
-  #nav button { background:transparent; border:none; color:#cdd6e4; font-size:11px; font-weight:600; padding:6px 12px; border-radius:14px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; min-width:58px; }
-  #nav button span { font-size:20px; }
-  #nav button.active, #nav button:hover { background:#16a34a; color:#fff; }
-
-  /* ---------- chat ---------- */
-  #chatToggle { position:absolute; bottom:96px; right:12px; z-index:25; background:#7c3aed; color:#fff; border:none; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(124,58,237,.5); font-size:13px; }
-  #chatPanel { position:absolute; bottom:150px; right:12px; width:300px; max-width:82vw; height:340px; background:rgba(15,20,35,.96); border-radius:18px; z-index:25; display:none; flex-direction:column; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.08); }
-  #chatPanel.open { display:flex; }
-  #chatHead { padding:10px 14px; font-weight:700; color:#fff; font-size:13px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; justify-content:space-between; }
-  #chatHead .dot { color:#4ade80; }
-  #chatMsgs { flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px; }
-  .cmsg { background:rgba(255,255,255,.08); border-radius:12px; padding:7px 10px; color:#e5e7eb; font-size:12px; max-width:88%; }
-  .cmsg b { color:#a5b4fc; }
-  .cmsg.me { background:#16a34a; align-self:flex-end; color:#fff; }
-  .cmsg.me b { color:#dcfce7; }
-  #chatInput { display:flex; padding:8px; gap:6px; border-top:1px solid rgba(255,255,255,.08); }
-  #chatInput input { flex:1; background:rgba(255,255,255,.1); border:none; border-radius:10px; padding:8px 10px; color:#fff; font-size:12px; outline:none; }
-  #chatInput button { background:#7c3aed; border:none; color:#fff; border-radius:10px; padding:0 14px; font-weight:700; cursor:pointer; }
-
-  /* ---------- modal ---------- */
-  #modalWrap { position:absolute; inset:0; background:rgba(0,0,0,.55); z-index:40; display:none; align-items:flex-end; justify-content:center; }
-  #modalWrap.open { display:flex; }
-  #modal { background:#fff; width:100%; max-width:480px; max-height:78vh; overflow-y:auto; border-radius:26px 26px 0 0; padding:20px 18px 30px; animation:slideUp .28s ease; }
-  @keyframes slideUp { from { transform:translateY(60px); opacity:.4; } to { transform:translateY(0); opacity:1; } }
-  #modal h2 { font-size:20px; margin-bottom:4px; color:#111827; }
-  #modal .sub { color:#6b7280; font-size:13px; margin-bottom:14px; }
-  .act { width:100%; text-align:left; background:#f3f4f6; border:none; border-radius:14px; padding:13px 14px; margin-bottom:8px; cursor:pointer; font-size:14px; font-weight:600; color:#111827; display:flex; justify-content:space-between; align-items:center; transition:background .15s; }
-  .act:hover { background:#e5e7eb; }
-  .act small { color:#6b7280; font-weight:500; }
-  .act.green { background:#16a34a; color:#fff; } .act.green small { color:#dcfce7; }
-  .act.red { background:#fee2e2; color:#991b1b; }
-  .act:disabled { opacity:.45; cursor:not-allowed; }
-
-  /* ---------- toasts ---------- */
-  #toasts { position:absolute; top:64px; left:50%; transform:translateX(-50%); z-index:50; display:flex; flex-direction:column; gap:6px; align-items:center; pointer-events:none; width:92vw; }
-  .toast { background:rgba(17,24,39,.94); color:#fff; padding:10px 18px; border-radius:999px; font-size:13px; font-weight:600; box-shadow:0 6px 20px rgba(0,0,0,.4); animation:tin .3s ease; max-width:92vw; text-align:center; }
-  @keyframes tin { from { transform:translateY(-14px); opacity:0; } to { transform:translateY(0); opacity:1; } }
-
-  #prompt { position:absolute; bottom:96px; left:50%; transform:translateX(-50%); z-index:15; background:rgba(17,24,39,.92); color:#fff; padding:9px 18px; border-radius:999px; font-size:13px; font-weight:600; display:none; }
-  #bigTitle { position:absolute; top:34%; left:0; right:0; text-align:center; z-index:60; pointer-events:none; opacity:0; transition:opacity .5s; }
-  #bigTitle h1 { font-size:34px; color:#fff; text-shadow:0 4px 20px rgba(0,0,0,.6); }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{width:100%;height:100%;overflow:hidden;background:#0b0f1a;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;user-select:none}
+  #game{display:block;position:absolute;inset:0}
+  #hud{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:20;flex-wrap:wrap;justify-content:center;max-width:97vw}
+  .pill{background:rgba(255,255,255,.95);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;color:#1a2233;box-shadow:0 3px 10px rgba(0,0,0,.25);display:flex;align-items:center;gap:5px;white-space:nowrap}
+  .pill b{color:#0a7a4a}
+  .statbar{width:52px;height:7px;background:#e5e7eb;border-radius:6px;overflow:hidden;display:inline-block}
+  .statbar i{display:block;height:100%;border-radius:6px;transition:width .4s}
+  #nav{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:rgba(20,25,40,.93);padding:7px;border-radius:20px;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  #nav button{background:transparent;border:none;color:#cdd6e4;font-size:10px;font-weight:600;padding:5px 11px;border-radius:13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:52px}
+  #nav button span{font-size:18px}
+  #nav button.active,#nav button:hover{background:#16a34a;color:#fff}
+  #chatToggle{position:absolute;top:56px;right:10px;z-index:25;background:#7c3aed;color:#fff;border:none;border-radius:999px;padding:8px 13px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(124,58,237,.5);font-size:12px}
+  #chatPanel{position:absolute;top:100px;right:10px;width:280px;max-width:80vw;height:300px;background:rgba(15,20,35,.96);border-radius:16px;z-index:25;display:none;flex-direction:column;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  #chatPanel.open{display:flex}
+  #chatHead{padding:9px 12px;font-weight:700;color:#fff;font-size:12px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between}
+  #chatMsgs{flex:1;overflow-y:auto;padding:9px;display:flex;flex-direction:column;gap:7px}
+  .cmsg{background:rgba(255,255,255,.08);border-radius:11px;padding:6px 9px;color:#e5e7eb;font-size:11px;max-width:88%}
+  .cmsg b{color:#a5b4fc}
+  .cmsg.me{background:#16a34a;align-self:flex-end;color:#fff}
+  #chatInput{display:flex;padding:7px;gap:5px;border-top:1px solid rgba(255,255,255,.08)}
+  #chatInput input{flex:1;background:rgba(255,255,255,.1);border:none;border-radius:9px;padding:7px 9px;color:#fff;font-size:11px;outline:none}
+  #chatInput button{background:#7c3aed;border:none;color:#fff;border-radius:9px;padding:0 12px;font-weight:700;cursor:pointer}
+  #modalWrap{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:40;display:none;align-items:flex-end;justify-content:center}
+  #modalWrap.open{display:flex}
+  #modal{background:#fff;width:100%;max-width:460px;max-height:75vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:18px 16px 26px;animation:up .25s ease}
+  @keyframes up{from{transform:translateY(50px);opacity:.4}to{transform:translateY(0);opacity:1}}
+  #modal h2{font-size:19px;margin-bottom:4px;color:#111827}
+  #modal .sub{color:#6b7280;font-size:12px;margin-bottom:12px}
+  .act{width:100%;text-align:left;background:#f3f4f6;border:none;border-radius:13px;padding:12px 13px;margin-bottom:7px;cursor:pointer;font-size:13px;font-weight:600;color:#111827;display:flex;justify-content:space-between;align-items:center}
+  .act:hover{background:#e5e7eb}.act.green{background:#16a34a;color:#fff}.act.red{background:#fee2e2;color:#991b1b}.act small{color:#6b7280;font-weight:500}.act.green small{color:#dcfce7}
+  #toasts{position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:5px;align-items:center;pointer-events:none;width:92vw}
+  .toast{background:rgba(17,24,39,.94);color:#fff;padding:9px 16px;border-radius:999px;font-size:12px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.4);animation:tin .3s ease;max-width:92vw;text-align:center}
+  @keyframes tin{from{transform:translateY(-12px);opacity:0}to{transform:translateY(0);opacity:1}}
+  #prompt{position:absolute;bottom:118px;left:50%;transform:translateX(-50%);z-index:15;background:rgba(17,24,39,.92);color:#fff;padding:8px 16px;border-radius:999px;font-size:12px;font-weight:600;display:none;white-space:nowrap}
+  #saybar{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);z-index:18;width:min(480px,94vw);display:none}
+  #saybar .row{display:flex;gap:6px;background:rgba(255,255,255,.96);border-radius:16px;padding:7px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  #saybar input{flex:1;border:none;outline:none;font-size:13px;padding:7px 9px;background:transparent;color:#111827}
+  #saybar button{background:#16a34a;border:none;color:#fff;border-radius:11px;padding:0 15px;font-weight:700;cursor:pointer}
+  #chips{display:flex;gap:6px;margin-top:6px;justify-content:center;flex-wrap:wrap}
+  .chip{background:rgba(255,255,255,.94);border:none;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:600;color:#111827;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+  #bigTitle{position:absolute;top:32%;left:0;right:0;text-align:center;z-index:60;pointer-events:none;opacity:0;transition:opacity .5s}
+  #bigTitle h1{font-size:32px;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.6)}
 </style>
 </head>
 <body>
 <canvas id="game"></canvas>
 
 <div id="hud">
-  <div class="pill">🌙 <span id="clock">8:00 AM</span></div>
-  <div class="pill">😊 <span class="statbar"><i id="bHappy" style="background:#f59e0b"></i></span></div>
-  <div class="pill">🍗 <span class="statbar"><i id="bHunger" style="background:#ef4444"></i></span></div>
-  <div class="pill">⚡ <span class="statbar"><i id="bEnergy" style="background:#3b82f6"></i></span></div>
-  <div class="pill">🧼 <span class="statbar"><i id="bHygiene" style="background:#06b6d4"></i></span></div>
+  <div class="pill">🌙 <span id="clock">8:00 AM · Day 1</span></div>
+  <div class="pill">😊<span class="statbar"><i id="bHappy" style="background:#f59e0b"></i></span></div>
+  <div class="pill">🍗<span class="statbar"><i id="bHunger" style="background:#ef4444"></i></span></div>
+  <div class="pill">⚡<span class="statbar"><i id="bEnergy" style="background:#3b82f6"></i></span></div>
   <div class="pill">💰 <b id="money">₦100,000</b></div>
+</div>
+
+<button id="chatToggle">💬 <span id="onlineCount">12</span> online</button>
+<div id="chatPanel">
+  <div id="chatHead"><span>👥 Lagos Chat <span style="color:#4ade80">● live</span></span><span style="cursor:pointer" onclick="toggleChat()">✕</span></div>
+  <div id="chatMsgs"></div>
+  <div id="chatInput"><input id="chatText" placeholder="Say something..." maxlength="120"><button onclick="sendChat()">Send</button></div>
 </div>
 
 <div id="prompt"></div>
 <div id="toasts"></div>
 <div id="bigTitle"><h1 id="bigTitleText"></h1></div>
 
+<div id="saybar">
+  <div class="row"><input id="sayText" placeholder="Say something out loud..." maxlength="100"><button onclick="sayIt()">➤</button></div>
+  <div id="chips"></div>
+</div>
+
 <div id="nav">
-  <button id="nMap" class="active"><span>🗺️</span>Map</button>
   <button id="nTravel"><span>🚕</span>Travel</button>
   <button id="nPhone"><span>📱</span>Phone</button>
-  <button id="nHome"><span>🏠</span>Home</button>
+  <button id="nHome"><span>🚪</span>Exit bldg</button>
 </div>
 
-<button id="chatToggle">💬 <span id="onlineCount">12</span> online</button>
-<div id="chatPanel">
-  <div id="chatHead"><span>👥 Lagos Chat <span class="dot">● live</span></span><span style="cursor:pointer" onclick="toggleChat()">✕</span></div>
-  <div id="chatMsgs"></div>
-  <div id="chatInput"><input id="chatText" placeholder="Say something..." maxlength="120"><button onclick="sendChat()">Send</button></div>
-</div>
-
-<div id="modalWrap" onclick="if(event.target===this)closeModal()">
-  <div id="modal"></div>
-</div>
+<div id="modalWrap" onclick="if(event.target===this)closeModal()"><div id="modal"></div></div>
 
 <script>
-/* =====================================================================
-   scar_belle's love life — a Lagos life simulator (single file)
-   ===================================================================== */
-const cv = document.getElementById('game');
-const cx = cv.getContext('2d');
-let W, H;
-function resize(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
-addEventListener('resize', resize); resize();
+const cv=document.getElementById('game'),cx=cv.getContext('2d');
+let W,H;const rs=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};addEventListener('resize',rs);rs();
+const rand=(a,b)=>a+Math.random()*(b-a),irand=(a,b)=>Math.floor(rand(a,b+1)),pick=a=>a[irand(0,a.length-1)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const fmt=n=>'₦'+Math.round(n).toLocaleString('en-NG');
 
-const rand = (a,b)=>a+Math.random()*(b-a);
-const irand = (a,b)=>Math.floor(rand(a,b+1));
-const pick = a=>a[irand(0,a.length-1)];
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const fmt = n=>'₦'+Math.round(n).toLocaleString('en-NG');
+/* ============ STATE ============ */
+const DEF={money:100000,happy:80,hunger:75,energy:90,hygiene:85,x:400,y:900,scene:'city',
+spouse:null,partner:null,baby:false,married:false,day:1,hour:8,jobLevel:1,shifts:0,
+rel:{},furniture:['bed','chair','cooler'],thugReports:0,home:'Self-contain · Yaba'};
+let S=JSON.parse(localStorage.getItem('sb_ll2')||'null')||JSON.parse(JSON.stringify(DEF));
+const save=()=>localStorage.setItem('sb_ll2',JSON.stringify(S));
 
-/* ---------------- STATE ---------------- */
-const DEF = {
-  money:100000, happy:80, hunger:75, energy:90, hygiene:85,
-  x:430, y:980, mode:'map', spouse:null, baby:false, married:false,
-  day:1, hour:8, jobLevel:1, shiftsDone:0, furniture:['bed','chair','cooler'],
-  met:[], thugRepelled:0, home:'Self-contain · Yaba'
+/* ============ CITY ============ */
+const CITY={w:2600,h:1700};
+const RH=[560,1000,1380],RV=[420,950,1500,2050];
+const LAGOON={y:210,h:150};
+const LOCS=[
+ {id:'home',name:'Home',emoji:'🏠',x:430,y:950,color:'#fde68a'},
+ {id:'office',name:'Corporate Office',emoji:'🏢',x:1500,y:330,color:'#dbeafe'},
+ {id:'market',name:'Oja Market',emoji:'🛒',x:1000,y:1150,color:'#dcfce7'},
+ {id:'club',name:'Quilox Club',emoji:'🎉',x:1980,y:720,color:'#fae8ff'},
+ {id:'beach',name:'Elegushi Beach',emoji:'🏖️',x:2300,y:1330,color:'#fef3c7'},
+ {id:'gym',name:'i-Fitness Gym',emoji:'💪',x:700,y:330,color:'#fee2e2'},
+ {id:'police',name:'Police Station',emoji:'🚔',x:1250,y:1470,color:'#e0e7ff'},
+ {id:'church',name:'Love Chapel',emoji:'💒',x:1680,y:1120,color:'#fce7f3'},
+ {id:'salon',name:'Mama Bisi Salon',emoji:'💇',x:520,y:700,color:'#ffedd5'},
+ {id:'resto',name:'Amala Shitta',emoji:'🍲',x:1380,y:700,color:'#fef9c3'},
+ {id:'shop',name:'The Palms Mall',emoji:'🛍️',x:2130,y:1080,color:'#f1f5f9'},
+];
+const loc=id=>LOCS.find(l=>l.id===id);
+
+const NAMES=['yung_omo','big_tunde','lagos_babe','kiki_wiz','dj_slim','ada_ng','chief_obi','sisi_naija','raptor_boy','mama_afia','oga_musa','temi_xx','dami_dre','nneka','koko_blaze','fine_boy_T','wendy_ng','jide_jr','baddie_ade','smoove_ola'];
+const PDEF=NAMES.map(n=>({name:n,skin:pick(['#8d5524','#a0663a','#5d4037','#c68642','#4a2f22']),shirt:pick(['#f472b6','#60a5fa','#34d399','#f87171','#a78bfa','#fbbf24','#fb923c']),emoji:pick(['🧍','👩','👨','🧑','👱‍♀️'])}));
+
+/* ============ INTERIORS ============ */
+/* Each interior: floor, props (static), npc roles, chips (quick actions) */
+function mkNpc(x,y,pd){return{...pd,x,y,tx:x,ty:y,speed:rand(30,60),ph:rand(0,6),sayT:rand(2,9),dance:Math.random()<0.6};}
+const INTERIORS={
+ beach:{name:'Elegushi Beach · Lekki',emoji:'🏖️',w:1400,h:900,floor:'sand',
+  props:[{t:'stage',x:1050,y:200},{t:'dj',x:1150,y:170},{t:'palm',x:120,y:140},{t:'palm',x:1290,y:760},{t:'palm',x:180,y:760},{t:'umbrella',x:300,y:420},{t:'umbrella',x:520,y:560},{t:'umbrella',x:820,y:640},{t:'fire',x:700,y:300}],
+  npcN:7,chips:['🎉 Beach rave','🎧 DJ booth','🍢 Suya spot','🏊 Swim'],
+  greet:'The bass is shaking the sand 🎶'},
+ club:{name:'Quilox Club',emoji:'🎉',w:1200,h:800,floor:'club',
+  props:[{t:'stage',x:950,y:160},{t:'dj',x:1040,y:130},{t:'bar',x:180,y:140},{t:'light',x:400,y:80},{t:'light',x:700,y:80}],
+  npcN:8,chips:['🍾 Buy bottles','💃 Dancefloor','🎊 Host party','📸 Snap pics'],
+  greet:'Bottles on bottles 🍾'},
+ office:{name:'Corporate Office',emoji:'🏢',w:1100,h:700,floor:'office',
+  props:[{t:'desk',x:250,y:250},{t:'desk',x:550,y:250},{t:'desk',x:850,y:250},{t:'desk',x:400,y:480},{t:'desk',x:700,y:480},{t:'bossdesk',x:950,y:520},{t:'plant',x:80,y:600}],
+  npcN:4,chips:['💼 Work shift','📈 Promotion','🖨️ Print docs'],
+  greet:'Hustle o, nobody go hustle for you 💼'},
+ home:{name:'Home · Yaba',emoji:'🏠',w:900,h:620,floor:'home',
+  props:[{t:'bed',x:700,y:150},{t:'chair',x:450,y:330},{t:'cooler',x:820,y:420},{t:'table',x:200,y:160},{t:'window',x:80,y:80},{t:'rug',x:450,y:430}],
+  npcN:1,chips:['🛏️ Sleep','🍳 Cook & eat','🎊 House party','👶 Family'],
+  greet:'Home sweet home 🏠'},
+ market:{name:'Oja Market',emoji:'🛒',w:1200,h:800,floor:'market',
+  props:[{t:'stall',x:200,y:200},{t:'stall',x:500,y:200},{t:'stall',x:800,y:200},{t:'stall',x:350,y:500},{t:'stall',x:650,y:500},{t:'stall',x:950,y:500}],
+  npcN:6,chips:['🧺 Trade stall','🥬 Buy foodstuffs','👗 Buy asoebi'],
+  greet:'Oja dey hot today! 🛒'},
+ gym:{name:'i-Fitness Gym',emoji:'💪',w:1000,h:650,floor:'gym',
+  props:[{t:'weights',x:200,y:180},{t:'weights',x:800,y:180},{t:'treadmill',x:350,y:480},{t:'treadmill',x:550,y:480},{t:'mat',x:700,y:460}],
+  npcN:3,chips:['🏋️ Workout','🏃 Cardio','🧖 Spa'],
+  greet:'Leg day every day 💪'},
+ police:{name:'Police Station',emoji:'🚔',w:1000,h:650,floor:'police',
+  props:[{t:'desk',x:300,y:200},{t:'desk',x:600,y:200},{t:'cell',x:850,y:420},{t:'board',x:150,y:460}],
+  npcN:3,chips:['🚨 Report thugs','🪪 Get permit'],
+  greet:'How can we help you? 🚔'},
+ church:{name:'Love Chapel',emoji:'💒',w:900,h:650,floor:'church',
+  props:[{t:'altar',x:450,y:120},{t:'pew',x:250,y:320},{t:'pew',x:450,y:320},{t:'pew',x:650,y:320},{t:'pew',x:250,y:460},{t:'pew',x:450,y:460},{t:'pew',x:650,y:460}],
+  npcN:3,chips:['🙏 Pray','💑 Date night','💍 Proposal'],
+  greet:'Welcome, child of God 💒'},
+ salon:{name:"Mama Bisi's Salon",emoji:'💇',w:800,h:560,floor:'salon',
+  props:[{t:'chair2',x:200,y:200},{t:'chair2',x:400,y:200},{t:'chair2',x:600,y:200},{t:'mirror',x:300,y:120},{t:'mirror',x:500,y:120}],
+  npcN:3,chips:['💇 New hair','💅 Mani-pedi'],
+  greet:'Sit down, make we make you fine 💇'},
+ resto:{name:'Amala Shitta',emoji:'🍲',w:800,h:560,floor:'resto',
+  props:[{t:'table2',x:220,y:220},{t:'table2',x:440,y:220},{t:'table2',x:330,y:400},{t:'pot',x:650,y:140}],
+  npcN:4,chips:['🍲 Amala combo','🍚 Rice plate'],
+  greet:'Correct amala dey here! 🍲'},
+ shop:{name:'The Palms Mall',emoji:'🛍️',w:1000,h:650,floor:'shop',
+  props:[{t:'shelf',x:180,y:160},{t:'shelf',x:500,y:160},{t:'shelf',x:820,y:160},{t:'shelf',x:340,y:440},{t:'shelf',x:660,y:440}],
+  npcN:5,chips:['🛋️ Furniture','📺 Electronics','👟 Fashion'],
+  greet:'Shop till you drop 🛍️'},
 };
-let S = JSON.parse(localStorage.getItem('sb_lovelife')||'null') || JSON.parse(JSON.stringify(DEF));
-function save(){ localStorage.setItem('sb_lovelife', JSON.stringify(S)); }
+let sceneNPCs=[],bubbles=[],inside=null;
 
-/* ---------------- WORLD ---------------- */
-const WORLD = { w:2600, h:1700 };
-// roads: horizontal & vertical strips
-const ROADS_H = [300, 700, 1100, 1450];
-const ROADS_V = [380, 900, 1400, 1900, 2300];
-const SIDE = 46; // sidewalk offset
+/* ============ UI helpers ============ */
+const $=id=>document.getElementById(id);
+function updateHUD(){$('money').textContent=fmt(S.money);$('clock').textContent=fmtClock();
+ $('bHappy').style.width=S.happy+'%';$('bHunger').style.width=S.hunger+'%';$('bEnergy').style.width=S.energy+'%';save();}
+function fmtClock(){const h=S.hour%24,ap=h<12?'AM':'PM',hh=((h+11)%12)+1;return `${hh}:00 ${ap} · Day ${S.day}`}
+function toast(m,ms=2600){const t=document.createElement('div');t.className='toast';t.innerHTML=m;$('toasts').appendChild(t);
+ setTimeout(()=>{t.style.opacity=0;t.style.transition='opacity .4s';setTimeout(()=>t.remove(),400)},ms)}
+function bigTitle(t){$('bigTitleText').textContent=t;$('bigTitle').style.opacity=1;setTimeout(()=>$('bigTitle').style.opacity=0,2200)}
+function openModal(h){$('modal').innerHTML=h;$('modalWrap').classList.add('open')}
+function closeModal(){$('modalWrap').classList.remove('open')}
+function bubble(x,y,text,who){bubbles.push({x,y,text,who,t:4});if(bubbles.length>14)bubbles.shift();}
+function say(who,x,y,text){bubble(x,y,text,who)}
 
-const LOCS = [
-  { id:'home',   name:'Home',            emoji:'🏠', x:430,  y:980,  color:'#fde68a' },
-  { id:'beach',  name:'Elegushi Beach',  emoji:'🏖️', x:2280, y:1420, color:'#fef3c7' },
-  { id:'office', name:'Corporate Office',emoji:'🏢', x:1500, y:340,  color:'#dbeafe' },
-  { id:'market', name:'Oja Market',      emoji:'🛒', x:980,  y:1120, color:'#dcfce7' },
-  { id:'club',   name:'Quilox Club',     emoji:'🎉', x:1950, y:720,  color:'#fae8ff' },
-  { id:'gym',    name:'i-Fitness Gym',   emoji:'💪', x:700,  y:360,  color:'#fee2e2' },
-  { id:'police', name:'Police Station',  emoji:'🚔', x:1200, y:1470, color:'#e0e7ff' },
-  { id:'church', name:'Love Chapel',     emoji:'💒', x:1660, y:1090, color:'#fce7f3' },
-  { id:'salon',  name:'Mama Bisi Salon', emoji:'💇', x:500,  y:690,  color:'#ffedd5' },
-  { id:'resto',  name:'Amala Shitta',    emoji:'🍲', x:1350, y:700,  color:'#fef9c3' },
-  { id:'shop',   name:'The Palms Mall',  emoji:'🛍️', x:2100, y:1080, color:'#f1f5f9' },
-];
-const loc = id=>LOCS.find(l=>l.id===id);
+/* ============ GLOBAL CHAT PANEL ============ */
+const CHATLINES=["who dey beach? 🏖️","abeg 2k make I chop 😅","Lagos traffic wan kill person","this game too sweet!","just buy new sofa 🛋️","who wonna host party tonight?","omo see money 💸","anybody don reach club?","I dey come market","my sim just marry o!! 💍","thugs collect my money 😭","police finally catch those boys","job shift done, paid!! 💼","owambe loading 🎊","your house fine o","lagos babe levels 😍"];
+function pushChat(n,t,me){const b=$('chatMsgs'),d=document.createElement('div');d.className='cmsg'+(me?' me':'');
+ d.innerHTML=`<b>@${n}</b> ${t}`;b.appendChild(d);b.scrollTop=b.scrollHeight;while(b.children.length>40)b.firstChild.remove();}
+function replyChat(u){const t=u.toLowerCase();let r=null;
+ if(/hello|hi|hey|good/.test(t))r=pick(["hellooo 😍","hey hey!","how you dey?"]);
+ else if(/party|owambe/.test(t))r=pick(["owambe!! 🎉","where at? I'm coming","host am!"]);
+ else if(/money|rich|broke|job/.test(t))r=pick(["office shift dey pay o","hustle! 💰","salary just land"]);
+ else if(/marry|love|babe|boyfriend/.test(t))r=pick(["love is in the air 💕","go chapel go marry","find bae for beach o"]);
+ else if(/thug|rob|police/.test(t))r=pick(["those boys again?!","report them o","stay for main road"]);
+ if(r)setTimeout(()=>pushChat(pick(NAMES),r),rand(1000,3000));}
+function sendChat(){const i=$('chatText'),v=i.value.trim();if(!v)return;pushChat('scar_belle',v.replace(/</g,'&lt;'),true);i.value='';replyChat(v)}
+$('chatText').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
+const toggleChat=()=>$('chatPanel').classList.toggle('open');
+$('chatToggle').onclick=toggleChat;
+let chatT=0,chatEvery=7;
+function chatTick(dt){chatT+=dt;if(chatT>chatEvery){chatT=0;chatEvery=rand(6,13);pushChat(pick(NAMES),pick(CHATLINES));$('onlineCount').textContent=irand(9,26)}}
 
-/* fake online players */
-const NAMES = ['yung_omo','big_tunde','lagos_babe','kiki_wiz','dj_slim','ada_ng','chief_obi','sisi_naija','raptor_boy','mama_afia','oga_musa','temi_xx','dami_dre','nneka','koko_blaze','fine_boy_T','wendy_ng','jide_jr'];
-const PLAYERS = NAMES.map((n,i)=>({
-  name:n, x:rand(300,WORLD.w-300), y:rand(300,WORLD.h-300),
-  tx:0, ty:0, speed:rand(35,65), emoji:pick(['🧍','👩','👨','🧑','👱‍♀️','👱']),
-  color:pick(['#8d5524','#a0663a','#5d4037','#c68642','#4a2f22']),
-  idle:rand(0,10)
-}));
-PLAYERS.forEach(p=>{ p.tx=p.x; p.ty=p.y; });
+/* ============ SAY BAR (in-room talking) ============ */
+function sayIt(){const i=$('sayText'),v=i.value.trim();if(!v)return;i.value='';
+ say('me',S.x,S.y-70,v.replace(/</g,'&lt;'));
+ setTimeout(()=>{const p=pick(sceneNPCs);if(p)say(p.name,p.x,p.y-70,roomReply(v))},rand(900,2200));
+ if(Math.random()<0.4)setTimeout(()=>{const p=pick(sceneNPCs);if(p)say(p.name,p.x,p.y-70,pick(CHATLINES))},rand(2500,5000));}
+$('sayText').addEventListener('keydown',e=>{if(e.key==='Enter')sayIt()});
+function roomReply(u){const t=u.toLowerCase();
+ if(/hello|hi|hey/.test(t))return pick(["hey!! 😄","hii","yooo","hello dear"]);
+ if(/fine|cute|beautiful|sexy|fine girl|handsome/.test(t))return pick(["aww stop it 🥰","you sef fine! 😍","blushing!! ☺️","thank you love 💕"]);
+ if(/dance/.test(t))return pick(["make we dance! 💃","🕺🕺","catch my steps!"]);
+ if(/drink|buy me|chop|food|eat/.test(t))return pick(["buy me suya first 😋","I dey hungry o","amala on you? 😂"]);
+ if(/love|marry|boo|girlfriend|boyfriend/.test(t))return pick(["hmm 😏💕","you go treat me right?","are you serious?! 🥺"]);
+ if(/party/.test(t))return pick(["party!! 🎉","owambe mood 🥳","I'm down!"]);
+ return pick(["lol 😂","true true","no be lie","haha okay","gist me more","Lagos things 😅","oya nau"]);}
 
-/* pedestrians (locals, denser crowd) */
-const PEDS = [];
-for(let i=0;i<28;i++){
-  PEDS.push({ x:rand(100,WORLD.w-100), y:pick(ROADS_H)+pick([-SIDE,SIDE]), dir:pick([-1,1]), speed:rand(25,55),
-    emoji:pick(['🧍','👩','👨','🧑']), color:pick(['#8d5524','#a0663a','#5d4037','#c68642','#3e2723']) });
-}
-
-/* cars */
-const CARS = [];
-for(let i=0;i<10;i++){
-  const lane = pick(ROADS_H);
-  CARS.push({ x:rand(0,WORLD.w), y:lane+pick([-16,16]), dir:pick([-1,1]), speed:rand(90,160),
-    color:pick(['#facc15','#f8fafc','#ef4444','#22c55e','#3b82f6']), kind:pick(['danfo','car','keke']) });
-}
-
-/* ---------------- TIME ---------------- */
-let timeAcc=0;
-function tickTime(dt){
-  timeAcc += dt;
-  if(timeAcc>=8){ timeAcc=0; S.hour++;
-    S.hunger=clamp(S.hunger-1.1,0,100); S.energy=clamp(S.energy-0.9,0,100);
-    S.hygiene=clamp(S.hygiene-0.7,0,100); S.happy=clamp(S.happy-0.35,0,100);
-    if(S.hour>=24){ S.hour=0; S.day++; }
-    if(S.hunger<=0||S.energy<=0){ S.happy=clamp(S.happy-3,0,100); }
-    updateHUD();
-  }
-}
-
-/* ---------------- HUD / UI helpers ---------------- */
-function updateHUD(){
-  document.getElementById('money').textContent = fmt(S.money);
-  document.getElementById('clock').textContent = fmtClock();
-  document.getElementById('bHappy').style.width = S.happy+'%';
-  document.getElementById('bHunger').style.width = S.hunger+'%';
-  document.getElementById('bEnergy').style.width = S.energy+'%';
-  document.getElementById('bHygiene').style.width = S.hygiene+'%';
-  save();
-}
-function fmtClock(){
-  const h=S.hour%24, ap=h<12?'AM':'PM', hh=((h+11)%12)+1;
-  return `${hh}:00 ${ap} · Day ${S.day}`;
-}
-function toast(msg, ms=2600){
-  const t=document.createElement('div'); t.className='toast'; t.innerHTML=msg;
-  document.getElementById('toasts').appendChild(t);
-  setTimeout(()=>{ t.style.opacity=0; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(),400); }, ms);
-}
-function bigTitle(txt){
-  const e=document.getElementById('bigTitle'); document.getElementById('bigTitleText').textContent=txt;
-  e.style.opacity=1; setTimeout(()=>e.style.opacity=0, 2200);
-}
-function openModal(html){ document.getElementById('modal').innerHTML=html; document.getElementById('modalWrap').classList.add('open'); }
-function closeModal(){ document.getElementById('modalWrap').classList.remove('open'); }
-function act(label, fn, cls='', sub=''){
-  return `<button class="act ${cls}" onclick="(${fn.toString()})()">${label}${sub?`<small>${sub}</small>`:''}</button>`;
-}
-
-/* ---------------- CHAT (simulated live players) ---------------- */
-const CHAT_LINES = [
-  "who dey go beach today? 🏖️","abeg who fit loan me 2k 😅","Lagos traffic wan kill person today",
-  "this game too sweet!","I just buy new furniture for my house 🛋️","who wonna host party tonight?",
-  "omo see money 💸","anybody don reach club?","I dey come market, make we link",
-  "my sim just marry o!! 💍","that thug collect my money for road 😭","police finally catch those boys, thank God",
-  "weather hot today 🥵","job shift done, paid!!","owambe loading this weekend 🎊"
-];
-let chatTimer=0, chatEvery=6;
-function pushChat(name, text, me=false){
-  const box=document.getElementById('chatMsgs');
-  const d=document.createElement('div'); d.className='cmsg'+(me?' me':'');
-  d.innerHTML=`<b>@${name}</b> ${text}`;
-  box.appendChild(d); box.scrollTop=box.scrollHeight;
-  while(box.children.length>40) box.firstChild.remove();
-}
-function replyChat(userText){
-  const t=userText.toLowerCase(); let r=null;
-  if(/(hello|hi|hey|good)/.test(t)) r=pick(["hellooo 😍","hey hey!","how you dey?","welcome!"]);
-  else if(/(party|owambe)/.test(t)) r=pick(["owambe!! 🎉","I'm down, where at?","host am, we dey come!"]);
-  else if(/(money|rich|broke|job)/.test(t)) r=pick(["go office do shift jare","hustle o 😤","I just collect salary 💰"]);
-  else if(/(marry|love|babe|boyfriend|girlfriend)/.test(t)) r=pick(["love is in the air 💕","go church go marry 😂","find bae for beach o"]);
-  else if(/(thug|rob|police)/.test(t)) r=pick(["those boys again?!","report them to police station","stay for main road o"]);
-  else if(/(house|rent)/.test(t)) r=pick(["Yaba soft 🔥","your house fine o","buy furniture from Palms Mall"]);
-  if(r) setTimeout(()=>pushChat(pick(NAMES), r), rand(1200,3200));
-}
-function sendChat(){
-  const i=document.getElementById('chatText'); const v=i.value.trim(); if(!v)return;
-  pushChat('scar_belle', v.replace(/</g,'&lt;'), true); i.value=''; replyChat(v);
-}
-document.getElementById('chatText').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChat(); });
-function toggleChat(){ document.getElementById('chatPanel').classList.toggle('open'); }
-document.getElementById('chatToggle').onclick=toggleChat;
-function chatTick(dt){
-  chatTimer+=dt;
-  if(chatTimer>chatEvery){ chatTimer=0; chatEvery=rand(5,12);
-    pushChat(pick(NAMES), pick(CHAT_LINES));
-    document.getElementById('onlineCount').textContent = irand(9,24);
-  }
-}
-
-/* ---------------- PLAYER movement ---------------- */
-const keys={};
-addEventListener('keydown',e=>{ keys[e.key.toLowerCase()]=true; if(e.key.toLowerCase()==='e') tryInteract(); });
-addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=false; });
-let clickTarget=null;
+/* ============ MOVEMENT ============ */
+const keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key.toLowerCase()==='e')tryInteract();if(e.key==='Escape'&&inside)exitInterior();});
+addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+let clickT=null,walking=false,ph=0,cam={x:0,y:0};
+function bounds(){return inside?{w:INTERIORS[inside].w,h:INTERIORS[inside].h}:{w:CITY.w,h:CITY.h}}
 cv.addEventListener('click',e=>{
-  if(S.mode!=='map') return;
-  const r=cv.getBoundingClientRect();
-  const wx=e.clientX - r.left + cam.x, wy=e.clientY - r.top + cam.y;
-  // clicked a location?
-  for(const l of LOCS){ if(Math.hypot(wx-l.x,wy-l.y)<60){ openLocMenu(l); return; } }
-  // clicked a player?
-  for(const p of PLAYERS){ if(Math.hypot(wx-p.x,wy-p.y)<30){ openPlayerMenu(p); return; } }
-  clickTarget={x:wx,y:wy};
-});
-let cam={x:0,y:0};
-function movePlayer(dt){
-  let dx=0,dy=0,sp=170;
-  if(keys['w']||keys['arrowup'])dy-=1;
-  if(keys['s']||keys['arrowdown'])dy+=1;
-  if(keys['a']||keys['arrowleft'])dx-=1;
-  if(keys['d']||keys['arrowright'])dx+=1;
-  if(dx||dy){ clickTarget=null; const m=Math.hypot(dx,dy); S.x+=dx/m*sp*dt; S.y+=dy/m*sp*dt; walking=true; }
-  else if(clickTarget){
-    const d=dist(S,clickTarget), m=Math.hypot(clickTarget.x-S.x,clickTarget.y-S.y)||1;
-    if(d>6){ S.x+=(clickTarget.x-S.x)/m*sp*dt; S.y+=(clickTarget.y-S.y)/m*sp*dt; walking=true; }
-    else { clickTarget=null; walking=false; }
-  } else walking=false;
-  S.x=clamp(S.x,40,WORLD.w-40); S.y=clamp(S.y,40,WORLD.h-40);
-}
-let walking=false, walkPhase=0;
+ if($('modalWrap').classList.contains('open'))return;
+ const r=cv.getBoundingClientRect(),wx=e.clientX-r.left+cam.x,wy=e.clientY-r.top+cam.y;
+ if(!inside){for(const l of LOCS)if(Math.hypot(wx-l.x,wy-l.y)<70){enterInterior(l.id);return}}
+ clickT={x:wx,y:wy};});
+function move(dt){let dx=0,dy=0,sp=175;
+ if(keys['w']||keys['arrowup'])dy-=1;if(keys['s']||keys['arrowdown'])dy+=1;
+ if(keys['a']||keys['arrowleft'])dx-=1;if(keys['d']||keys['arrowright'])dx+=1;
+ if(dx||dy){clickT=null;const m=Math.hypot(dx,dy);S.x+=dx/m*sp*dt;S.y+=dy/m*sp*dt;walking=true;}
+ else if(clickT){const d=dist(S,clickT),m=Math.hypot(clickT.x-S.x,clickT.y-S.y)||1;
+  if(d>6){S.x+=(clickT.x-S.x)/m*sp*dt;S.y+=(clickT.y-S.y)/m*sp*dt;walking=true}else{clickT=null;walking=false}}
+ else walking=false;
+ const b=bounds();S.x=clamp(S.x,30,b.w-30);S.y=clamp(S.y,30,b.h-30);}
 
-/* ---------------- INTERACTION ---------------- */
-let nearLoc=null;
-function scanNearby(){
-  nearLoc=null; let best=90;
-  for(const l of LOCS){ const d=dist(S,l); if(d<best){ best=d; nearLoc=l; } }
-  const p=document.getElementById('prompt');
-  if(S.mode==='map'){
-    if(nearLoc){ p.style.display='block'; p.textContent=`Press E — enter ${nearLoc.name} ${nearLoc.emoji}`; }
-    else p.style.display='none';
-  } else p.style.display='none';
+/* ============ INTERIOR enter/exit ============ */
+function enterInterior(id){
+ inside=id;const d=INTERIORS[id];clickT=null;
+ S.x=d.w/2;S.y=d.h-80;
+ sceneNPCs=[];const pool=[...PDEF].sort(()=>Math.random()-.5);
+ for(let i=0;i<d.npcN;i++){const pd=pool[i%pool.length];
+  sceneNPCs.push(mkNpc(rand(150,d.w-150),rand(140,d.h-160),pd));}
+ if(id==='home'&&S.married){sceneNPCs.push(mkNpc(d.w/2+80,d.h-160,{name:S.spouse.name,skin:'#8d5524',shirt:'#f472b6',emoji:'🧑'}));}
+ if(id==='office')sceneNPCs[0].name='Boss_'+sceneNPCs[0].name;
+ if(id==='police')sceneNPCs[0].name='Officer_'+sceneNPCs[0].name;
+ if(id==='church')sceneNPCs[0].name='Pastor_Ade';
+ $('nHome').innerHTML='<span>🚪</span>Exit bldg';
+ $('saybar').style.display='block';
+ $('chips').innerHTML=d.chips.map(c=>`<button class="chip" onclick="chipAct('${c}')">${c}</button>`).join('');
+ bigTitle(d.emoji+' '+d.name);
+ toast(d.greet);
+ pushChat(pick(NAMES),'I dey '+d.name+' now! '+d.emoji);
 }
-function tryInteract(){ if(nearLoc && S.mode==='map') openLocMenu(nearLoc); }
+function exitInterior(){inside=null;sceneNPCs=[];bubbles=[];clickT=null;
+ const l=loc(S._lastLoc||'home');S.x=l.x;S.y=l.y+120;
+ $('saybar').style.display='none';$('nHome').innerHTML='<span>🏠</span>Home';}
+$('nHome').onclick=()=>{if(inside)exitInterior();else{if(dist(S,loc('home'))<140)enterInterior('home');else travelTo('home')}};
 
-function openLocMenu(l){
-  switch(l.id){
-    case 'home': homeMenu(); break;
-    case 'beach': beachMenu(); break;
-    case 'office': officeMenu(); break;
-    case 'market': marketMenu(); break;
-    case 'club': clubMenu(); break;
-    case 'gym': gymMenu(); break;
-    case 'police': policeMenu(); break;
-    case 'church': churchMenu(); break;
-    case 'salon': salonMenu(); break;
-    case 'resto': restoMenu(); break;
-    case 'shop': shopMenu(); break;
-  }
+/* ============ NPC proximity + talk ============ */
+let nearNpc=null;
+function scanNpc(){nearNpc=null;if(!inside)return;let best=70;
+ for(const p of sceneNPCs){const d=dist(S,p);if(d<best){best=d;nearNpc=p}}
+ const pr=$('prompt');
+ if(nearNpc){pr.style.display='block';pr.textContent=`Press E — talk to @${nearNpc.name}`}
+ else if(!inside){let bl=null,bd=95;for(const l of LOCS){const d=dist(S,l);if(d<bd){bd=d;bl=l}}
+  if(bl){pr.style.display='block';pr.textContent=`Press E — enter ${bl.emoji} ${bl.name}`}else pr.style.display='none';}
+ else pr.style.display='none';}
+function tryInteract(){if(inside&&nearNpc)talkMenu(nearNpc);else if(!inside){for(const l of LOCS)if(dist(S,l)<95){enterInterior(l.id);return}}}
+function relOf(p){if(!S.rel[p.name])S.rel[p.name]={lvl:0};return S.rel[p.name];}
+function talkMenu(p){
+ const r=relOf(p),isBoo=S.partner&&S.partner.name===p.name,isSp=S.spouse&&S.spouse.name===p.name;
+ const greetLines=["how you dey? 😄","omo you fine o","wetin dey happen?","you come here often? 😏","lagos no easy my guy","make we gist!"];
+ openModal(`
+  <h2>${p.emoji} @${p.name}</h2>
+  <div class="sub">"${pick(greetLines)}" · ${isSp?'💍 your spouse':isBoo?`💕 your boo (level ${S.partner.lvl}/5)`:'online player'}${r.lvl>0&&!isBoo&&!isSp?` · friend lvl ${r.lvl}`:''}</div>
+  <button class="act" onclick="npcChat('${p.name}')">💬 Chat <small>free</small></button>
+  <button class="act" onclick="npcCompliment('${p.name}')">🥰 Compliment <small>+friendship</small></button>
+  ${(!S.partner&&!S.married&&!isBoo)?`<button class="act green" onclick="npcAskOut('${p.name}')">💘 Ask to be your boo</button>`:''}
+  ${isBoo?`<button class="act green" onclick="npcDate('${p.name}')">💑 Date night <small>₦8,000 · lvl ${S.partner.lvl}/5</small></button>
+  <button class="act" onclick="npcGift('${p.name}')">🎁 Gift <small>₦10,000 · +1 lvl</small></button>`:''}
+  ${isBoo&&S.partner.lvl>=5?`<button class="act green" onclick="npcPropose('${p.name}')">💍 PROPOSE <small>ring ₦50,000</small></button>`:''}
+  <button class="act" onclick="closeModal()">👋 Bye</button>`);
 }
+function findNpc(n){return sceneNPCs.find(p=>p.name===n)}
+function npcChat(n){const p=findNpc(n);closeModal();
+ say('me',S.x,S.y-70,pick(["how you dey?","you fine o 😍","wetin dey?","make we vibe!","enjoying Lagos?"]));
+ setTimeout(()=>{if(p)say(n,p.x,p.y-70,roomReply('hello'))},900);
+ relOf(p).lvl++;S.happy=clamp(S.happy+2,0,100);updateHUD();}
+function npcCompliment(n){const p=findNpc(n);closeModal();
+ say('me',S.x,S.y-70,pick(["you too fine! 😍","I like your vibes","you dey glow today ✨"]));
+ setTimeout(()=>{if(p)say(n,p.x,p.y-70,pick(["aww 🥰","stop it ☺️","you sef fine o!","thank you love 💕"]))},1000);
+ relOf(p).lvl++;S.happy=clamp(S.happy+3,0,100);updateHUD();}
+function npcAskOut(n){const p=findNpc(n);closeModal();
+ if(S.partner){toast(`You're dating @${S.partner.name} already!`);return}
+ if(relOf(p).lvl<2){say(n,p.x,p.y-70,"we just met 😅 gist small first");toast('💬 Befriend them first — chat & compliment a couple times.');return}
+ if(Math.random()<0.8){S.partner={name:n,lvl:1};bigTitle('💘 IT\'S A MATCH!');
+  say(n,p.x,p.y-70,"YES!! I go be your boo 😍");pushChat(n,'omgg yesss 💕');
+  pushChat(pick(NAMES),'new couple alert!! 🥳');toast(`💘 Dating @${n}! Grow love: date nights at 💒 chapel, gifts, compliments.`)}
+ else{say(n,p.x,p.y-70,"hmm let me think 😅");toast('Not yet... build more friendship first.')}
+ updateHUD();}
+function npcDate(n){if(S.money<8000){toast('Date night costs ₦8,000');return}
+ S.money-=8000;S.partner.lvl=clamp(S.partner.lvl+1,0,5);S.happy=clamp(S.happy+18,0,100);S.hour=(S.hour+3)%24;
+ closeModal();bigTitle('💑 DATE NIGHT');pushChat(n,'best date ever 😍');
+ toast(`💑 @${n} level ${S.partner.lvl}/5`);updateHUD();}
+function npcGift(n){if(S.money<10000){toast('Gift costs ₦10,000');return}
+ S.money-=10000;S.partner.lvl=clamp(S.partner.lvl+1,0,5);const p=findNpc(n);closeModal();
+ if(p)say(n,p.x,p.y-70,"omgg a gift?! love you!! 🥺💕");pushChat(n,'my boo too sweet 🥺💕');
+ toast(`🎁 Level ${S.partner.lvl}/5`);updateHUD();}
+function npcPropose(n){if(S.money<50000){toast('The ring costs ₦50,000!');return}
+ S.money-=50000;closeModal();bigTitle('💍 SHE SAID YES!!');
+ S.married=true;S.spouse=S.partner;S.partner=null;
+ pushChat(n,'I SAID YES!!! 💍💒');pushChat(pick(NAMES),'wedding loading!!! 🥳');
+ setTimeout(()=>bigTitle('💒 Just Married!'),2400);toast('💒 Married! Visit 🏠 Home → 👶 Family to grow your family.');updateHUD();}
 
-/* ---------- HOME ---------- */
-function homeMenu(){
-  openModal(`
-    <h2>🏠 ${S.home}</h2><div class="sub">Your self-contain in Yaba. Rent paid weekly.</div>
-    ${act('🛏️ Sleep (restore energy)', ()=>{ doSleep(); },'green','free')}
-    ${act('🍳 Cook & eat from cooler', ()=>{ eatHome(); },'','uses food stock')}
-    ${act('🛋️ Buy furniture / groceries', ()=>{ shopMenu(true); })}
-    ${act('🎊 Host house party', ()=>{ hostParty('home'); })}
-    ${act('👶 Family', ()=>{ familyMenu(); })}
-    ${act('🚪 Step outside', ()=>{ closeModal(); })}
-  `);
-}
-function doSleep(){
-  closeModal(); S.energy=100; S.hygiene=clamp(S.hygiene+10,0,100);
-  S.hour=(S.hour+8)%24; if(S.hour<8) S.day++;
-  S.hunger=clamp(S.hunger-25,0,100);
-  bigTitle('☀️ Good morning, beautiful day in Lagos');
-  toast('You slept well. Energy full!'); updateHUD();
-}
-function eatHome(){
-  if(S.money<800){ toast('Not enough money for groceries (₦800)'); return; }
-  S.money-=800; S.hunger=clamp(S.hunger+45,0,100); S.happy=clamp(S.happy+4,0,100);
-  closeModal(); toast('🍛 You cooked a nice meal. Hunger restored!'); updateHUD();
-}
+/* ============ CHIPS (quick room actions) ============ */
+function chipAct(c){
+ const id=inside;if(!id)return;
+ if(/rave/.test(c)){if(S.money<2500){toast('₦2,500 to join the rave');return}S.money-=2500;S.happy=clamp(S.happy+22,0,100);S.energy=clamp(S.energy-15,0,100);S.hour=(S.hour+3)%24;bigTitle('🎉 BEACH RAVE!!');pushChat(pick(NAMES),'rave dey MADT 🔥');toast('🎉 You danced till sunset!')}
+ else if(/DJ/.test(c)){S.happy=clamp(S.happy+10,0,100);const d=sceneNPCs[0];if(d)say(d.name,d.x,d.y-70,"THIS DJ SICK!! 🎧");toast('🎧 The DJ played your request!')}
+ else if(/Suya/.test(c)){if(S.money<1200){toast('₦1,200');return}S.money-=1200;S.hunger=clamp(S.hunger+30,0,100);S.happy=clamp(S.happy+6,0,100);toast('🍢 Suya & Chapman! Belly happy.')}
+ else if(/Swim/.test(c)){if(S.money<1500){toast('₦1,500');return}S.money-=1500;S.hygiene=clamp(S.hygiene-10,0,100);S.happy=clamp(S.happy+10,0,100);toast('🏊 Atlantic ocean dip!')}
+ else if(/bottles/.test(c)){clubSpend(10000,26)}else if(/Dancefloor/.test(c)){clubSpend(1000,9)}else if(/Snap/.test(c)){if(S.money<2000){toast('₦2,000');return}S.money-=2000;S.happy=clamp(S.happy+7,0,100);toast('📸 Pics for the gram!')}
+ else if(/Host party/.test(c)){hostParty()}
+ else if(/Work shift/.test(c)){workShift()}else if(/Promotion/.test(c)){promote()}else if(/Print/.test(c)){toast('🖨️ Documents printed. Boss nods approvingly.')}
+ else if(/Sleep/.test(c)){doSleep()}else if(/Cook/.test(c)){cookEat()}else if(/House party/.test(c)){hostParty()}else if(/Family/.test(c)){familyMenu()}
+ else if(/Trade/.test(c)){marketHustle()}else if(/foodstuffs/.test(c)){if(S.money<1500){toast('₦1,500');return}S.money-=1500;S.hunger=clamp(S.hunger+22,0,100);toast('🥬 Fresh foodstuffs!')}else if(/asoebi/.test(c)){if(S.money<7000){toast('₦7,000');return}S.money-=7000;S.happy=clamp(S.happy+10,0,100);toast('👗 Asoebi fabric acquired!')}
+ else if(/Workout/.test(c)){gymAct(2000,11,18)}else if(/Cardio/.test(c)){gymAct(1500,7,12)}else if(/Spa/.test(c)){if(S.money<4000){toast('₦4,000');return}S.money-=4000;S.hygiene=100;S.happy=clamp(S.happy+10,0,100);toast('🧖 So fresh!')}
+ else if(/Report thugs/.test(c)){if(S.thugReports>0){const rw=S.thugReports*3000;S.money+=rw;S.thugReports=0;toast(`🚔 Reports acted on! Reward ${fmt(rw)}`);updateHUD()}else toast('🚔 No open cases. Report thugs when they approach you outside.')}
+ else if(/permit/.test(c)){if(S.money>=5000){S.money-=5000;toast('🪪 Permit granted!');updateHUD()}else toast('₦5,000 needed')}
+ else if(/Pray/.test(c)){S.happy=clamp(S.happy+6,0,100);toast('🙏 Peace of mind.');updateHUD()}
+ else if(/Date night/.test(c)){if(S.partner)npcDate(S.partner.name);else toast('You need a boo first! Meet people inside buildings 💕')}
+ else if(/Proposal/.test(c)){if(S.partner&&S.partner.lvl>=5)npcPropose(S.partner.name);else toast('💍 Grow your relationship to level 5 first!')}
+ else if(/New hair/.test(c)){if(S.money<5000){toast('₦5,000');return}S.money-=5000;S.hygiene=clamp(S.hygiene+15,0,100);S.happy=clamp(S.happy+12,0,100);toast('💇 You look FIRE 🔥');updateHUD()}
+ else if(/Mani/.test(c)){if(S.money<4000){toast('₦4,000');return}S.money-=4000;S.hygiene=clamp(S.hygiene+20,0,100);S.happy=clamp(S.happy+7,0,100);toast('💅 Soft like butter');updateHUD()}
+ else if(/Amala/.test(c)){eatOut(2500,45)}else if(/Rice/.test(c)){eatOut(1200,25)}
+ else if(/Furniture/.test(c)){buyItem('sofa',30000,'🛋️ Sofa')}else if(/Electronics/.test(c)){buyItem('tv',45000,'📺 TV')}else if(/Fashion/.test(c)){if(S.money<12000){toast('₦12,000');return}S.money-=12000;S.happy=clamp(S.happy+10,0,100);toast('👟 Fresh drip!');updateHUD()}
+ updateHUD();}
+function clubSpend(c,h){if(S.money<c){toast('Bouncer: "your money no reach" 😬');return}S.money-=c;S.happy=clamp(S.happy+h,0,100);S.energy=clamp(S.energy-18,0,100);S.hour=(S.hour+4)%24;bigTitle('🎶 OWAMBE NIGHT');pushChat(pick(NAMES),'Quilox dey POP 🍾');toast('🍾 What a night!')}
+function hostParty(){if(S.money<15000){toast('Hosting costs ₦15,000');return}S.money-=15000;S.happy=100;S.energy=clamp(S.energy-25,0,100);
+ bigTitle('🎊 YOUR PARTY IS LIT 🔥');
+ for(let i=0;i<irand(4,9);i++)setTimeout(()=>pushChat(pick(NAMES),pick(['party madt!! 🎉','this host sabi! 🙌','owambe 🥳','we dey your party!!','champagne dey flow 🍾'])),rand(500,4000));
+ for(const p of sceneNPCs)setTimeout(()=>{if(p)say(p.name,p.x,p.y-70,pick(['🥳🥳','party!!','this DJ!! 🔥','spray money! 💸']))},rand(300,2500));
+ toast('🎊 Everyone pulled up!');updateHUD();}
+function workShift(){const wage=9000+S.jobLevel*3500;closeModal();bigTitle('💼 Working shift...');
+ setTimeout(()=>{S.money+=wage;S.energy=clamp(S.energy-20,0,100);S.hunger=clamp(S.hunger-12,0,100);S.hour=(S.hour+4)%24;S.shifts++;toast(`💼 Shift done! Paid ${fmt(wage)}`);pushChat(pick(NAMES),'salary landed 💰');updateHUD()},4000);}
+function promote(){if(S.shifts<S.jobLevel*3){toast(`Boss: "do ${S.jobLevel*3-S.shifts} more shifts first"`);return}S.jobLevel++;bigTitle('📈 PROMOTED · LVL '+S.jobLevel);pushChat(pick(NAMES),'omo promotion!! 🎉');updateHUD();}
+function marketHustle(){closeModal();bigTitle('🧺 Hustling...');setTimeout(()=>{const e=irand(4000,9000);S.money+=e;S.energy=clamp(S.energy-15,0,100);S.hour=(S.hour+3)%24;toast(`🧺 Earned ${fmt(e)}`);updateHUD()},3500);}
+function gymAct(c,h,e){if(S.money<c){toast(fmt(c)+' needed');return}S.money-=c;S.happy=clamp(S.happy+h,0,100);S.energy=clamp(S.energy-e,0,100);toast('💪 Session complete! Feel the burn.');updateHUD();}
+function eatOut(c,f){if(S.money<c){toast(fmt(c)+' needed');return}S.money-=c;S.hunger=clamp(S.hunger+f,0,100);S.happy=clamp(S.happy+5,0,100);toast('🍲 That hit the spot!');updateHUD();}
+function buyItem(key,cost,label){if(S.furniture.includes(key)){toast('Already owned.');return}if(S.money<cost){toast(fmt(cost)+' needed');return}S.money-=cost;S.furniture.push(key);S.happy=clamp(S.happy+6,0,100);toast(`🛍️ ${label} delivered home!`);updateHUD();}
+function doSleep(){S.energy=100;S.hygiene=clamp(S.hygiene+10,0,100);S.hour=(S.hour+8)%24;if(S.hour<8)S.day++;S.hunger=clamp(S.hunger-25,0,100);bigTitle('☀️ Good morning!');toast('You slept well. Energy full!');updateHUD();}
+function cookEat(){if(S.money<800){toast('Groceries cost ₦800');return}S.money-=800;S.hunger=clamp(S.hunger+45,0,100);S.happy=clamp(S.happy+4,0,100);toast('🍛 Nice home meal!');updateHUD();}
 function familyMenu(){
-  if(!S.married){
-    openModal(`<h2>💕 Family</h2><div class="sub">You're single. Go meet someone special! Try the beach or club — or chat with online players. 💒 Get married at the chapel.</div>${act('😌 Close',()=>closeModal())}`);
-    return;
-  }
-  openModal(`
-    <h2>💕 The ${S.spouse.name} Family</h2><div class="sub">Married to @${S.spouse.name} 💍</div>
-    ${S.baby
-      ? act('👶 Spend time with baby', ()=>{ S.happy=clamp(S.happy+15,0,100); S.energy=clamp(S.energy-10,0,100); closeModal(); toast('👶 Family time! Happiness up!'); updateHUD(); },'green')
-      : act('🍼 Try for a baby', ()=>{ tryForBaby(); },'green','private family moment')}
-    ${act('💑 Quality time with spouse', ()=>{ S.happy=clamp(S.happy+12,0,100); S.hunger=clamp(S.hunger-8,0,100); closeModal(); toast(`💑 Lovely evening with @${S.spouse.name}`); updateHUD(); })}
-    ${act('Back', ()=>homeMenu())}
-  `);
-}
-function tryForBaby(){
-  closeModal();
-  toast('💕 A beautiful private evening together...');
-  setTimeout(()=>{
-    if(Math.random()<0.65){ S.baby=true; bigTitle('👶 Congratulations! You\'re expecting!'); pushChat(S.spouse.name,'BABY ON THE WAY!! 🍼👶'); }
-    else toast('Not this time... try again another day 💕');
-    updateHUD();
-  }, 2500);
-}
+ if(!S.married){openModal(`<h2>💕 Family</h2><div class="sub">You're single! Meet people inside the beach, club, mall... chat, compliment, ask them out, then 💍 at the chapel.</div><button class="act" onclick="closeModal()">😌 Okay</button>`);return}
+ openModal(`<h2>💕 The ${S.spouse.name} Family</h2><div class="sub">Married to @${S.spouse.name} 💍</div>
+ ${S.baby?`<button class="act green" onclick="famTime()">👶 Family time <small>+happiness</small></button>`:`<button class="act green" onclick="tryBaby()">🍼 Try for a baby <small>private moment</small></button>`}
+ <button class="act" onclick="closeModal()">Back</button>`);}
+function famTime(){S.happy=clamp(S.happy+15,0,100);closeModal();toast('👶 Beautiful family moment!');updateHUD();}
+function tryBaby(){closeModal();toast('💕 A lovely private evening together...');
+ setTimeout(()=>{if(Math.random()<0.65){S.baby=true;bigTitle('👶 You\'re expecting!');pushChat(S.spouse.name,'BABY ON THE WAY 🍼')}else toast('Not this time... try another day 💕');updateHUD()},2500);}
 
-/* ---------- BEACH ---------- */
-function beachMenu(){
-  openModal(`
-    <h2>🏖️ Elegushi Beach · Lekki</h2><div class="sub">The bass is shaking the sand.</div>
-    ${act('🏊 Swim in the Atlantic', ()=>{ payTime(1500,8,'hunger',6,'🏊 You swam in the ocean!'); },'','₦1,500')}
-    ${act('🍢 Suya & Chapman on the sand', ()=>{ payTime(1200,10,'hunger',25,'🍢 That suya HIT different!'); },'','₦1,200')}
-    ${act('🐎 Ride a horse', ()=>{ payTime(3000,8,'happy',12,'🐎 Beach horse ride, so fancy!'); },'','₦3,000')}
-    ${act('🎉 Attend beach rave', ()=>{ beachRave(); },'green','₦2,500')}
-    ${act('📸 Beach photoshoot', ()=>{ payTime(5000,6,'happy',8,'📸 Pics for the gram!'); },'','₦5,000')}
-    ${act('Back to map', ()=>closeModal())}
-  `);
-}
-function payTime(cost, happy, stat, statAmt, msg){
-  if(S.money<cost){ toast('Not enough money!'); return; }
-  S.money-=cost; S.happy=clamp(S.happy+happy,0,100);
-  if(stat==='hunger') S.hunger=clamp(S.hunger+statAmt,0,100);
-  if(stat==='hygiene') S.hygiene=clamp(S.hygiene-statAmt,0,100);
-  closeModal(); toast(msg); updateHUD();
-}
-function beachRave(){
-  if(S.money<2500){ toast('Not enough money!'); return; }
-  S.money-=2500; S.happy=clamp(S.happy+22,0,100); S.energy=clamp(S.energy-15,0,100);
-  S.hour=(S.hour+3)%24;
-  closeModal(); bigTitle('🎉 BEACH RAVE!!'); pushChat(pick(NAMES),'rave at Elegushi is MAD 🔥');
-  toast('🎉 You danced till sunset!'); updateHUD();
-}
+/* ============ CITY npcs, cars, thugs, travel ============ */
+const CITYPEDS=[];for(let i=0;i<26;i++)CITYPEDS.push({x:rand(50,CITY.w-50),y:pick(RH)+pick([-58,58]),dir:pick([-1,1]),speed:rand(25,55),skin:pick(['#8d5524','#a0663a','#5d4037','#c68642']),shirt:pick(['#94a3b8','#f472b6','#60a5fa','#34d399'])});
+const CARS=[];for(let i=0;i<10;i++)CARS.push({x:rand(0,CITY.w),y:pick(RH)+pick([-16,16]),dir:pick([-1,1]),speed:rand(90,160),color:pick(['#facc15','#f8fafc','#ef4444','#22c55e','#3b82f6'])});
+let travelling=null,thugCool=40,thugActive=false;
+const MODES=[{id:'trek',n:'Trek',i:'🚶',c:0,s:55,mx:20},{id:'keke',n:'Keke',i:'🛺',c:100,s:170},{id:'danfo',n:'Danfo',i:'🚌',c:100,s:190},{id:'okada',n:'Okada',i:'🏍️',c:350,s:320},{id:'cab',n:'Cab',i:'🚕',c:650,s:520}];
+function travelMenu(){if(inside){toast('🚪 Exit the building first');return}
+ let rows='';for(const l of LOCS){if(dist(S,l)<110)continue;rows+=`<button class="act" onclick="pickMode('${l.id}')"><span>${l.emoji} ${l.name}</span><small>~${Math.round(dist(S,l)/10)*10}m</small></button>`}
+ openModal(`<h2>🚕 Travel</h2><div class="sub">Where to?</div>${rows}`);}
+function pickMode(id){const d=dist(S,loc(id));let rows='';
+ for(const m of MODES){const t=m.id==='trek'?Math.min(m.mx,d/60):d/m.s;rows+=`<button class="act ${m.id==='cab'?'green':''}" onclick="startTravel('${id}','${m.id}')"><span>${m.i} ${m.n}</span><small>${m.c?fmt(m.c):'Free'} · ${t.toFixed(0)}s</small></button>`}
+ openModal(`<h2>${loc(id).emoji} ${loc(id).name}</h2><div class="sub">Pick transport (trek max 20s)</div>${rows}<button class="act" onclick="travelMenu()">⬅ Back</button>`);}
+function startTravel(id,mid){const m=MODES.find(x=>x.id===mid),l=loc(id);
+ if(S.money<m.c){toast(fmt(m.c)+' needed for '+m.n);return}
+ S.money-=m.c;updateHUD();closeModal();S._lastLoc=id;
+ const d=dist(S,l),dur=m.id==='trek'?Math.min(m.mx,d/60):clamp(d/m.s,1.2,15);
+ travelling={from:{x:S.x,y:S.y},to:l,t:0,dur,mode:m};bigTitle(m.i+' '+m.n+' ride...');}
+function travelTo(id){startTravel(id,'cab')}
+function travelTick(dt){if(!travelling)return false;const tr=travelling;tr.t+=dt;const k=clamp(tr.t/tr.dur,0,1);
+ const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+ S.x=tr.from.x+(tr.to.x-tr.from.x)*e;S.y=tr.from.y+(tr.to.y-tr.from.y)*e;walking=tr.mode.id==='trek';
+ if(k>=1){travelling=null;walking=false;toast('📍 Arrived: '+tr.to.name);enterInterior(tr.to.id)}return true;}
+function thugTick(dt){if(inside||thugActive)return;thugCool-=dt;
+ const night=S.hour>=20||S.hour<5;
+ if(thugCool<=0){thugCool=night?rand(40,90):rand(90,180);
+  if(dist(S,loc('police'))<260||dist(S,loc('home'))<200)return;
+  if(Math.random()<(night?0.75:0.35)){thugActive=true;const demand=irand(2000,8000),nm=pick(['Shina','Rambo','Eku','Kazeem']);
+  openModal(`<h2>😈 Street Thug: "${nm}"</h2><div class="sub">"Oga, drop ${fmt(demand)} make we no wound you."</div>
+  <button class="act" onclick="thugPay(${demand})">💸 Pay ${fmt(demand)}</button>
+  <button class="act" onclick="thugRun()">🏃 Run!</button>
+  <button class="act" onclick="thugPolice()">🚔 Call police</button>`);}}}
+function thugPay(d){S.money=Math.max(0,S.money-d);thugActive=false;closeModal();toast(`😈 You paid ${fmt(d)}... painful.`);updateHUD();}
+function thugRun(){thugActive=false;closeModal();
+ if(Math.random()<0.6)toast('🏃 You escaped!');else{const f=irand(1000,3000);S.money=Math.max(0,S.money-f);S.energy=clamp(S.energy-15,0,100);toast(`😈 They caught you! Took ${fmt(f)}`)}updateHUD();}
+function thugPolice(){S.thugReports++;thugActive=false;closeModal();toast('🚔 Report filed! Collect reward at the station.');pushChat(pick(NAMES),'police dey come that axis o');updateHUD();}
 
-/* ---------- JOBS ---------- */
-function officeMenu(){
-  const wage = 9000 + S.jobLevel*3500;
-  openModal(`
-    <h2>🏢 Corporate Office</h2><div class="sub">Hustle hard. Career level ${S.jobLevel} · ${S.shiftsDone} shifts completed.</div>
-    ${act(`💼 Work a shift (${fmt(wage)})`, ()=>{ workShift(wage); },'green','takes 4 hours')}
-    ${act('📈 Ask for promotion', ()=>{ promote(); })}
-    ${act('🗣️ Gist with coworkers', ()=>{ S.happy=clamp(S.happy+5,0,100); closeModal(); toast('🗣️ Office gist sweet die!'); updateHUD(); })}
-    ${act('Back', ()=>closeModal())}
-  `);
-}
-function workShift(wage){
-  closeModal();
-  bigTitle('💼 Working shift...');
-  setTimeout(()=>{
-    S.money+=wage; S.energy=clamp(S.energy-20,0,100); S.hunger=clamp(S.hunger-12,0,100);
-    S.happy=clamp(S.happy-3,0,100); S.hour=(S.hour+4)%24; S.shiftsDone++;
-    toast(`💼 Shift complete! Paid ${fmt(wage)}`); pushChat(pick(NAMES),'salary landed 💰 who dey hangout?'); updateHUD();
-  }, 4000);
-}
-function promote(){
-  if(S.shiftsDone < S.jobLevel*3){ toast(`Boss: "Do ${S.jobLevel*3 - S.shiftsDone} more shifts first."`); return; }
-  S.jobLevel++; closeModal(); bigTitle('📈 PROMOTED! Level '+S.jobLevel);
-  pushChat(pick(NAMES),'omo somebody got promoted! 🎉'); updateHUD();
-}
-function marketMenu(){
-  openModal(`
-    <h2>🛒 Oja Market</h2><div class="sub">Buy cheap, sell dear. Trader work available.</div>
-    ${act('🧺 Run a trading stall (₦4,000–₦9,000)', ()=>{ marketHustle(); },'green','takes 3 hours')}
-    ${act('🥬 Buy foodstuffs (₦1,500)', ()=>{ payTime(1500,3,'hunger',20,'🥬 Foodstuffs bought & munched!'); },'','cook at home')}
-    ${act('👗 Buy asoebi fabric (₦7,000)', ()=>{ payTime(7000,10,'hygiene',0,'👗 New drip acquired!'); },'','+happiness')}
-    ${act('Back', ()=>closeModal())}
-  `);
-}
-function marketHustle(){
-  closeModal(); bigTitle('🧺 Hustling at the market...');
-  setTimeout(()=>{
-    const earn=irand(4000,9000); S.money+=earn; S.energy=clamp(S.energy-15,0,100);
-    S.hunger=clamp(S.hunger-10,0,100); S.hour=(S.hour+3)%24;
-    toast(`🧺 Trading done! You earned ${fmt(earn)}`); updateHUD();
-  }, 3500);
-}
+/* ============ PHONE ============ */
+function phoneMenu(){openModal(`<h2>📱 scar_belle's phone</h2><div class="sub">Lagos, Day ${S.day}</div>
+ <button class="act" onclick="toast('💼 Office shifts + Market trading = money')">💼 <b>Jobs</b><small>career lvl ${S.jobLevel} · ${S.shifts} shifts</small></button>
+ <button class="act" onclick="toast('🏦 Balance: ${fmt(S.money)}')">🏦 <b>Bank</b><small>${fmt(S.money)}</small></button>
+ <button class="act" onclick="familyMenu()">💕 <b>${S.married?'Married to @'+S.spouse.name+(S.baby?' · expecting 👶':''):S.partner?'Dating @'+S.partner.name+' (lvl '+S.partner.lvl+'/5)':'Single 😏'}</b></button>
+ <button class="act" onclick="howTo()">📖 <b>How to play</b></button>
+ <button class="act red" onclick="if(confirm('Start a new life?')){localStorage.removeItem('sb_ll2');location.reload()}">🗑️ <b>Restart life</b></button>
+ <button class="act" onclick="closeModal()">Close</button>`);}
+function howTo(){openModal(`<h2>📖 How to play</h2><div class="sub">
+🚶 <b>Move:</b> WASD / arrows or click. Walk into any building to enter it.<br><br>
+👥 <b>Inside buildings</b> you'll see other people — walk close and press <b>E</b> to talk, compliment, date, marry. Use the <b>"Say something out loud"</b> bar to chat with the room.<br><br>
+💼 <b>Earn:</b> office shifts, market trading. 🍗 Keep hunger, energy & happiness up.<br><br>
+💘 Date → level 5 → 💍 propose at the chapel → 🏠 home → 👶 family.<br><br>
+😈 Thugs appear on streets at night — pay, run, or report at 🚔.<br><br>
+🚕 Travel button: keke, danfo, okada, cab (trek max 20s).</div>
+<button class="act green" onclick="closeModal()">Got it!</button>`);}
+$('nTravel').onclick=travelMenu;$('nPhone').onclick=phoneMenu;
 
-/* ---------- CLUB / PARTY ---------- */
-function clubMenu(){
-  openModal(`
-    <h2>🎉 Quilox Club</h2><div class="sub">The bass is heavy. Bottles on bottles.</div>
-    ${act('🍾 Buy table & drinks (₦10,000)', ()=>{ clubNight(10000,25); },'green','night of fun')}
-    ${act('🥂 Light drinks (₦3,000)', ()=>{ clubNight(3000,12); })}
-    ${act('🎊 Host a party (₦25,000)', ()=>{ hostParty('club'); })}
-    ${act('💃 Just vibe on the dancefloor (₦1,000)', ()=>{ clubNight(1000,8); })}
-    ${act('Back', ()=>closeModal())}
-  `);
-}
-function clubNight(cost, happy){
-  if(S.money<cost){ toast('Bouncer: "Your money no reach." 😬'); return; }
-  S.money-=cost; S.happy=clamp(S.happy+happy,0,100); S.energy=clamp(S.energy-18,0,100);
-  S.hygiene=clamp(S.hygiene-8,0,100); S.hour=(S.hour+4)%24;
-  closeModal(); bigTitle('🎶 OWAMBE NIGHT');
-  pushChat(pick(NAMES),'Quilox tonight dey POP 🍾'); toast('🍾 What a night!'); updateHUD();
-}
-function hostParty(where){
-  const cost = where==='club'?25000:15000;
-  if(S.money<cost){ toast(`You need ${fmt(cost)} to host a party.`); return; }
-  S.money-=cost; S.happy=100; S.energy=clamp(S.energy-25,0,100);
-  closeModal(); bigTitle('🎊 YOUR PARTY IS LIT! 🔥');
-  const guests=irand(4,9);
-  for(let i=0;i<guests;i++) setTimeout(()=>pushChat(pick(NAMES), pick(['party madt!! 🎉','this host sabi! 🙌','owambe things 🥳','we dey your party!!','champagne dey flow 🍾'])), rand(600,4000));
-  toast(`🎊 ${guests} online players pulled up! You're the talk of Lagos!`);
-  S.happy=clamp(S.happy+20,0,100); updateHUD();
-}
+/* ============ TIME ============ */
+let tAcc=0;
+function tickTime(dt){tAcc+=dt;if(tAcc>=8){tAcc=0;S.hour++;
+ S.hunger=clamp(S.hunger-1.1,0,100);S.energy=clamp(S.energy-0.9,0,100);S.hygiene=clamp(S.hygiene-0.7,0,100);S.happy=clamp(S.happy-0.35,0,100);
+ if(S.hour>=24){S.hour=0;S.day++}
+ if(S.hunger<=0||S.energy<=0)S.happy=clamp(S.happy-3,0,100);
+ updateHUD();}}
 
-/* ---------- GYM ---------- */
-function gymMenu(){
-  openModal(`
-    <h2>💪 i-Fitness Gym</h2><div class="sub">Leg day every day. ₦2,000 per session.</div>
-    ${act('🏋️ Full workout', ()=>{ payTime(2000,10,'energy',18,'🏋️ Muscles loading... 💪 You feel great!'); },'green','-energy +happy')}
-    ${act('🏃 Cardio burn', ()=>{ payTime(1500,6,'energy',12,'🏃 You ran 5km!'); })}
-    ${act('🧖 Use the spa', ()=>{ payTime(4000,12,'hygiene',-30,'🧖 So fresh and so clean!'); },'','restores hygiene')}
-    ${act('Back', ()=>closeModal())}
-  `);
-}
+/* ============ DRAWING ============ */
+function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath();}
+function human(x,y,o,s=1,phase=0){cx.save();cx.translate(x,y);
+ cx.fillStyle='rgba(0,0,0,.25)';cx.beginPath();cx.ellipse(0,14*s,11*s,4*s,0,0,7);cx.fill();
+ const bob=Math.sin(phase)*2*s,lp=Math.sin(phase)*7*s;
+ cx.strokeStyle='#1f2937';cx.lineWidth=5*s;cx.lineCap='round';
+ cx.beginPath();cx.moveTo(-3*s,2*s+bob*.3);cx.lineTo(-3*s+lp,14*s);cx.stroke();
+ cx.beginPath();cx.moveTo(3*s,2*s+bob*.3);cx.lineTo(3*s-lp,14*s);cx.stroke();
+ cx.fillStyle=o.shirt;rr(-8*s,-20*s+bob*.3,16*s,22*s,6*s);cx.fill();
+ cx.fillStyle=o.skin;cx.beginPath();cx.arc(0,-28*s+bob*.3,8*s,0,7);cx.fill();
+ cx.fillStyle='#111';cx.beginPath();cx.arc(0,-31*s+bob*.3,8*s,Math.PI,2*Math.PI);cx.fill();cx.restore();}
+function bubbleDraw(){for(const b of bubbles){cx.font='600 12px sans-serif';const tw=cx.measureText(b.text).width+16;
+ cx.fillStyle=b.who==='me'?'rgba(22,163,74,.95)':'rgba(255,255,255,.95)';rr(b.x-tw/2,b.y-26,tw,22,11);cx.fill();
+ cx.fillStyle=b.who==='me'?'#fff':'#111827';cx.textAlign='center';cx.fillText(b.text,b.x,b.y-10);cx.textAlign='left';}}
+function label(x,y,txt){cx.font='600 13px sans-serif';const tw=cx.measureText(txt).width+18;
+ cx.fillStyle='rgba(255,255,255,.95)';rr(x-tw/2,y-16,tw,24,12);cx.fill();
+ cx.fillStyle='#1f2937';cx.textAlign='center';cx.fillText(txt,x,y+2);cx.textAlign='left';}
 
-/* ---------- POLICE ---------- */
-function policeMenu(){
-  openModal(`
-    <h2>🚔 Police Station</h2><div class="sub">The boys in black. Report crimes here.</div>
-    ${act('🚨 Report street thugs', ()=>{
-        if(S.thugRepelled>0){ const r=S.thugRepelled*3000; S.money+=r; S.thugRepelled=0; closeModal(); toast(`🚔 Officers acted on your reports. Reward ${fmt(r)}!`); updateHUD(); }
-        else toast('Officer: "No open cases. Report thugs when they approach you."');
-      },'green','reward ₦3,000 each')}
-    ${act('🪪 Apply for side-hustle permit (₦5,000)', ()=>{ if(S.money>=5000){S.money-=5000; closeModal(); toast('🪪 Permit granted! Market hustle pays +20% now.'); updateHUD();} else toast('Not enough money.'); })}
-    ${act('Back', ()=>closeModal())}
-  `);
+/* ---- city ---- */
+function drawCity(){
+ cx.fillStyle='#9ccc65';cx.fillRect(0,0,CITY.w,CITY.h);
+ // lagoon
+ cx.fillStyle='#4fc3f7';cx.fillRect(0,LAGOON.y,CITY.w,LAGOON.h);
+ cx.fillStyle='#0288d1';cx.font='bold 36px sans-serif';cx.fillText('LAGOS LAGOON 🌊',1050,LAGOON.y+88);
+ // sand strip under lagoon
+ cx.fillStyle='#ffe082';cx.fillRect(0,LAGOON.y+LAGOON.h,CITY.w,60);
+ // roads
+ cx.fillStyle='#78909c';
+ for(const y of RH)cx.fillRect(0,y-28,CITY.w,56);
+ for(const x of RV)cx.fillRect(x-28,0,56,CITY.h);
+ cx.strokeStyle='rgba(255,255,255,.6)';cx.lineWidth=3;cx.setLineDash([24,20]);
+ for(const y of RH){cx.beginPath();cx.moveTo(0,y);cx.lineTo(CITY.w,y);cx.stroke()}
+ for(const x of RV){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,CITY.h);cx.stroke()}
+ cx.setLineDash([]);
+ // billboards
+ for(let i=0;i<6;i++){const bx=300+i*380,by=pick([RH[1]-70,RH[2]+52]);
+  cx.fillStyle='#374151';cx.fillRect(bx,by,6,34);cx.fillRect(bx+70,by,6,34);
+  cx.fillStyle=pick(['#0288d1','#16a34a']);cx.fillRect(bx-8,by-26,92,32);
+  cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.fillText(pick(['GLO 📶','MTN','LAGOS LIFE','BET9JA']),bx,by-5);}
+ // buildings
+ for(const l of LOCS)drawBuilding(l);
+ // pedestrians
+ for(const p of CITYPEDS){p.x+=p.dir*p.speed*0.016;if(p.x<0)p.x=CITY.w;if(p.x>CITY.w)p.x=0;
+  human(p.x,p.y,{skin:p.skin,shirt:p.shirt},0.95,p.x*0.05);}
+ // cars
+ for(const c of CARS){c.x+=c.dir*c.speed*0.016;if(c.dir>0&&c.x>CITY.w+60)c.x=-60;if(c.dir<0&&c.x<-60)c.x=CITY.w+60;
+  cx.save();cx.translate(c.x,c.y);if(c.dir<0)cx.scale(-1,1);
+  cx.fillStyle=c.color;rr(-22,-11,44,22,7);cx.fill();
+  cx.fillStyle='rgba(180,220,255,.9)';rr(-8,-9,16,10,3);cx.fill();
+  cx.fillStyle='#111';cx.beginPath();cx.arc(-12,12,5,0,7);cx.arc(12,12,5,0,7);cx.fill();cx.restore();}
 }
+function drawBuilding(l){
+ cx.save();cx.translate(l.x,l.y);
+ cx.fillStyle='rgba(0,0,0,.2)';rr(-52,-34+10,110,78,10);cx.fill();
+ cx.fillStyle='#f5f5f4';rr(-55,-40,110,80,10);cx.fill();
+ cx.strokeStyle='rgba(0,0,0,.15)';cx.lineWidth=2;rr(-55,-40,110,80,10);cx.stroke();
+ cx.fillStyle=l.color;cx.beginPath();cx.moveTo(-55,-40);cx.lineTo(-40,-58);cx.lineTo(70,-58);cx.lineTo(55,-40);cx.closePath();cx.fill();
+ cx.strokeStyle='rgba(0,0,0,.15)';cx.stroke();
+ cx.font='34px sans-serif';cx.textAlign='center';cx.fillText(l.emoji,0,8);cx.textAlign='left';
+ cx.restore();label(l.x,l.y-66,l.emoji+' '+l.name);}
 
-/* ---------- CHURCH / MARRIAGE ---------- */
-function churchMenu(){
-  if(!S.partner){
-    openModal(`
-      <h2>💒 Love Chapel</h2><div class="sub">Find your person first — build a relationship at the beach, club, or with online players. Then come back here 💍</div>
-      ${act('🙏 Pray (free)', ()=>{ S.happy=clamp(S.happy+6,0,100); closeModal(); toast('🙏 Peace of mind.'); updateHUD(); })}
-      ${act('Back', ()=>closeModal())}
-    `);
-    return;
-  }
-  const p=S.partner;
-  openModal(`
-    <h2>💒 Love Chapel</h2><div class="sub">You & @${p.name} · Relationship level ${p.level}/5</div>
-    ${p.level>=5
-      ? act(`💍 PROPOSE to @${p.name} (ring ₦50,000)`, ()=>{ propose(); },'green','forever starts here')
-      : `<div class="sub" style="margin-bottom:10px">Grow your relationship to level 5 to unlock proposal 💍 (date & gift @${p.name})</div>`}
-    ${act('💑 Go on a date (₦8,000)', ()=>{ datePartner(p); })}
-    ${act('🎁 Buy a gift (₦10,000)', ()=>{ giftPartner(p); })}
-    ${act('💔 Break up', ()=>{ breakUp(); },'red')}
-    ${act('Back', ()=>closeModal())}
-  `);
+/* ---- interiors ---- */
+const FLOORS={sand:['#f4d58d','#ecc878'],club:['#1e1b2e','#171422'],office:['#e8e6e3','#dfdcd8'],home:['#caa06a','#a86b32'],market:['#d9c8a9','#cbb894'],gym:['#dfe5ea','#cfd6dd'],police:['#c9d4e4','#bcc9dc'],church:['#f3ead9','#e8dcc4'],salon:['#f6e3ee','#eccfe0'],resto:['#e7d3b3','#dcc397'],shop:['#eef1f4','#e2e7ec']};
+function drawInterior(){
+ const d=INTERIORS[inside];const f=FLOORS[d.floor];
+ cx.fillStyle=f[0];cx.fillRect(0,0,d.w,d.h);
+ if(d.floor==='club'){ // neon grid
+  cx.strokeStyle='rgba(255,0,255,.15)';cx.lineWidth=1;
+  for(let x=0;x<d.w;x+=60){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,d.h);cx.stroke()}
+  for(let y=0;y<d.h;y+=60){cx.beginPath();cx.moveTo(0,y);cx.lineTo(d.w,y);cx.stroke()}}
+ if(d.floor==='home'){cx.fillStyle='#7c4a1e';cx.fillRect(0,0,d.w,d.h*0.55);
+  cx.fillStyle=f[1];for(let i=0;i<10;i++)for(let j=0;j<6;j++)if((i+j)%2===0)cx.fillRect(i*100-((j%2)*50),d.h*0.55+j*52,100,52);}
+ if(d.floor==='sand'){ // dance floor tiles
+  const cols=['#f472b6','#60a5fa','#34d399','#facc15'];
+  for(let i=0;i<6;i++)for(let j=0;j<4;j++){cx.fillStyle=cols[(i+j)%4];cx.fillRect(480+i*55,300+j*55,55,55);}
+  cx.strokeStyle='rgba(255,255,255,.5)';cx.strokeRect(480,300,330,220);}
+ // walls border
+ cx.strokeStyle='rgba(0,0,0,.35)';cx.lineWidth=10;cx.strokeRect(5,5,d.w-10,d.h-10);
+ // props
+ for(const p of d.props)drawProp(p,d);
+ // room label
+ label(d.w/2,44,d.emoji+' '+d.name);
 }
-function datePartner(p){
-  if(S.money<8000){ toast('Not enough money for a date!'); return; }
-  S.money-=8000; p.level=clamp(p.level+1,0,5); S.happy=clamp(S.happy+18,0,100);
-  S.hour=(S.hour+3)%24;
-  closeModal(); bigTitle('💑 DATE NIGHT');
-  pushChat(p.name,'best date ever 😍💕'); toast(`💑 @${p.name} is falling for you! (lvl ${p.level}/5)`); updateHUD();
+function drawProp(p,d){
+ cx.save();cx.translate(p.x,p.y);
+ switch(p.t){
+  case 'stage':cx.fillStyle='#111827';rr(-110,-40,220,90,10);cx.fill();
+   cx.fillStyle='#a855f7';rr(-100,-32,200,50,6);cx.fill();break;
+  case 'dj':cx.font='46px sans-serif';cx.textAlign='center';cx.fillText('🎧',0,0);break;
+  case 'palm':cx.fillStyle='#6d4c41';cx.fillRect(-6,-10,12,40);cx.font='44px sans-serif';cx.textAlign='center';cx.fillText('🌴',0,-6);break;
+  case 'umbrella':cx.font='50px sans-serif';cx.textAlign='center';cx.fillText('⛱️',0,10);break;
+  case 'fire':cx.font='38px sans-serif';cx.textAlign='center';cx.fillText('🔥',0,10);break;
+  case 'bar':cx.fillStyle='#7c2d12';rr(-90,-25,180,50,8);cx.fill();cx.font='26px sans-serif';cx.textAlign='center';cx.fillText('🍾🥂🍷',0,6);break;
+  case 'light':cx.fillStyle='rgba(250,204,21,.25)';cx.beginPath();cx.arc(0,0,60,0,7);cx.fill();cx.font='30px sans-serif';cx.textAlign='center';cx.fillText('💡',0,8);break;
+  case 'desk':cx.fillStyle='#b08968';rr(-50,-25,100,50,6);cx.fill();cx.font='26px sans-serif';cx.textAlign='center';cx.fillText('💻',0,6);break;
+  case 'bossdesk':cx.fillStyle='#8b5e34';rr(-60,-30,120,60,8);cx.fill();cx.font='30px sans-serif';cx.textAlign='center';cx.fillText('🧑‍💼',0,8);break;
+  case 'plant':cx.font='44px sans-serif';cx.textAlign='center';cx.fillText('🪴',0,10);break;
+  case 'bed':cx.fillStyle='#e7e5e4';rr(-60,-35,120,70,8);cx.fill();cx.fillStyle='#dc2626';rr(-58,-33,80,66,6);cx.fill();cx.fillStyle='#fff';rr(22,-33,38,66,6);cx.fill();break;
+  case 'chair':cx.fillStyle='#dc2626';rr(-14,-18,28,36,4);cx.fill();break;
+  case 'cooler':cx.fillStyle='#2563eb';rr(-18,-14,36,30,4);cx.fill();cx.fillStyle='#fff';cx.fillRect(-18,-14,36,8);break;
+  case 'table':cx.fillStyle='#d6d3d1';rr(-25,-16,50,32,4);cx.fill();cx.font='18px sans-serif';cx.textAlign='center';cx.fillText('🫙',0,4);break;
+  case 'window':cx.fillStyle='#bae6fd';rr(-30,-20,60,40,4);cx.fill();cx.strokeStyle='#fff';cx.lineWidth=3;cx.strokeRect(-30,-20,60,40);break;
+  case 'rug':cx.fillStyle='rgba(220,38,38,.4)';cx.beginPath();cx.ellipse(0,0,70,45,0,0,7);cx.fill();break;
+  case 'stall':cx.fillStyle='#a16207';rr(-55,-25,110,50,6);cx.fill();cx.fillStyle=pick(['#ef4444','#16a34a','#facc15']);cx.beginPath();cx.moveTo(-60,-25);cx.lineTo(0,-55);cx.lineTo(60,-25);cx.closePath();cx.fill();cx.font='20px sans-serif';cx.textAlign='center';cx.fillText(pick(['🥬🍅','🍠🌶️','🐟','🍚🫘']),0,10);break;
+  case 'weights':cx.font='40px sans-serif';cx.textAlign='center';cx.fillText('🏋️',0,8);break;
+  case 'treadmill':cx.fillStyle='#475569';rr(-35,-18,70,36,5);cx.fill();cx.fillStyle='#94a3b8';cx.fillRect(-25,-10,50,8);break;
+  case 'mat':cx.fillStyle='#3b82f6';rr(-40,-25,80,50,6);cx.fill();break;
+  case 'cell':cx.fillStyle='#64748b';rr(-45,-35,90,70,4);cx.fill();cx.strokeStyle='#1e293b';cx.lineWidth=4;for(let i=-30;i<=30;i+=15){cx.beginPath();cx.moveTo(i,-35);cx.lineTo(i,35);cx.stroke()}break;
+  case 'board':cx.fillStyle='#1e3a8a';rr(-40,-25,80,50,4);cx.fill();cx.fillStyle='#fff';cx.font='10px sans-serif';cx.textAlign='center';cx.fillText('WANTED 🚨',0,4);break;
+  case 'altar':cx.fillStyle='#d4af37';rr(-70,-25,140,50,6);cx.fill();cx.font='34px sans-serif';cx.textAlign='center';cx.fillText('💒✝️',0,8);break;
+  case 'pew':cx.fillStyle='#8b5e34';rr(-70,-16,140,32,6);cx.fill();break;
+  case 'chair2':cx.fillStyle='#475569';rr(-16,-16,32,32,6);cx.fill();cx.font='22px sans-serif';cx.textAlign='center';cx.fillText('💇',0,6);break;
+  case 'mirror':cx.fillStyle='#bae6fd';rr(-25,-30,50,60,8);cx.fill();break;
+  case 'table2':cx.fillStyle='#b08968';cx.beginPath();cx.arc(0,0,34,0,7);cx.fill();cx.font='20px sans-serif';cx.textAlign='center';cx.fillText('🍲',0,6);break;
+  case 'pot':cx.font='44px sans-serif';cx.textAlign='center';cx.fillText('🍲',0,10);break;
+  case 'shelf':cx.fillStyle='#94a3b8';rr(-80,-20,160,40,4);cx.fill();cx.font='20px sans-serif';cx.textAlign='center';cx.fillText(pick(['🛋️📺','👟👗','🧊🍽️']),0,6);break;
+ }
+ cx.restore();}
+function drawSceneNPCs(dt){
+ for(const p of sceneNPCs){
+  if(p.dance){p.ph+=dt*8;p.x+=Math.sin(p.ph*.5)*0.4;}else{
+   p.sayT-=dt;if(p.sayT<=0){p.sayT=rand(6,16);p.tx=clamp(p.x+rand(-180,180),80,INTERIORS[inside].w-80);p.ty=clamp(p.y+rand(-160,160),90,INTERIORS[inside].h-90)}
+   const d=dist(p,{x:p.tx,y:p.ty});
+   if(d>4){const m=Math.hypot(p.tx-p.x,p.ty-p.y);p.x+=(p.tx-p.x)/m*p.speed*dt;p.y+=(p.ty-p.y)/m*p.speed*dt;p.ph+=dt*7}
+   if(Math.random()<0.002)say(p.name,p.x,p.y-70,pick(['😂','omo!!','lagos sweet','as e dey hot 🔥','no be lie','🎶🎶','check my steps 💃','chai']));}
+  const isBoo=(S.partner&&S.partner.name===p.name)||(S.spouse&&S.spouse.name===p.name);
+  human(p.x,p.y,p,1.0,p.ph);
+  cx.font='700 11px sans-serif';cx.textAlign='center';
+  cx.fillStyle=isBoo?'#e11d48':'#fff';cx.strokeStyle='rgba(0,0,0,.5)';cx.lineWidth=3;
+  cx.strokeText('@'+p.name+(isBoo?' 💕':''),p.x,p.y-46);cx.fillText('@'+p.name+(isBoo?' 💕':''),p.x,p.y-46);cx.textAlign='left';}
 }
-function giftPartner(p){
-  if(S.money<10000){ toast('Not enough money for a gift!'); return; }
-  S.money-=10000; p.level=clamp(p.level+1,0,5);
-  closeModal(); pushChat(p.name,'omggg a gift?! I love it!! 🥺💕'); toast(`🎁 @${p.name} loved the gift! (lvl ${p.level}/5)`); updateHUD();
-}
-function propose(){
-  if(S.money<50000){ toast('The ring costs ₦50,000!'); return; }
-  S.money-=50000; closeModal(); bigTitle('💍 SHE SAID YES!!');
-  S.married=true; S.spouse=S.partner; S.partner=null;
-  pushChat(S.spouse.name,'I SAID YES!!! 💍💒'); pushChat(pick(NAMES),'wedding loading!!! 🥳');
-  setTimeout(()=>bigTitle('💒 Just Married!'), 2600);
-  toast('💒 Congratulations! You are now married.'); updateHUD();
-}
-function breakUp(){
-  const n=S.partner.name; S.partner=null; closeModal();
-  pushChat(n,'...wow. okay. 💔'); toast('💔 You broke up with @'+n); updateHUD();
-}
+function drawPlayer(){
+ if(walking)ph+=0.16;
+ if(S.married){cx.font='20px sans-serif';cx.fillText('💍',S.x+10,S.y-50)}
+ if(S.baby){cx.font='16px sans-serif';cx.fillText('👶',S.x-22,S.y-50)}
+ human(S.x,S.y,{skin:'#8d5524',shirt:'#fbbf24'},1.1,ph);
+ cx.font='800 12px sans-serif';cx.textAlign='center';
+ cx.fillStyle='#0a7a4a';cx.strokeStyle='rgba(255,255,255,.8)';cx.lineWidth=3;
+ cx.strokeText('@scar_belle (you)',S.x,S.y-56);cx.fillText('@scar_belle (you)',S.x,S.y-56);cx.textAlign='left';
+ if(travelling&&travelling.mode.id!=='trek'){cx.font='40px sans-serif';cx.textAlign='center';cx.fillText(travelling.mode.i,S.x,S.y-6);cx.textAlign='left';}}
 
-/* ---------- SALON / RESTO / SHOP ---------- */
-function salonMenu(){
-  openModal(`
-    <h2>💇 Mama Bisi's Salon</h2><div class="sub">Look good, feel good.</div>
-    ${act('💇 New hairstyle (₦5,000)', ()=>{ payTime(5000,12,'hygiene',-15,'💇 You look FIRE! 🔥'); },'green')}
-    ${act('💅 Mani-pedi (₦4,000)', ()=>{ payTime(4000,8,'hygiene',-20,'💅 Hands soft like butter'); })}
-    ${act('Back', ()=>closeModal())}
-  `);
-}
-function restoMenu(){
-  openModal(`
-    <h2>🍲 Amala Shitta</h2><div class="sub">Correct amala & ewedu. Chop life!</div>
-    ${act('🍲 Full amala combo (₦2,500)', ()=>{ payTime(2500,8,'hunger',45,'🍲 Belly FULL! That amala sweet!'); },'green')}
-    ${act('🍚 Light rice (₦1,200)', ()=>{ payTime(1200,4,'hunger',25,'🍚 Nice quick meal'); })}
-    ${act('Back', ()=>closeModal())}
-  `);
-}
-function shopMenu(fromHome){
-  openModal(`
-    <h2>🛍️ The Palms Mall</h2><div class="sub">Shop till you drop.</div>
-    ${act('🛋️ Buy sofa (₦30,000)', ()=>{ buyItem('sofa',30000); })}
-    ${act('📺 Buy TV (₦45,000)', ()=>{ buyItem('tv',45000); })}
-    ${act('🧊 Buy fridge (₦25,000)', ()=>{ buyItem('fridge',25000); })}
-    ${act('👟 New sneakers (₦12,000)', ()=>{ payTime(12000,10,'hygiene',0,'👟 Fresh kicks!'); })}
-    ${act('Back', ()=>{ closeModal(); if(fromHome) homeMenu(); })}
-  `);
-}
-function buyItem(name, cost){
-  if(S.furniture.includes(name)){ toast('You already own that.'); return; }
-  if(S.money<cost){ toast('Not enough money!'); return; }
-  S.money-=cost; S.furniture.push(name); S.happy=clamp(S.happy+6,0,100);
-  toast(`🛍️ ${name} delivered to your house!`); updateHUD(); save();
-}
-
-/* ---------- PLAYER interaction (romance / chat) ---------- */
-function openPlayerMenu(p){
-  if(S.married){
-    openModal(`<h2>${p.emoji} @${p.name}</h2><div class="sub">Online player</div>
-      ${act('💬 Chat', ()=>{ closeModal(); toggleChat(); pushChat('scar_belle',`hi @${p.name} 😊`,true); setTimeout(()=>pushChat(p.name,pick(['hey hey! 😄','hello hello','how far!'])),1200); })}
-      ${act('😌 Close',()=>closeModal())}`);
-    return;
-  }
-  const isPartner = S.partner && S.partner.name===p.name;
-  openModal(`
-    <h2>${p.emoji} @${p.name}</h2><div class="sub">Online player · ${irand(1,60)}m away</div>
-    ${isPartner
-      ? `<div class="sub">💕 This is your boo! Visit the 💒 chapel to date, gift & propose.</div>`
-      : act('💘 Ask to be your boo', ()=>{ askOut(p); },'green')}
-    ${act('💬 Chat', ()=>{ closeModal(); toggleChat(); pushChat('scar_belle',`hi @${p.name} 👋`,true); setTimeout(()=>pushChat(p.name,pick(['hey!! 😍','hiii','yo yo','hello dear'])),1300); })}
-    ${act('🎁 Send ₦5,000 gift', ()=>{ if(S.money>=5000){S.money-=5000; if(S.partner&&S.partner.name===p.name){S.partner.level=clamp(S.partner.level+1,0,5); pushChat(p.name,'aww you too sweet! 💕');} else pushChat(p.name,'omgg thank you!! 🥺'); toast('🎁 Gift sent!'); updateHUD();} else toast('Not enough money!'); })}
-    ${act('😌 Close',()=>closeModal())}
-  `);
-}
-function askOut(p){
-  if(S.partner){ toast(`You're already dating @${S.partner.name}! Break up first.`); return; }
-  if(Math.random()<0.75){
-    S.partner={name:p.name, level:1};
-    closeModal(); bigTitle('💘 IT\'S A MATCH!');
-    pushChat(p.name,'yessss I go be your boo 😍💕');
-    pushChat(pick(NAMES),'new couple alert!!! 🥳');
-    toast(`💘 You're now dating @${p.name}! Build it at the 💒 chapel.`);
-  } else {
-    pushChat(p.name,pick(['lol I just see you as a friend 😅','hmm let me think about it','maybe later jare 😂']));
-    toast('😅 They said not yet... try gifting or chatting first.');
-  }
-  updateHUD();
-}
-
-/* ---------- TRAVEL ---------- */
-const MODES = [
-  { id:'trek',  name:'Trek',  icon:'🚶', cost:0,    speed:55, max:20 },
-  { id:'keke',  name:'Keke',  icon:'🛺', cost:100,  speed:170 },
-  { id:'danfo', name:'Danfo', icon:'🚌', cost:100,  speed:190 },
-  { id:'okada', name:'Okada', icon:'🏍️', cost:350,  speed:320 },
-  { id:'cab',   name:'Cab',   icon:'🚕', cost:650,  speed:520 },
-];
-let travelling=null;
-function travelMenu(){
-  let rows='';
-  for(const l of LOCS){
-    if(l.id==='home' && dist(S,l)<100) continue;
-    rows += `<button class="act" onclick="pickMode('${l.id}')"><span>${l.emoji} ${l.name}</span><small>${Math.round(dist(S,l)/10)*10}m away</small></button>`;
-  }
-  openModal(`<h2>🚕 Travel</h2><div class="sub">Where to? (pick a destination)</div>${rows}`);
-}
-function pickMode(destId){
-  const d = dist(S, loc(destId));
-  let rows='';
-  for(const m of MODES){
-    const t = m.id==='trek' ? Math.min(m.max, d/60) : d/m.speed;
-    rows += `<button class="act ${m.id==='cab'?'green':''}" onclick="startTravel('${destId}','${m.id}')"><span>${m.icon} ${m.name}</span><small>${m.cost?fmt(m.cost):'Free'} · ${t.toFixed(0)}s</small></button>`;
-  }
-  openModal(`<h2>${loc(destId).emoji} ${loc(destId).name}</h2><div class="sub">Choose transport (trekking max 20s)</div>${rows}<button class="act" onclick="travelMenu()">⬅ Back</button>`);
-}
-function startTravel(destId, modeId){
-  const m = MODES.find(x=>x.id===modeId), l = loc(destId);
-  if(S.money<m.cost){ toast(`You need ${fmt(m.cost)} for ${m.name}.`); return; }
-  S.money-=m.cost; updateHUD(); closeModal();
-  const d = dist(S,l);
-  const dur = m.id==='trek' ? Math.min(m.max, d/60) : clamp(d/m.speed, 1.2, 15);
-  travelling = { from:{x:S.x,y:S.y}, to:l, t:0, dur, mode:m };
-  bigTitle(`${m.icon} ${m.name} ride...`);
-}
-function travelTick(dt){
-  if(!travelling) return false;
-  const tr=travelling; tr.t+=dt;
-  const k=clamp(tr.t/tr.dur,0,1);
-  const e = k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2; // easeInOut
-  S.x = tr.from.x + (tr.to.x-tr.from.x)*e;
-  S.y = tr.from.y + (tr.to.y-tr.from.y)*e;
-  walking = tr.mode.id==='trek';
-  if(k>=1){
-    travelling=null; walking=false;
-    toast(`📍 Arrived: ${tr.to.name} ${tr.to.emoji}`);
-    if(tr.to.id==='beach') pushChat(pick(NAMES),'welcome to the beach!! 🏖️');
-    openLocMenu(tr.to);
-  }
-  return true;
-}
-
-/* ---------- THUG EVENTS ---------- */
-let thugCooldown=30, thugActive=null;
-function thugTick(dt){
-  if(thugActive) return;
-  thugCooldown-=dt;
-  const night = S.hour>=20||S.hour<5;
-  if(thugCooldown<=0){
-    thugCooldown = night? rand(40,90) : rand(90,180);
-    // don't trigger in safe zones
-    if(dist(S,loc('police'))<250 || dist(S,loc('home'))<200) return;
-    if(Math.random()<(night?0.75:0.35)){
-      thugActive={name:pick(['Shina','Rambo','Eku','Kazeem']), demand:irand(2000,8000)};
-      openModal(`
-        <h2>😈 Street Thug: "${thugActive.name}"</h2>
-        <div class="sub">"Oga, drop ${fmt(thugActive.demand)} make we no wound you."</div>
-        ${act(`💸 Pay ${fmt(thugActive.demand)}`, ()=>{ S.money=Math.max(0,S.money-thugActive.demand); toast(`😈 You paid ${fmt(thugActive.demand)}... painful.`); thugActive=null; updateHUD(); closeModal(); })}
-        ${act('🏃 Run for your life!', ()=>{ if(Math.random()<0.6){ toast('🏃 You escaped!'); } else { const fine=irand(1000,3000); S.money=Math.max(0,S.money-fine); S.energy=clamp(S.energy-15,0,100); toast(`😈 They caught you! Took ${fmt(fine)} and you got roughed up.`);} thugActive=null; updateHUD(); closeModal(); })}
-        ${act('🚔 Call the police', ()=>{ S.thugRepelled++; toast('🚔 Police dispatched! Report filed. Go to station later for reward.'); pushChat(pick(NAMES),'police dey come that axis o'); thugActive=null; updateHUD(); closeModal(); })}
-      `);
-    }
-  }
-}
-
-/* ---------- PHONE ---------- */
-function phoneMenu(){
-  openModal(`
-    <h2>📱 scar_belle's phone</h2><div class="sub">Sunday vibes in Lagos</div>
-    ${act('💼 <b>Jobs</b>', ()=>toast('💼 Visit 🏢 Office for salary work, or 🛒 Market for trading hustle'))}
-    ${act('🏦 <b>Bank</b> — balance: '+fmt(S.money), ()=>{ toast(`🏦 Balance: ${fmt(S.money)}`); })}
-    ${act('💕 <b>Status</b> — '+(S.married?`Married to @${S.spouse.name}`+(S.baby?' · expecting 👶':''):S.partner?`Dating @${S.partner.name} (lvl ${S.partner.level}/5)`:'Single & ready 😏'), ()=>{ closeModal(); familyMenu(); })}
-    ${act('📖 <b>How to play</b>', ()=>howTo())}
-    ${act('🗑️ <b>Restart life</b>', ()=>{ if(confirm('Start a new life? Current progress will be lost.')){ localStorage.removeItem('sb_lovelife'); location.reload(); } },'red')}
-    ${act('Close', ()=>closeModal())}
-  `);
-}
-function howTo(){
-  openModal(`<h2>📖 How to play</h2><div class="sub">
-  🚶 Move with <b>WASD / arrows</b> or click anywhere to walk. Click buildings & players to interact.<br><br>
-  💼 <b>Work</b> at the Office or Market to earn money. Keep 🍗 hunger, ⚡ energy, 🧼 hygiene & 😊 happiness up or you'll feel awful.<br><br>
-  💘 Click <b>online players</b>, ask them out, date at the 💒 chapel, propose at level 5, marry, then start a family 👶.<br><br>
-  🎉 Host parties, hit the club & beach. 😈 Watch out for thugs at night — report them at 🚔 for rewards.<br><br>
-  🚕 Use Travel for keke, danfo, okada & cab — trekking takes max 20 seconds.</div>
-  ${act('Got it!', ()=>closeModal(),'green')}`);
-}
-
-/* ---------------- NAV ---------------- */
-document.getElementById('nTravel').onclick=travelMenu;
-document.getElementById('nPhone').onclick=phoneMenu;
-document.getElementById('nHome').onclick=()=>{ if(dist(S,loc('home'))<120) homeMenu(); else { pickMode('home'); } };
-document.getElementById('nMap').onclick=()=>{ toast('🗺️ You are the golden avatar. Explore!'); };
-
-/* ---------------- DRAWING ---------------- */
-function drawHuman(x,y,color,scale=1,phase=0,emoji){
-  cx.save(); cx.translate(x,y);
-  const bob = Math.sin(phase)*2*scale;
-  // shadow
-  cx.fillStyle='rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(0,14*scale,12*scale,4*scale,0,0,7); cx.fill();
-  // legs
-  cx.strokeStyle='#1f2937'; cx.lineWidth=5*scale; cx.lineCap='round';
-  const lp = Math.sin(phase)*7*scale;
-  cx.beginPath(); cx.moveTo(-3*scale,2*scale+bob*.3); cx.lineTo(-3*scale+lp,14*scale); cx.stroke();
-  cx.beginPath(); cx.moveTo(3*scale,2*scale+bob*.3); cx.lineTo(3*scale-lp,14*scale); cx.stroke();
-  // body
-  cx.fillStyle=color.shirt||'#facc15';
-  roundRect(-8*scale,-20*scale+bob*.3,16*scale,22*scale,6*scale); cx.fill();
-  // head
-  cx.fillStyle=color.skin||'#8d5524';
-  cx.beginPath(); cx.arc(0,-28*scale+bob*.3,8*scale,0,7); cx.fill();
-  cx.fillStyle='#111'; cx.beginPath(); cx.arc(0,-31*scale+bob*.3,8*scale,Math.PI,2*Math.PI); cx.fill();
-  cx.restore();
-}
-function roundRect(x,y,w,h,r){ cx.beginPath(); cx.moveTo(x+r,y); cx.arcTo(x+w,y,x+w,y+h,r); cx.arcTo(x+w,y+h,x,y+h,r); cx.arcTo(x,y+h,x,y,r); cx.arcTo(x,y,x+w,y,r); cx.closePath(); }
-
-function drawWorld(){
-  // grass base
-  cx.fillStyle='#9ccc65'; cx.fillRect(0,0,WORLD.w,WORLD.h);
-  // lagoon
-  cx.fillStyle='#4fc3f7';
-  cx.fillRect(2050,1200,600,520);
-  cx.fillStyle='#0288d1'; cx.font='bold 34px sans-serif'; cx.fillText('LAGOS LAGOON 🌊', 2080, 1290);
-  // sand near beach
-  cx.fillStyle='#ffe082'; cx.fillRect(2050,1120,600,90);
-  // roads
-  cx.fillStyle='#78909c';
-  for(const y of ROADS_H) cx.fillRect(0,y-28,WORLD.w,56);
-  for(const x of ROADS_V) cx.fillRect(x-28,0,56,WORLD.h);
-  // road dashes
-  cx.strokeStyle='rgba(255,255,255,.6)'; cx.lineWidth=3; cx.setLineDash([24,20]);
-  for(const y of ROADS_H){ cx.beginPath(); cx.moveTo(0,y); cx.lineTo(WORLD.w,y); cx.stroke(); }
-  for(const x of ROADS_V){ cx.beginPath(); cx.moveTo(x,0); cx.lineTo(x,WORLD.h); cx.stroke(); }
-  cx.setLineDash([]);
-  // sidewalks
-  cx.fillStyle='rgba(255,255,255,.25)';
-  for(const y of ROADS_H){ cx.fillRect(0,y-38,WORLD.w,6); cx.fillRect(0,y+32,WORLD.w,6); }
-}
-function drawLoc(l){
-  // plot
-  cx.fillStyle=l.color; cx.strokeStyle='rgba(0,0,0,.15)'; cx.lineWidth=2;
-  roundRect(l.x-55,l.y-45,110,90,14); cx.fill(); cx.stroke();
-  cx.font='40px sans-serif'; cx.textAlign='center';
-  cx.fillText(l.emoji,l.x,l.y+6);
-  // label
-  cx.font='600 13px sans-serif';
-  const tw=cx.measureText(l.name).width+18;
-  cx.fillStyle='rgba(255,255,255,.95)';
-  roundRect(l.x-tw/2,l.y-78,tw,24,12); cx.fill();
-  cx.fillStyle='#1f2937'; cx.fillText(l.name,l.x,l.y-61);
-  cx.textAlign='left';
-}
-function drawPlayerCharacter(){
-  const moving = walking || travelling;
-  if(moving) walkPhase += 0.15;
-  // crown if rich
-  if(S.money>=1000000){ cx.font='22px sans-serif'; cx.fillText('👑',S.x-11,S.y-52); }
-  drawHuman(S.x,S.y,{shirt:'#fbbf24',skin:'#8d5524'},1.15,walkPhase);
-  // ring indicator if married
-  if(S.married){ cx.font='14px sans-serif'; cx.fillText('💍',S.x+12,S.y-38); }
-  if(S.baby){ cx.font='13px sans-serif'; cx.fillText('👶',S.x-24,S.y-38); }
-  // name
-  cx.font='700 12px sans-serif'; cx.textAlign='center';
-  cx.fillStyle='#0a7a4a'; cx.fillText('@scar_belle (you)',S.x,S.y-58);
-  cx.textAlign='left';
-}
-function drawNPCs(){
-  for(const p of PEDS){
-    p.x += p.dir*p.speed*0.016;
-    if(p.x<0)p.x=WORLD.w; if(p.x>WORLD.w)p.x=0;
-    drawHuman(p.x,p.y,{shirt:'#94a3b8',skin:p.color},0.95,p.x*0.05);
-  }
-}
-function drawPlayers(dt){
-  for(const p of PLAYERS){
-    p.idle+=dt;
-    if(p.idle>rand(4,9) || dist(p,{x:p.tx,y:p.ty})<10){
-      p.idle=0; p.tx=clamp(p.x+rand(-260,260),100,WORLD.w-100); p.ty=clamp(p.y+rand(-260,260),100,WORLD.h-100);
-      // prefer sidewalks
-      if(Math.random()<0.5) p.ty=pick(ROADS_H)+pick([-SIDE,SIDE]);
-    }
-    const d=dist(p,{x:p.tx,y:p.ty});
-    if(d>4){ const m=Math.hypot(p.tx-p.x,p.ty-p.y); p.x+=p.tx-p.x>=0?1:-1; p.x+=( (p.tx-p.x)/m )*p.speed*dt; p.y+=( (p.ty-p.y)/m )*p.speed*dt; }
-    const isBoo = (S.partner&&S.partner.name===p.name)||(S.spouse&&S.spouse.name===p.name);
-    drawHuman(p.x,p.y,{shirt:pickShirt(p),skin:p.color},1.0,p.x*0.05);
-    cx.font='600 11px sans-serif'; cx.textAlign='center';
-    cx.fillStyle=isBoo?'#e11d48':'#374151';
-    cx.fillText('@'+p.name+(isBoo?' 💕':''),p.x,p.y-48);
-    cx.textAlign='left';
-  }
-}
-const SHIRTCACHE={};
-function pickShirt(p){ if(!SHIRTCACHE[p.name]) SHIRTCACHE[p.name]=pick(['#f472b6','#60a5fa','#34d399','#f87171','#a78bfa','#fbbf24']); return SHIRTCACHE[p.name]; }
-function drawCars(){
-  for(const c of CARS){
-    c.x += c.dir*c.speed*0.016;
-    if(c.dir>0 && c.x>WORLD.w+60) c.x=-60;
-    if(c.dir<0 && c.x<-60) c.x=WORLD.w+60;
-    cx.save(); cx.translate(c.x,c.y); if(c.dir<0)cx.scale(-1,1);
-    if(c.kind==='keke'){
-      cx.fillStyle='#facc15'; roundRect(-16,-10,32,20,5); cx.fill();
-      cx.fillStyle='#111'; cx.beginPath(); cx.arc(-8,12,5,0,7); cx.arc(8,12,5,0,7); cx.fill();
-    } else {
-      cx.fillStyle=c.color; roundRect(-22,-11,44,22,7); cx.fill();
-      cx.fillStyle='rgba(180,220,255,.9)'; roundRect(-8,-9,16,10,3); cx.fill();
-      cx.fillStyle='#111'; cx.beginPath(); cx.arc(-12,12,5,0,7); cx.arc(12,12,5,0,7); cx.fill();
-    }
-    cx.restore();
-  }
-}
-function drawHouseInterior(){
-  // cozy room
-  cx.fillStyle='#7c4a1e'; cx.fillRect(0,0,W,H);
-  cx.fillStyle='#a86b32'; cx.fillRect(0,0,W,H*0.62);
-  cx.fillStyle='#d9a05b';
-  for(let i=0;i<12;i++)for(let j=0;j<8;j++){ if((i+j)%2===0){ cx.fillRect(i*140-((j%2)*70),H*0.62+j*50,140,50); } }
-  // furniture
-  const items={ bed:['🛏️',.2,.66], chair:['🪑',.45,.74], cooler:['🧊',.8,.68], sofa:['🛋️',.6,.66], tv:['📺',.5,.45], fridge:['🧊',.9,.6] };
-  cx.textAlign='center';
-  for(const f of S.furniture){ const it=items[f]; if(!it)continue; cx.font=(f==='tv'?'90px':'110px')+' sans-serif'; cx.fillText(it[0],W*it[1],H*it[2]); }
-  // spouse & baby
-  if(S.married){ cx.font='90px sans-serif'; cx.fillText('🧑🏾',W*0.32,H*0.72);
-    cx.font='600 13px sans-serif'; cx.fillStyle='#fff'; cx.fillText('@'+S.spouse.name+' 💍',W*0.32,H*0.76); }
-  if(S.baby){ cx.font='44px sans-serif'; cx.fillText('👶',W*0.4,H*0.76); }
-  cx.font='bold 26px sans-serif'; cx.fillStyle='#fff';
-  cx.fillText('🏠 '+S.home+'  ·  click Phone → Home menu',W/2,60);
-  cx.textAlign='left';
-}
-
-/* ---------------- MAIN LOOP ---------------- */
+/* ============ MAIN LOOP ============ */
 let last=0;
-function loop(t){
-  const dt=Math.min(0.05,(t-last)/1000||0.016); last=t;
-  tickTime(dt); chatTick(dt); thugTick(dt);
+function loop(t){const dt=Math.min(0.05,(t-last)/1000||0.016);last=t;
+ tickTime(dt);chatTick(dt);thugTick(dt);
+ for(const b of bubbles)b.t-=dt;bubbles=bubbles.filter(b=>b.t>0);
+ if(!inside){if(!travelTick(dt))move(dt);scanNpc();
+  cam.x=clamp(S.x-W/2,0,Math.max(0,CITY.w-W));cam.y=clamp(S.y-H/2,0,Math.max(0,CITY.h-H));
+  cx.save();cx.translate(-cam.x,-cam.y);drawCity();drawPlayer();bubbleDraw();cx.restore();}
+ else{const d=INTERIORS[inside];move(dt);scanNpc();
+  cam.x=clamp(S.x-W/2,0,Math.max(0,d.w-W));cam.y=clamp(S.y-H/2,0,Math.max(0,d.h-H));
+  cx.save();cx.translate(-cam.x,-cam.y);drawInterior();drawSceneNPCs(dt);drawPlayer();bubbleDraw();cx.restore();}
+ requestAnimationFrame(loop);}
 
-  if(S.mode==='map'){
-    if(!travelTick(dt)) movePlayer(dt);
-    scanNearby();
-    // camera
-    cam.x = clamp(S.x-W/2,0,Math.max(0,WORLD.w-W));
-    cam.y = clamp(S.y-H/2,0,Math.max(0,WORLD.h-H));
-    cx.save(); cx.translate(-cam.x,-cam.y);
-    drawWorld();
-    for(const l of LOCS) drawLoc(l);
-    drawNPCs(); drawCars(); drawPlayers(dt);
-    drawPlayerCharacter();
-    // travel vehicle overlay
-    if(travelling && travelling.mode.id!=='trek'){
-      cx.font='42px sans-serif'; cx.textAlign='center';
-      cx.fillText(travelling.mode.icon,S.x,S.y-8); cx.textAlign='left';
-    }
-    cx.restore();
-  } else {
-    drawHouseInterior();
-  }
-  requestAnimationFrame(loop);
-}
-
-/* ---------------- BOOT ---------------- */
-updateHUD();
-bigTitle("💕 scar_belle's love life");
-pushChat('system','👋 Welcome to Lagos! Find work, find love, live large.');
-setTimeout(()=>pushChat(pick(NAMES),'new here? welcome!! 🎉'), 2500);
-setTimeout(()=>toast('🚶 Move: WASD / click · Press E near buildings · Everyone you see is "online" — click them!'), 1500);
+/* ============ BOOT ============ */
+updateHUD();bigTitle("💕 scar_belle's love life");
+pushChat('system','👋 Welcome! Walk into any building — people are inside waiting to gist with you.');
+setTimeout(()=>toast('🚶 WASD / click to walk · Walk into a building to enter · E to talk to people'),1200);
+setTimeout(()=>pushChat(pick(NAMES),'who dey beach?? 🏖️'),3000);
 requestAnimationFrame(loop);
 </script>
 </body>
 </html>
 '''
-import os
-os.makedirs('/mnt/agents/output', exist_ok=True)
-with open('/mnt/agents/output/scar_belles_love_life.html','w') as f:
-    f.write(game_code)
-print('written', len(game_code), 'chars')
+with open('/mnt/agents/output/index.html','w') as f:
+    f.write(code)
+print('written', len(code), 'chars')
