@@ -2,592 +2,860 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>scar_belle's love life</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>scar_belle's love life 💕</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{width:100%;height:100%;overflow:hidden;background:#0b0f1a;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;user-select:none}
-  #game{display:block;position:absolute;inset:0}
-  #hud{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:20;flex-wrap:wrap;justify-content:center;max-width:97vw}
-  .pill{background:rgba(255,255,255,.95);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;color:#1a2233;box-shadow:0 3px 10px rgba(0,0,0,.25);display:flex;align-items:center;gap:5px;white-space:nowrap}
-  .pill b{color:#0a7a4a}
-  .statbar{width:52px;height:7px;background:#e5e7eb;border-radius:6px;overflow:hidden;display:inline-block}
-  .statbar i{display:block;height:100%;border-radius:6px;transition:width .4s}
-  #nav{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:rgba(20,25,40,.93);padding:7px;border-radius:20px;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-  #nav button{background:transparent;border:none;color:#cdd6e4;font-size:10px;font-weight:600;padding:5px 11px;border-radius:13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:52px}
-  #nav button span{font-size:18px}
-  #nav button.active,#nav button:hover{background:#16a34a;color:#fff}
-  #chatToggle{position:absolute;top:56px;right:10px;z-index:25;background:#7c3aed;color:#fff;border:none;border-radius:999px;padding:8px 13px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(124,58,237,.5);font-size:12px}
-  #chatPanel{position:absolute;top:100px;right:10px;width:280px;max-width:80vw;height:300px;background:rgba(15,20,35,.96);border-radius:16px;z-index:25;display:none;flex-direction:column;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-  #chatPanel.open{display:flex}
-  #chatHead{padding:9px 12px;font-weight:700;color:#fff;font-size:12px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between}
-  #chatMsgs{flex:1;overflow-y:auto;padding:9px;display:flex;flex-direction:column;gap:7px}
-  .cmsg{background:rgba(255,255,255,.08);border-radius:11px;padding:6px 9px;color:#e5e7eb;font-size:11px;max-width:88%}
-  .cmsg b{color:#a5b4fc}
-  .cmsg.me{background:#16a34a;align-self:flex-end;color:#fff}
-  #chatInput{display:flex;padding:7px;gap:5px;border-top:1px solid rgba(255,255,255,.08)}
-  #chatInput input{flex:1;background:rgba(255,255,255,.1);border:none;border-radius:9px;padding:7px 9px;color:#fff;font-size:11px;outline:none}
-  #chatInput button{background:#7c3aed;border:none;color:#fff;border-radius:9px;padding:0 12px;font-weight:700;cursor:pointer}
-  #modalWrap{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:40;display:none;align-items:flex-end;justify-content:center}
-  #modalWrap.open{display:flex}
-  #modal{background:#fff;width:100%;max-width:460px;max-height:75vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:18px 16px 26px;animation:up .25s ease}
-  @keyframes up{from{transform:translateY(50px);opacity:.4}to{transform:translateY(0);opacity:1}}
-  #modal h2{font-size:19px;margin-bottom:4px;color:#111827}
-  #modal .sub{color:#6b7280;font-size:12px;margin-bottom:12px}
-  .act{width:100%;text-align:left;background:#f3f4f6;border:none;border-radius:13px;padding:12px 13px;margin-bottom:7px;cursor:pointer;font-size:13px;font-weight:600;color:#111827;display:flex;justify-content:space-between;align-items:center}
-  .act:hover{background:#e5e7eb}.act.green{background:#16a34a;color:#fff}.act.red{background:#fee2e2;color:#991b1b}.act small{color:#6b7280;font-weight:500}.act.green small{color:#dcfce7}
-  #toasts{position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:5px;align-items:center;pointer-events:none;width:92vw}
-  .toast{background:rgba(17,24,39,.94);color:#fff;padding:9px 16px;border-radius:999px;font-size:12px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.4);animation:tin .3s ease;max-width:92vw;text-align:center}
-  @keyframes tin{from{transform:translateY(-12px);opacity:0}to{transform:translateY(0);opacity:1}}
-  #prompt{position:absolute;bottom:118px;left:50%;transform:translateX(-50%);z-index:15;background:rgba(17,24,39,.92);color:#fff;padding:8px 16px;border-radius:999px;font-size:12px;font-weight:600;display:none;white-space:nowrap}
-  #saybar{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);z-index:18;width:min(480px,94vw);display:none}
-  #saybar .row{display:flex;gap:6px;background:rgba(255,255,255,.96);border-radius:16px;padding:7px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
-  #saybar input{flex:1;border:none;outline:none;font-size:13px;padding:7px 9px;background:transparent;color:#111827}
-  #saybar button{background:#16a34a;border:none;color:#fff;border-radius:11px;padding:0 15px;font-weight:700;cursor:pointer}
-  #chips{display:flex;gap:6px;margin-top:6px;justify-content:center;flex-wrap:wrap}
-  .chip{background:rgba(255,255,255,.94);border:none;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:600;color:#111827;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25)}
-  #bigTitle{position:absolute;top:32%;left:0;right:0;text-align:center;z-index:60;pointer-events:none;opacity:0;transition:opacity .5s}
-  #bigTitle h1{font-size:32px;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.6)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#0b1020;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;user-select:none}
+#cv{display:block;position:absolute;inset:0}
+.hidden{display:none!important}
+button{font-family:inherit;cursor:pointer}
+
+/* ===== auth ===== */
+#authScreen{position:absolute;inset:0;background:linear-gradient(160deg,#1e1b4b,#4c1d95,#831843);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;padding:20px;overflow-y:auto}
+#authScreen h1{color:#fff;font-size:26px;margin-bottom:4px;text-align:center}
+#authScreen p{color:#e9d5ff;font-size:13px;margin-bottom:18px;text-align:center}
+.authCard{background:rgba(255,255,255,.97);border-radius:22px;padding:22px;width:min(400px,94vw);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.authCard input{width:100%;padding:13px 14px;border-radius:12px;border:2px solid #e5e7eb;margin-bottom:10px;font-size:14px;outline:none}
+.authCard input:focus{border-color:#16a34a}
+.bigBtn{width:100%;padding:14px;border:none;border-radius:14px;background:#16a34a;color:#fff;font-size:15px;font-weight:700;margin-top:6px}
+.bigBtn:disabled{opacity:.5}
+.linkBtn{background:none;border:none;color:#7c3aed;font-weight:600;font-size:13px;margin-top:12px}
+#setupBox{background:#fffbeb;border:2px solid #f59e0b;border-radius:16px;padding:16px;width:min(520px,94vw);color:#78350f;font-size:12.5px;line-height:1.65;margin-top:14px}
+#setupBox b{color:#92400e}
+#setupBox code{background:#fef3c7;padding:1px 5px;border-radius:5px}
+
+/* ===== creator ===== */
+#creator{position:absolute;inset:0;background:#eef2ff;display:flex;flex-direction:column;z-index:190}
+#crTop{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(255,255,255,.85)}
+#crTop h2{font-size:17px;color:#111827}
+#crNext{background:#16a34a;color:#fff;border:none;border-radius:999px;padding:9px 22px;font-weight:700;font-size:14px}
+#crNext:disabled{background:#a7f3d0}
+#crStage{flex:1;position:relative;overflow:hidden}
+#crAvatar{position:absolute;left:50%;top:8%;transform:translateX(-50%);text-align:center;pointer-events:none}
+#crSheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:28px 28px 0 0;padding:20px 18px 30px;max-height:56%;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.15)}
+#crSheet h3{font-size:14px;color:#6b7280;font-weight:600;margin-bottom:10px}
+.crRow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:2px solid #e5e7eb;background:#f9fafb;border-radius:999px;padding:10px 16px;font-size:14px;font-weight:600;color:#111827}
+.chip.sel{background:#1f2937;color:#fff;border-color:#1f2937}
+.crCard{width:100%;text-align:left;border:2px solid #e5e7eb;border-radius:16px;padding:13px;margin-bottom:9px;background:#fff}
+.crCard.sel{border-color:#16a34a;background:#f0fdf4}
+.crCard b{font-size:15px;color:#111827}
+.crCard small{display:block;color:#6b7280;font-size:12px;margin-top:3px;line-height:1.45}
+#crNameInput{width:100%;padding:13px;border-radius:12px;border:2px solid #e5e7eb;font-size:16px;font-weight:600;margin-bottom:12px;outline:none}
+#crNameInput:focus{border-color:#16a34a}
+#lotteryCard{background:#fde68a;border-radius:22px;padding:30px;text-align:center;margin:10px 0}
+#lotteryCard .big{font-size:52px}
+#lotteryCard h4{font-size:22px;margin:10px 0 6px}
+#lotteryCard p{font-size:13px;color:#713f12}
+#crGo{width:100%;padding:15px;border:none;border-radius:16px;background:#16a34a;color:#fff;font-size:16px;font-weight:800;margin-top:8px}
+
+/* ===== HUD ===== */
+#hud{position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:60;flex-wrap:wrap;justify-content:center;max-width:98vw}
+.pill{background:rgba(255,255,255,.95);border-radius:999px;padding:6px 11px;font-size:11.5px;font-weight:600;color:#1a2233;box-shadow:0 3px 10px rgba(0,0,0,.25);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.pill b{color:#0a7a4a}
+.sbar{width:46px;height:7px;background:#e5e7eb;border-radius:5px;overflow:hidden;display:inline-block}
+.sbar i{display:block;height:100%;border-radius:5px}
+#hudSub{position:absolute;top:44px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:60}
+.spill{background:rgba(255,255,255,.9);border:none;border-radius:999px;padding:5px 11px;font-size:11px;font-weight:600;color:#374151;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+
+/* ===== bottom nav ===== */
+#nav{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:rgba(255,255,255,.97);padding:8px;border-radius:24px;z-index:60;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+#nav button{background:transparent;border:none;color:#6b7280;font-size:10px;font-weight:700;padding:5px 13px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:56px}
+#nav button span{font-size:19px}
+#nav button.active{background:#1f2937;color:#fff}
+
+/* ===== sheets ===== */
+.sheetWrap{position:absolute;inset:0;background:rgba(10,12,25,.5);z-index:100;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:480px;max-height:82vh;overflow-y:auto;border-radius:26px 26px 0 0;padding:18px 16px 28px;animation:up .25s ease}
+@keyframes up{from{transform:translateY(60px);opacity:.3}to{transform:translateY(0);opacity:1}}
+.sheet h2{font-size:19px;color:#111827}
+.sheet .sub{color:#6b7280;font-size:12.5px;margin:3px 0 14px;line-height:1.5}
+.xBtn{float:right;background:#f3f4f6;border:none;border-radius:999px;width:32px;height:32px;font-size:14px;font-weight:700;color:#374151}
+.act{width:100%;text-align:left;background:#f3f4f6;border:none;border-radius:14px;padding:13px 14px;margin-bottom:8px;font-size:14px;font-weight:600;color:#111827;display:flex;justify-content:space-between;align-items:center}
+.act:hover{background:#e5e7eb}.act.green{background:#16a34a;color:#fff}.act.pink{background:#db2777;color:#fff}.act.red{background:#fee2e2;color:#991b1b}
+.act small{color:#6b7280;font-weight:500;font-size:11.5px}.act.green small,.act.pink small{color:rgba(255,255,255,.85)}
+.tiles{display:flex;gap:6px;margin:10px 0 14px}
+.tmode{flex:1;border:2px solid #e5e7eb;border-radius:14px;background:#fff;padding:10px 4px;text-align:center}
+.tmode.sel{border-color:#2563eb;background:#eff6ff}
+.tmode .ic{font-size:22px}
+.tmode b{display:block;font-size:11.5px;margin-top:3px}
+.tmode small{font-size:10.5px;color:#6b7280}
+#goBtn{width:100%;padding:14px;border:none;border-radius:16px;background:#16a34a;color:#fff;font-size:15px;font-weight:800}
+.chipRow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.mchip{border:none;background:#f3f4f6;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:600;color:#111827}
+
+/* venue chat bar */
+#venueBar{position:absolute;bottom:66px;left:50%;transform:translateX(-50%);width:min(460px,94vw);z-index:55;display:none}
+#venueBar .vrow{display:flex;gap:6px;background:rgba(255,255,255,.97);border-radius:16px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+#venueBar input{flex:1;border:none;outline:none;font-size:13px;padding:8px;background:transparent;color:#111827}
+#venueBar button{background:#16a34a;border:none;color:#fff;border-radius:11px;padding:0 15px;font-weight:800}
+#vChips{display:flex;gap:5px;margin-top:5px;justify-content:center;flex-wrap:wrap}
+.vchip{background:rgba(255,255,255,.95);border:none;border-radius:999px;padding:6px 11px;font-size:11px;font-weight:700;color:#111827;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+
+/* DM */
+#dmMsgs{height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:6px 2px}
+.dmB{border-radius:14px;padding:8px 11px;font-size:13px;max-width:80%;line-height:1.4}
+.dmB.them{background:#f3f4f6;color:#111827;align-self:flex-start}
+.dmB.me{background:#2563eb;color:#fff;align-self:flex-end}
+.dmB small{display:block;font-size:9.5px;opacity:.6;margin-top:2px}
+#dmRow{display:flex;gap:6px;margin-top:10px}
+#dmRow input{flex:1;padding:11px;border-radius:12px;border:2px solid #e5e7eb;font-size:13px;outline:none}
+#dmRow button{background:#16a34a;border:none;color:#fff;border-radius:12px;padding:0 16px;font-weight:800}
+.quickRow{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.qb{background:#eef2ff;border:none;border-radius:999px;padding:7px 11px;font-size:11.5px;font-weight:600;color:#3730a3}
+
+/* phone */
+.appGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px;margin:14px 0}
+.app{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none}
+.app .ic{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.app span{font-size:10.5px;font-weight:600;color:#374151}
+.jobCard{display:flex;gap:12px;align-items:center;border:2px solid #f3f4f6;border-radius:16px;padding:12px;margin-bottom:9px}
+.jobCard .ji{width:46px;height:46px;border-radius:13px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:23px}
+.jobCard b{font-size:14.5px}
+.jobCard small{display:block;color:#6b7280;font-size:11.5px;margin-top:2px;line-height:1.4}
+.jobCard .apply{margin-left:auto;background:#16a34a;border:none;color:#fff;border-radius:10px;padding:9px 12px;font-size:11px;font-weight:700;white-space:nowrap}
+.jobCard .pay{color:#16a34a;font-weight:800;font-size:12px}
+
+/* catalogue */
+.catTabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}
+.catTab{white-space:nowrap;border:none;background:#f3f4f6;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:700;color:#374151}
+.catTab.sel{background:#1f2937;color:#fff}
+.catGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.itemCard{border:2px solid #f3f4f6;border-radius:14px;padding:10px 6px;text-align:center;background:#fff}
+.itemCard .ie{font-size:30px}
+.itemCard b{display:block;font-size:11px;margin-top:4px;color:#111827}
+.itemCard .pr{color:#16a34a;font-weight:800;font-size:12px;margin-top:2px}
+.itemCard .st{color:#f59e0b;font-size:9px}
+.itemCard button{margin-top:6px;width:100%;border:none;border-radius:9px;background:#16a34a;color:#fff;font-size:11px;font-weight:700;padding:7px 0}
+.itemCard button:disabled{background:#d1d5db}
+
+/* misc */
+#prompt{position:absolute;bottom:112px;left:50%;transform:translateX(-50%);z-index:55;background:rgba(17,24,39,.94);color:#fff;padding:9px 17px;border-radius:999px;font-size:12.5px;font-weight:600;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+#toasts{position:absolute;top:76px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:5px;align-items:center;pointer-events:none;width:94vw}
+.toast{background:rgba(17,24,39,.95);color:#fff;padding:10px 17px;border-radius:999px;font-size:12.5px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.4);animation:tin .3s ease;max-width:94vw;text-align:center}
+@keyframes tin{from{transform:translateY(-12px);opacity:0}to{transform:translateY(0);opacity:1}}
+#bigTitle{position:absolute;top:30%;left:0;right:0;text-align:center;z-index:250;pointer-events:none;opacity:0;transition:opacity .5s}
+#bigTitle h1{font-size:30px;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.65)}
+#loader{position:absolute;inset:0;background:rgba(10,14,30,.88);z-index:180;display:none;align-items:center;justify-content:center;flex-direction:column}
+#loader .box{background:#fff;border-radius:18px;padding:16px 26px;font-weight:700;color:#111827;font-size:14px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#bell{position:absolute;top:44px;right:10px;z-index:65;background:rgba(255,255,255,.95);border:none;border-radius:999px;width:36px;height:36px;font-size:16px;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+#bellCount{position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;border-radius:999px;font-size:9.5px;font-weight:800;padding:2px 6px}
+#visitTag{position:absolute;top:44px;left:10px;z-index:65;background:rgba(219,39,119,.95);color:#fff;border:none;border-radius:999px;padding:8px 14px;font-size:11.5px;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.3)}
 </style>
 </head>
 <body>
-<canvas id="game"></canvas>
+<canvas id="cv"></canvas>
 
-<div id="hud">
-  <div class="pill">🌙 <span id="clock">8:00 AM · Day 1</span></div>
-  <div class="pill">😊<span class="statbar"><i id="bHappy" style="background:#f59e0b"></i></span></div>
-  <div class="pill">🍗<span class="statbar"><i id="bHunger" style="background:#ef4444"></i></span></div>
-  <div class="pill">⚡<span class="statbar"><i id="bEnergy" style="background:#3b82f6"></i></span></div>
-  <div class="pill">💰 <b id="money">₦100,000</b></div>
+<!-- ================= AUTH ================= -->
+<div id="authScreen">
+  <h1>💕 scar_belle's love life</h1>
+  <p>Real people. Real Lagos. One link — invite your friends & meet them in the game.</p>
+  <div class="authCard">
+    <input id="em" type="email" placeholder="Email" autocomplete="email">
+    <input id="pw" type="password" placeholder="Password (6+ chars)" autocomplete="current-password">
+    <button class="bigBtn" id="authBtn">Create account / Log in</button>
+    <div style="text-align:center"><button class="linkBtn" id="authSwap">New here? Create account</button></div>
+    <div id="authErr" style="color:#dc2626;font-size:12px;margin-top:8px;text-align:center"></div>
+  </div>
+  <div id="setupBox" class="hidden">
+    <b>One-time setup (5 mins) for real multiplayer:</b><br>
+    1. Go to <code>console.firebase.google.com</code> → "Add project" (any name, Google Analytics off).<br>
+    2. Build → <b>Realtime Database</b> → Create → choose location → <b>Start in test mode</b>.<br>
+    3. Project settings → "Add app" → Web (</>) → copy the <code>firebaseConfig</code> values.<br>
+    4. Paste them into <code>FIREBASE_CONFIG</code> at the top of the script in this file.<br>
+    5. In Authentication → Sign-in method → enable <b>Email/Password</b>. Commit. Done! ✅
+  </div>
 </div>
 
-<button id="chatToggle">💬 <span id="onlineCount">12</span> online</button>
-<div id="chatPanel">
-  <div id="chatHead"><span>👥 Lagos Chat <span style="color:#4ade80">● live</span></span><span style="cursor:pointer" onclick="toggleChat()">✕</span></div>
-  <div id="chatMsgs"></div>
-  <div id="chatInput"><input id="chatText" placeholder="Say something..." maxlength="120"><button onclick="sendChat()">Send</button></div>
+<!-- ================= CREATOR ================= -->
+<div id="creator" class="hidden">
+  <div id="crTop">
+    <div style="width:70px"></div>
+    <div style="text-align:center">
+      <h2 id="crTitle">Look</h2>
+      <div id="crProg" style="display:flex;gap:5px;justify-content:center;margin-top:5px"></div>
+    </div>
+    <button id="crNext" disabled>Next</button>
+  </div>
+  <div id="crStage">
+    <div id="crAvatar"><canvas id="crCv" width="220" height="320"></canvas><div style="font-size:11px;color:#9ca3af;margin-top:-24px">your look</div></div>
+    <div id="crSheet"></div>
+  </div>
 </div>
 
-<div id="prompt"></div>
-<div id="toasts"></div>
-<div id="bigTitle"><h1 id="bigTitleText"></h1></div>
+<!-- ================= GAME ================= -->
+<div id="game" class="hidden">
+  <div id="hud">
+    <div class="pill">🌙 <span id="hudClock">8:00 AM · Day 1</span></div>
+    <div class="pill">💰 <b id="hudMoney">₦0</b></div>
+    <div class="pill">😊<span class="sbar"><i id="sbH" style="background:#f59e0b"></i></span></div>
+    <div class="pill">🍗<span class="sbar"><i id="sbF" style="background:#ef4444"></i></span></div>
+    <div class="pill">⚡<span class="sbar"><i id="sbE" style="background:#3b82f6"></i></span></div>
+    <div class="pill">🧼<span class="sbar"><i id="sbY" style="background:#06b6d4"></i></span></div>
+  </div>
+  <div id="hudSub">
+    <button class="spill" id="spRadio">📻 Naija Radio</button>
+    <button class="spill">👀 <span id="spVisits">7.2m</span> visits</button>
+    <button class="spill">🟢 <span id="spOnline">1</span> online</button>
+  </div>
+  <button id="bell" class="hidden">🔔<span id="bellCount" class="hidden">0</span></button>
+  <button id="visitTag" class="hidden">🏠 <span id="visitName"></span>'s home · tap to leave</button>
 
-<div id="saybar">
-  <div class="row"><input id="sayText" placeholder="Say something out loud..." maxlength="100"><button onclick="sayIt()">➤</button></div>
-  <div id="chips"></div>
+  <div id="venueBar">
+    <div class="vrow"><input id="vInput" placeholder="Say something to the players here..."><button id="vSend">➤</button></div>
+    <div id="vChips"></div>
+  </div>
+
+  <div id="prompt"></div>
+  <div id="toasts"></div>
+  <div id="bigTitle"><h1 id="bigText"></h1></div>
+  <div id="loader"><div class="box" id="loaderText">Loading Lagos… 0%</div></div>
+
+  <div id="nav" class="hidden">
+    <button id="nHome"><span>🏠</span>Home</button>
+    <button id="nBuy"><span>🛋️</span>Buy</button>
+    <button id="nMap" class="active"><span>🗺️</span>Map</button>
+    <button id="nPhone"><span>📱</span>Phone</button>
+  </div>
 </div>
 
-<div id="nav">
-  <button id="nTravel"><span>🚕</span>Travel</button>
-  <button id="nPhone"><span>📱</span>Phone</button>
-  <button id="nHome"><span>🚪</span>Exit bldg</button>
-</div>
-
-<div id="modalWrap" onclick="if(event.target===this)closeModal()"><div id="modal"></div></div>
+<div id="sheetRoot"></div>
 
 <script>
-const cv=document.getElementById('game'),cx=cv.getContext('2d');
-let W,H;const rs=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};addEventListener('resize',rs);rs();
+/* =====================================================================
+   scar_belle's love life — REAL MULTIPLAYER Lagos life sim
+   ===================================================================== */
+
+/* >>> PASTE YOUR FIREBASE CONFIG HERE (see setup box on login screen) <<< */
+const FIREBASE_CONFIG = {
+  apiKey: "PASTE_HERE",
+  authDomain: "PASTE_HERE",
+  databaseURL: "PASTE_HERE",
+  projectId: "PASTE_HERE",
+  storageBucket: "PASTE_HERE",
+  messagingSenderId: "PASTE_HERE",
+  appId: "PASTE_HERE"
+};
+
+const $=id=>document.getElementById(id);
 const rand=(a,b)=>a+Math.random()*(b-a),irand=(a,b)=>Math.floor(rand(a,b+1)),pick=a=>a[irand(0,a.length-1)];
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),d2=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const fmt=n=>'₦'+Math.round(n).toLocaleString('en-NG');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let DB=null,AUTH=null,ME=null;
+const configured=()=>FIREBASE_CONFIG.apiKey!=="PASTE_HERE";
 
-/* ============ STATE ============ */
-const DEF={money:100000,happy:80,hunger:75,energy:90,hygiene:85,x:400,y:900,scene:'city',
-spouse:null,partner:null,baby:false,married:false,day:1,hour:8,jobLevel:1,shifts:0,
-rel:{},furniture:['bed','chair','cooler'],thugReports:0,home:'Self-contain · Yaba'};
-let S=JSON.parse(localStorage.getItem('sb_ll2')||'null')||JSON.parse(JSON.stringify(DEF));
-const save=()=>localStorage.setItem('sb_ll2',JSON.stringify(S));
+/* ============================= AUTH ============================= */
+let isLogin=false;
+if(!configured()){$('setupBox').classList.remove('hidden');}
+else{firebase.initializeApp(FIREBASE_CONFIG);AUTH=firebase.auth();DB=firebase.database();}
+$('authSwap').onclick=()=>{isLogin=!isLogin;$('authSwap').textContent=isLogin?'New here? Create account':'Have an account? Log in';$('authBtn').textContent=isLogin?'Log in':'Create account / Log in';};
+$('authBtn').onclick=async()=>{
+  if(!configured()){toast('Paste your Firebase config first (see yellow box)');return}
+  const em=$('em').value.trim(),pw=$('pw').value;
+  $('authErr').textContent='';
+  try{
+    if(isLogin){await AUTH.signInWithEmailAndPassword(em,pw);}
+    else{const c=await AUTH.createUserWithEmailAndPassword(em,pw);await DB.ref('users/'+c.user.uid).set(newProfile());}
+  }catch(e){$('authErr').textContent=e.message.replace('Firebase: ','');return}
+};
+AUTH&&AUTH.onAuthStateChanged(async u=>{
+  if(!u)return;
+  ME=(await DB.ref('users/'+u.uid).get()).val()||newProfile();
+  ME.uid=u.uid;
+  if(!ME.name){startCreator();}
+  else{enterGame();}
+});
+function newProfile(){return{name:'',money:0,happy:70,hunger:80,energy:90,hygiene:90,day:1,hour:8,
+  body:'Woman',hair:'Braids',outfit:'Casual',traits:[],dream:'',origin:'',homeId:'',homeName:'',
+  rent:0,x:1300,y:900,scene:'city',job:'',shifts:0,partnerUid:'',partnerName:'',relLvl:0,married:false,baby:false,
+  furni:[],lastRentDay:1,banned:false};}
 
-/* ============ CITY ============ */
-const CITY={w:2600,h:1700};
-const RH=[560,1000,1380],RV=[420,950,1500,2050];
-const LAGOON={y:210,h:150};
+/* ============================= CREATOR ============================= */
+const HAIRS=['Low cut','Bald','Curls','Afro','Locs','Braids','Classic','Gele'];
+const OUTFITS=['Casual','Hoodie','Office','Chill','Owambe','Street'];
+const TRAITS=[['💼','Hustler','Sees money everywhere. Work pays more.'],['🍲','Foodie','Food restores extra hunger.'],['🎉','Owambe Spirit','Parties boost happiness more.'],['💪','Gym Rat','Energy drains slower.'],['🥰','Smooth Talker','Relationships grow faster.'],['😴','Lazy Bone','Energy lasts longer, work pays a bit less.'],['🧼','Clean Pikin','Hygiene drops slower.'],['🌙','Night Crawler','Thugs fear you at night.'],['💻','Tech Bro or Sis','Office & CcHub pay +20%.'],['🎵','Musical','Club & beach vibes hit different.']];
+const DREAMS=[['👔','Oga at the Top','Reach career level 5.'],['🏡','Lekki Landlord','Build a net worth of ₦1,000,000.'],['🎤','Afrobeats Star','Max out the music life.'],['🤝','Everybody\'s Padi','Befriend 10 players.'],['🦄','Yaba Unicorn','Get your startup funded at CcHub.']];
+const ORIGINS=[['🏦','LAPO Baby!','₦60,000 loan to start — hustle starts at 2.','+₦60,000 start',60000],['👶','Aje Butter','Soft life. Start with ₦150,000.','+₦150,000 start',150000],['🧑‍🌾','Village Champion','Grandma sent ₦40,000 & prayers.','+₦40,000 start',40000]];
+const HOMES=[['🎓','UNILAG Student · Akoka','Student life','Start ₦14,000','Rent ₦1,200/wk',14000,1200],['🚪','Face-me-I-face-you · Mushin','Hard start','Start ₦76,000','Rent ₦2,400/wk',76000,2400],['🏠','Self-contain · Yaba','Balanced','Start ₦96,000','Rent ₦6,000/wk',96000,6000],['🏢','Mini-flat · Lekki Phase 1','Big spender','Start ₦250,000','Rent ₦18,000/wk',250000,18000]];
+let crStep=0,crTraits=[];
+function startCreator(){$('authScreen').classList.add('hidden');$('creator').classList.remove('hidden');crStep=0;crRender();}
+function crProg(){const p=['Look','Personality','Dream','Birth lottery','Home'];$('crProg').innerHTML=p.map((t,i)=>`<div style="width:26px;height:5px;border-radius:3px;background:${i<=crStep?'#16a34a':'#e5e7eb'}"></div>`).join('');}
+function crRender(){
+  crProg();const sh=$('crSheet');$('crNext').disabled=true;drawCrAvatar();
+  if(crStep===0){$('crTitle').textContent='Look';
+    sh.innerHTML=`<input id="crNameInput" maxlength="16" placeholder="@yourname" value="${esc(ME.name||'')}">
+    <h3>Body</h3><div class="crRow" id="crBody">${['Woman','Man'].map(b=>`<button class="chip ${ME.body===b?'sel':''}" data-v="${b}">${b}</button>`).join('')}</div>
+    <h3>Hairstyle</h3><div class="crRow" id="crHair">${HAIRS.map(h=>`<button class="chip ${ME.hair===h?'sel':''}" data-v="${h}">${h}</button>`).join('')}</div>
+    <h3>Outfit</h3><div class="crRow" id="crOut">${OUTFITS.map(o=>`<button class="chip ${ME.outfit===o?'sel':''}" data-v="${o}">${o}</button>`).join('')}</div>`;
+    $('crNameInput').oninput=e=>{ME.name=e.target.value.replace(/[^a-zA-Z0-9_]/g,'').toLowerCase();$('crNext').disabled=ME.name.length<3;drawCrAvatar();};
+    wireChips('crBody',v=>ME.body=v,()=>{drawCrAvatar();});wireChips('crHair',v=>ME.hair=v,()=>{drawCrAvatar();});wireChips('crOut',v=>ME.outfit=v,()=>{drawCrAvatar();});
+    $('crNext').disabled=ME.name.length<3;
+  }
+  if(crStep===1){$('crTitle').textContent='Personality';crTraits=[];
+    sh.innerHTML=`<div class="sub" style="color:#6b7280;font-size:13px;margin-bottom:10px">Choose 2 traits for @${esc(ME.name)}.</div>`+
+    TRAITS.map((t,i)=>`<button class="crCard" data-i="${i}"><b>${t[0]} ${t[1]}</b><small>${t[2]}</small></button>`).join('');
+    sh.querySelectorAll('.crCard').forEach(c=>c.onclick=()=>{const i=+c.dataset.i;
+      if(crTraits.includes(i)){crTraits=crTraits.filter(x=>x!==i);c.classList.remove('sel');}
+      else if(crTraits.length<2){crTraits.push(i);c.classList.add('sel');}
+      $('crNext').disabled=crTraits.length!==2;});
+  }
+  if(crStep===2){$('crTitle').textContent='Dream';
+    sh.innerHTML=`<div class="sub" style="color:#6b7280;font-size:13px;margin-bottom:10px">What's @${esc(ME.name)}'s big dream?</div>`+
+    DREAMS.map((d,i)=>`<button class="crCard" data-i="${i}"><b>${d[0]} ${d[1]}</b><small>${d[2]}</small></button>`).join('');
+    sh.querySelectorAll('.crCard').forEach(c=>c.onclick=()=>{sh.querySelectorAll('.crCard').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');ME.dream=DREAMS[+c.dataset.i][1];$('crNext').disabled=false;});
+  }
+  if(crStep===3){$('crTitle').textContent='Birth lottery';
+    sh.innerHTML=`<div class="sub" style="color:#6b7280;font-size:13px;margin-bottom:6px;text-align:center">Every Lagosian is born into something.<br>What was @${esc(ME.name)} born into?</div><div id="lotteryCard"><div class="big">🎲</div><h4>Rolling…</h4><p>Tap roll to see your fate</p></div><button class="bigBtn" id="rollBtn">🎲 Roll my birth</button>`;
+    $('rollBtn').onclick=()=>{const o=pick(ORIGINS);ME.origin=o[1];ME.originBonus=o[4];
+      $('lotteryCard').innerHTML=`<div class="big">${o[0]}</div><h4>${o[1]}</h4><p>${o[2]}</p><p style="font-weight:800;color:#16a34a;margin-top:6px">${o[3]}</p>`;
+      $('rollBtn').style.display='none';$('crNext').disabled=false;};
+  }
+  if(crStep===4){$('crTitle').textContent='Home';
+    sh.innerHTML=`<div class="sub" style="color:#6b7280;font-size:13px;margin-bottom:6px">Where will @${esc(ME.name)} live? Rent is paid every 7 days.</div>`+
+    HOMES.map((h,i)=>`<button class="crCard" data-i="${i}"><b>${h[0]} ${h[1]} <span style="float:right;font-size:10.5px;background:#e0e7ff;color:#3730a3;border-radius:999px;padding:2px 9px">${h[2]}</span></b><small><b style="color:#16a34a">${h[3]}</b> &nbsp; <b style="color:#dc2626">${h[4]}</b></small></button>`).join('')+
+    `<button id="crGo" disabled>Move in 🚚</button>`;
+    let sel=-1;sh.querySelectorAll('.crCard').forEach(c=>c.onclick=()=>{sh.querySelectorAll('.crCard').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');sel=+c.dataset.i;$('crGo').disabled=false;});
+    $('crGo').onclick=()=>{const h=HOMES[sel];ME.homeId='home_'+ME.uid;ME.homeName=h[1];ME.money=h[3+2-2+2]+0;ME.money=h[5]?h[5]:0;ME.money=h[6];ME.rent=h[7];ME.money=h[5]+ME.originBonus;ME.traits=crTraits.map(i=>TRAITS[i][1]);ME.furni=[{t:'bed',x:2,y:1},{t:'chair',x:4,y:3},{t:'cooler',x:6,y:1}];saveProfile(enterGame);bigTitleFn('🏡 Welcome to '+h[1]);};
+  }
+}
+function wireChips(id,fn,after){$(id).querySelectorAll('.chip').forEach(c=>c.onclick=()=>{$(id).querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');fn(c.dataset.v);after();});}
+$('crNext').onclick=()=>{if(crStep===1)ME.traits=crTraits.map(i=>TRAITS[i][1]);crStep++;crRender();};
+function drawCrAvatar(){const c=$('crCv').getContext('2d');c.clearRect(0,0,220,320);
+  c.fillStyle='rgba(0,0,0,.08)';c.beginPath();c.ellipse(110,290,70,18,0,0,7);c.fill();
+  const woman=ME.body==='Woman';
+  c.fillStyle='#7c4a22'; // legs
+  c.fillRect(88,200,16,84);c.fillRect(116,200,16,84);
+  c.fillStyle=ME.outfit==='Office'?'#1f2937':ME.outfit==='Owambe'?'#dc2626':'#334155'; // trousers/skirt
+  if(woman||ME.outfit==='Office'){c.fillRect(84,140,52,70);}else{c.fillRect(88,150,16,58);c.fillRect(116,150,16,58);}
+  c.fillStyle='#fbbf24';c.beginPath();c.moveTo(78,90);c.lineTo(142,90);c.lineTo(woman?146:140,woman?150:140);c.lineTo(woman?74:80,woman?150:140);c.closePath();c.fill(); // top
+  c.fillStyle='#7c4a22';c.fillRect(74,92,10,58);c.fillRect(136,92,10,58); // arms
+  c.fillStyle='#7c4a22';c.beginPath();c.arc(110,64,26,0,7);c.fill(); // head
+  c.fillStyle='#111'; // hair
+  if(ME.hair==='Bald'){}
+  else if(ME.hair==='Afro'||ME.hair==='Curls'){c.beginPath();c.arc(110,52,30,Math.PI,2*Math.PI);c.fill();}
+  else if(ME.hair==='Gele'){c.fillStyle='#dc2626';c.beginPath();c.arc(110,44,24,Math.PI,2*Math.PI);c.fill();}
+  else if(ME.hair==='Braids'||ME.hair==='Locs'){c.beginPath();c.arc(110,56,26,Math.PI,2*Math.PI);c.fill();c.fillRect(84,56,10,44);c.fillRect(126,56,10,44);}
+  else{c.beginPath();c.arc(110,56,26,Math.PI,2*Math.PI);c.fill();}
+  c.fillStyle='#dc2626';c.fillRect(84,282,22,10);c.fillRect(114,282,22,10); // shoes
+}
+
+/* ============================= GAME CORE ============================= */
+const cv=$('cv'),ctx=cv.getContext('2d');let VW,VH;
+const rs=()=>{VW=cv.width=innerWidth;VH=cv.height=innerHeight};addEventListener('resize',rs);rs();
+function saveProfile(cb){DB.ref('users/'+ME.uid).set(ME).then(cb||(()=>{}));}
+function toast(m,ms=2800){const t=document.createElement('div');t.className='toast';t.innerHTML=m;$('toasts').appendChild(t);setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity=0;setTimeout(()=>t.remove(),400)},ms);}
+function bigTitleFn(t){$('bigText').textContent=t;$('bigTitle').style.opacity=1;setTimeout(()=>$('bigTitle').style.opacity=0,2300);}
+function sheet(html){$('sheetRoot').innerHTML=`<div class="sheetWrap" onclick="if(event.target===this)closeSheet()"><div class="sheet">${html}</div></div>`;}
+function closeSheet(){$('sheetRoot').innerHTML='';}
+function hud(){$('hudMoney').textContent=fmt(ME.money);const h=ME.hour%24,ap=h<12?'AM':'PM';$('hudClock').textContent=`${((h+11)%12)+1}:00 ${ap} · Day ${ME.day}`;
+ $('sbH').style.width=ME.happy+'%';$('sbF').style.width=ME.hunger+'%';$('sbE').style.width=ME.energy+'%';$('sbY').style.width=ME.hygiene+'%';}
+
+/* ---------- world data ---------- */
+const CITYW=2600,CITYH=1500,LAGY=170,LAGH=130,OCEANY=1380;
+const ROADS_Y=[520,920,1240],ROADS_X=[680,1240,1800];
 const LOCS=[
- {id:'home',name:'Home',emoji:'🏠',x:430,y:950,color:'#fde68a'},
- {id:'office',name:'Corporate Office',emoji:'🏢',x:1500,y:330,color:'#dbeafe'},
- {id:'market',name:'Oja Market',emoji:'🛒',x:1000,y:1150,color:'#dcfce7'},
- {id:'club',name:'Quilox Club',emoji:'🎉',x:1980,y:720,color:'#fae8ff'},
- {id:'beach',name:'Elegushi Beach',emoji:'🏖️',x:2300,y:1330,color:'#fef3c7'},
- {id:'gym',name:'i-Fitness Gym',emoji:'💪',x:700,y:330,color:'#fee2e2'},
- {id:'police',name:'Police Station',emoji:'🚔',x:1250,y:1470,color:'#e0e7ff'},
- {id:'church',name:'Love Chapel',emoji:'💒',x:1680,y:1120,color:'#fce7f3'},
- {id:'salon',name:'Mama Bisi Salon',emoji:'💇',x:520,y:700,color:'#ffedd5'},
- {id:'resto',name:'Amala Shitta',emoji:'🍲',x:1380,y:700,color:'#fef9c3'},
- {id:'shop',name:'The Palms Mall',emoji:'🛍️',x:2130,y:1080,color:'#f1f5f9'},
+ {id:'amala',n:'Amala Shitta',e:'🍲',x:360,y:400,d:'Correct amala & ewedu. Chop life!',acts:[['🍲 Amala combo · ₦2,500','eat',2500,45],['🍚 Rice plate · ₦1,200','eat',1200,25]]},
+ {id:'gym',n:'i-Fitness',e:'💪',x:960,y:360,d:'Leg day every day.',acts:[['🏋️ Workout · ₦2,000','gym'],['🧖 Spa · ₦4,000','spa']]},
+ {id:'library',n:'The Library',e:'📚',x:1390,y:390,d:'Read & level up your mind.',acts:[['📖 Study (free)','study']]},
+ {id:'canopy',n:'Canopy Walk',e:'🌉',x:1840,y:370,d:'Lekki bridge views.',acts:[['🚶 Walk the bridge · ₦1,000','fun',1000,10]]},
+ {id:'cc',n:'CcHub',e:'💡',x:700,y:640,d:'Yaba tech hub. Startups dey here.',acts:[['🚀 Pitch startup · ₦5,000','pitch']]},
+ {id:'unilag',n:'UNILAG',e:'🎓',x:2250,y:430,d:'University of Lagos.',acts:[['📚 Attend lecture (free)','study']]},
+ {id:'court',n:'High Court',e:'⚖️',x:420,y:800,d:'Justice for all.',acts:[]},
+ {id:'eko',n:'Eko Hotels & Suites',e:'🏨',x:1180,y:780,d:"Lagos' most famous hotel. Pool, buffet, live band.",acts:[['🏊 Swim · ₦5,000','fun',5000,14],['🍽️ Buffet · ₦8,500','eat',8500,60],['🎷 Live band · ₦3,000','fun',3000,16],['🛏️ Sleep in a Deluxe Room · ₦15,000','sleephotel']]},
+ {id:'freedom',n:'Freedom Park',e:'🎭',x:440,y:1080,d:'Chill spot with history.',acts:[['🧺 Picnic · ₦2,000','fun',2000,12]]},
+ {id:'market',n:'Market',e:'🧺',x:230,y:1050,d:'Oja! Buy cheap, sell dear.',acts:[['🧺 Trade stall (earn ₦4k–₦9k)','trade']]},
+ {id:'police',n:'Police Station',e:'🚔',x:330,y:1290,d:'Report street thugs here.',acts:[['🚨 Collect thug rewards','reward'],['🪪 Get permit · ₦5,000','permit']]},
+ {id:'quilox',n:'Quilox',e:'🎉',x:1500,y:1030,d:'Bottles on bottles. The beat is heavy.',acts:[['🍾 Table & bottles · ₦10,000','club',10000,26],['💃 Dancefloor · ₦1,000','club',1000,9],['🎊 Host party · ₦25,000','party']]},
+ {id:'beach',n:'Beach',e:'🏖️',x:2120,y:1200,d:'The bass is shaking the sand.',acts:[['🎉 Beach rave · ₦2,500','rave'],['🏊 Swim · ₦1,500','fun',1500,10],['🍢 Suya & Chapman · ₦1,200','eat',1200,30],['🐎 Horse ride · ₦3,000','fun',3000,12]]},
+ {id:'chapel',n:'Love Chapel',e:'💒',x:1700,y:1330,d:'Where Lagos lovers tie the knot.',acts:[['💍 Get married (needs boo, level 5)','marry'],['🙏 Pray (free)','pray'],['💑 Date night · ₦8,000','date']]}
 ];
 const loc=id=>LOCS.find(l=>l.id===id);
+const VENUE_STYLE={quilox:{floor:'#2a2438',accent:'#a855f7'},beach:{floor:'#f4d58d',accent:'#f59e0b'},amala:{floor:'#e7d3b3',accent:'#b45309'},gym:{floor:'#dfe5ea',accent:'#2563eb'},library:{floor:'#e8e6e3',accent:'#7c3aed'},chapel:{floor:'#f3ead9',accent:'#d4af37'},market:{floor:'#d9c8a9',accent:'#16a34a'},police:{floor:'#c9d4e4',accent:'#1e3a8a'},eko:{floor:'#eef1f4',accent:'#0891b2'}};
+const V_PROPS={quilox:[['stage',.78,.16],['bar',.16,.18],['light',.4,.08],['light',.6,.08]],
+ beach:[['palm',.08,.15],['palm',.92,.8],['umbrella',.22,.5],['umbrella',.42,.68],['fire',.5,.3],['dj',.72,.2]],
+ amala:[['pot',.5,.3],['table2',.25,.45],['table2',.55,.6],['table2',.75,.4]],
+ gym:[['weights',.2,.3],['weights',.8,.3],['treadmill',.35,.7],['treadmill',.6,.7]],
+ library:[['shelf',.2,.25],['shelf',.5,.25],['shelf',.8,.25],['desk2',.4,.6],['desk2',.65,.6]],
+ chapel:[['altar',.5,.18],['pew',.3,.5],['pew',.5,.5],['pew',.7,.5],['pew',.4,.72],['pew',.6,.72]],
+ market:[['stall',.18,.28],['stall',.48,.28],['stall',.78,.28],['stall',.33,.62],['stall',.63,.62]],
+ police:[['desk2',.25,.35],['desk2',.6,.35],['cell',.85,.6],['board',.12,.65]],
+ eko:[['pool',.78,.72],['stage',.5,.2],['table2',.2,.5],['table2',.4,.68]]};
+const JOBS=[['💻','Tech',9900,'Starts as Intern. 1-hour shifts, anytime.'],['🏦','Banking',11600,'Starts as Marketer. Charisma is king.'],['🎤','Music',7400,'Starts as Backup Singer. Night shifts at the Shrine.'],['📈','Trading',8100,'Starts as Floor Assistant.'],['🍳','Chef',7800,'Starts as Dishwasher at Amala Shitta.'],['🎬','Content',7400,'Starts as Aspiring Creator at Lekki canopy.'],['💇','Styling',8300,'Starts as hype man at Mama Bisi\'s.'],['🩺','Nursing',9400,'Starts as Student Nurse.'],['⚖️','Law',9100,'Starts as Law Clerk at the High Court.'],['🩻','Medicine',21000,'Starts as House Officer. Stamina needed.']];
+const CATS=[['🛏️ Sleep','sleep'],['🍳 Kitchen','kitchen'],['🛁 Bath','bath'],['🛋️ Comfort','comfort'],['📺 Fun','fun'],['💡 Light','light'],['🪴 Decor','decor']];
+const ITEMS={sleep:[['🛏️','Wooden Bed',4000,'1x1',1],['🛏️','Double Bed',12000,'2x1',2],['🛋️','Velvet Sofa',10200,'2x1',2]],kitchen:[['🧊','Cooler',3500,'1x1',1],['🍳','Stove',6000,'1x1',1],['🗄️','Kitchen Cabinet',9000,'2x1',2]],bath:[['🚽','WC',5000,'1x1',1],['🚿','Shower',7500,'1x1',1],['🛁','Bathtub',15000,'2x1',2]],comfort:[['🪑','Plastic Chair',500,'1x1',1],['🛋️','3-Seater Sofa',24000,'3x1',3],['👑','Royal Gold Sofa',55000,'2x2',4]],fun:[['📺','TV',45000,'wall',1],['🎮','PS5 Setup',850000,'2x1',2],['🎱','Snooker Table',3500000,'3x2',6]],light:[['💡','Standing Lamp',7200,'1x1',1],['❄️','Air Conditioner',650000,'wall',1]],decor:[['🪴','Plant',2000,'1x1',1],['🖼️','Wall Art',8500,'wall',1],['🧸','Teddy Bear',3000,'1x1',1]]};
 
-const NAMES=['yung_omo','big_tunde','lagos_babe','kiki_wiz','dj_slim','ada_ng','chief_obi','sisi_naija','raptor_boy','mama_afia','oga_musa','temi_xx','dami_dre','nneka','koko_blaze','fine_boy_T','wendy_ng','jide_jr','baddie_ade','smoove_ola'];
-const PDEF=NAMES.map(n=>({name:n,skin:pick(['#8d5524','#a0663a','#5d4037','#c68642','#4a2f22']),shirt:pick(['#f472b6','#60a5fa','#34d399','#f87171','#a78bfa','#fbbf24','#fb923c']),emoji:pick(['🧍','👩','👨','🧑','👱‍♀️'])}));
+/* ---------- presence ---------- */
+let others={},otherDirty=true,lastWrite=0,bubbles=[],roomMsgs=[],dmListeners={},reqCount=0;
+function enterGame(){
+  $('creator').classList.add('hidden');$('authScreen').classList.add('hidden');$('game').classList.remove('hidden');$('nav').classList.remove('hidden');$('bell').classList.remove('hidden');
+  ME.scene=ME.homeId;ME.x=3;ME.y=3;
+  DB.ref('online/'+ME.uid).onDisconnect().remove();
+  DB.ref('online').on('value',s=>{others=s.val()||{};delete others[ME.uid];otherDirty=true;$('spOnline').textContent=Object.keys(others).length+1;});
+  DB.ref('requests/'+ME.uid).on('value',s=>{const r=s.val()||{};reqCount=Object.keys(r).length;$('bellCount').textContent=reqCount;$('bellCount').classList.toggle('hidden',!reqCount);});
+  listenVenueChat();hud();showLoading(()=>{renderVisitTag();toast(`🏡 Welcome home, @${ME.name}! Invite friends with your link 💕`);});
+}
+function writePresence(){const now=performance.now();if(now-lastWrite<160)return;lastWrite=now;
+  DB.ref('online/'+ME.uid).set({n:ME.name,x:Math.round(ME.x),y:Math.round(ME.y),sc:ME.scene,b:ME.body,h:ME.hair,o:ME.outfit,ring:ME.married?1:0,baby:ME.baby?1:0,ts:firebase.database.ServerValue.TIMESTAMP});}
+function sceneOthers(){const o=[];for(const uid in others){const p=others[uid];if(p.sc===ME.scene&&Date.now()-(p._ts||0)<6e5)o.push({uid,...p});}return o;}
+DB&&setInterval(()=>{ // presence ts tracking
+  for(const uid in others)others[uid]._ts=others[uid].ts||Date.now();
+},3000);
 
-/* ============ INTERIORS ============ */
-/* Each interior: floor, props (static), npc roles, chips (quick actions) */
-function mkNpc(x,y,pd){return{...pd,x,y,tx:x,ty:y,speed:rand(30,60),ph:rand(0,6),sayT:rand(2,9),dance:Math.random()<0.6};}
-const INTERIORS={
- beach:{name:'Elegushi Beach · Lekki',emoji:'🏖️',w:1400,h:900,floor:'sand',
-  props:[{t:'stage',x:1050,y:200},{t:'dj',x:1150,y:170},{t:'palm',x:120,y:140},{t:'palm',x:1290,y:760},{t:'palm',x:180,y:760},{t:'umbrella',x:300,y:420},{t:'umbrella',x:520,y:560},{t:'umbrella',x:820,y:640},{t:'fire',x:700,y:300}],
-  npcN:7,chips:['🎉 Beach rave','🎧 DJ booth','🍢 Suya spot','🏊 Swim'],
-  greet:'The bass is shaking the sand 🎶'},
- club:{name:'Quilox Club',emoji:'🎉',w:1200,h:800,floor:'club',
-  props:[{t:'stage',x:950,y:160},{t:'dj',x:1040,y:130},{t:'bar',x:180,y:140},{t:'light',x:400,y:80},{t:'light',x:700,y:80}],
-  npcN:8,chips:['🍾 Buy bottles','💃 Dancefloor','🎊 Host party','📸 Snap pics'],
-  greet:'Bottles on bottles 🍾'},
- office:{name:'Corporate Office',emoji:'🏢',w:1100,h:700,floor:'office',
-  props:[{t:'desk',x:250,y:250},{t:'desk',x:550,y:250},{t:'desk',x:850,y:250},{t:'desk',x:400,y:480},{t:'desk',x:700,y:480},{t:'bossdesk',x:950,y:520},{t:'plant',x:80,y:600}],
-  npcN:4,chips:['💼 Work shift','📈 Promotion','🖨️ Print docs'],
-  greet:'Hustle o, nobody go hustle for you 💼'},
- home:{name:'Home · Yaba',emoji:'🏠',w:900,h:620,floor:'home',
-  props:[{t:'bed',x:700,y:150},{t:'chair',x:450,y:330},{t:'cooler',x:820,y:420},{t:'table',x:200,y:160},{t:'window',x:80,y:80},{t:'rug',x:450,y:430}],
-  npcN:1,chips:['🛏️ Sleep','🍳 Cook & eat','🎊 House party','👶 Family'],
-  greet:'Home sweet home 🏠'},
- market:{name:'Oja Market',emoji:'🛒',w:1200,h:800,floor:'market',
-  props:[{t:'stall',x:200,y:200},{t:'stall',x:500,y:200},{t:'stall',x:800,y:200},{t:'stall',x:350,y:500},{t:'stall',x:650,y:500},{t:'stall',x:950,y:500}],
-  npcN:6,chips:['🧺 Trade stall','🥬 Buy foodstuffs','👗 Buy asoebi'],
-  greet:'Oja dey hot today! 🛒'},
- gym:{name:'i-Fitness Gym',emoji:'💪',w:1000,h:650,floor:'gym',
-  props:[{t:'weights',x:200,y:180},{t:'weights',x:800,y:180},{t:'treadmill',x:350,y:480},{t:'treadmill',x:550,y:480},{t:'mat',x:700,y:460}],
-  npcN:3,chips:['🏋️ Workout','🏃 Cardio','🧖 Spa'],
-  greet:'Leg day every day 💪'},
- police:{name:'Police Station',emoji:'🚔',w:1000,h:650,floor:'police',
-  props:[{t:'desk',x:300,y:200},{t:'desk',x:600,y:200},{t:'cell',x:850,y:420},{t:'board',x:150,y:460}],
-  npcN:3,chips:['🚨 Report thugs','🪪 Get permit'],
-  greet:'How can we help you? 🚔'},
- church:{name:'Love Chapel',emoji:'💒',w:900,h:650,floor:'church',
-  props:[{t:'altar',x:450,y:120},{t:'pew',x:250,y:320},{t:'pew',x:450,y:320},{t:'pew',x:650,y:320},{t:'pew',x:250,y:460},{t:'pew',x:450,y:460},{t:'pew',x:650,y:460}],
-  npcN:3,chips:['🙏 Pray','💑 Date night','💍 Proposal'],
-  greet:'Welcome, child of God 💒'},
- salon:{name:"Mama Bisi's Salon",emoji:'💇',w:800,h:560,floor:'salon',
-  props:[{t:'chair2',x:200,y:200},{t:'chair2',x:400,y:200},{t:'chair2',x:600,y:200},{t:'mirror',x:300,y:120},{t:'mirror',x:500,y:120}],
-  npcN:3,chips:['💇 New hair','💅 Mani-pedi'],
-  greet:'Sit down, make we make you fine 💇'},
- resto:{name:'Amala Shitta',emoji:'🍲',w:800,h:560,floor:'resto',
-  props:[{t:'table2',x:220,y:220},{t:'table2',x:440,y:220},{t:'table2',x:330,y:400},{t:'pot',x:650,y:140}],
-  npcN:4,chips:['🍲 Amala combo','🍚 Rice plate'],
-  greet:'Correct amala dey here! 🍲'},
- shop:{name:'The Palms Mall',emoji:'🛍️',w:1000,h:650,floor:'shop',
-  props:[{t:'shelf',x:180,y:160},{t:'shelf',x:500,y:160},{t:'shelf',x:820,y:160},{t:'shelf',x:340,y:440},{t:'shelf',x:660,y:440}],
-  npcN:5,chips:['🛋️ Furniture','📺 Electronics','👟 Fashion'],
-  greet:'Shop till you drop 🛍️'},
-};
-let sceneNPCs=[],bubbles=[],inside=null;
+/* ============================= LOADING ============================= */
+function showLoading(cb){$('loader').style.display='flex';let p=0;const iv=setInterval(()=>{p+=irand(7,18);if(p>=100){p=100;clearInterval(iv);setTimeout(()=>{$('loader').style.display='none';cb&&cb();},250);}$('loaderText').textContent=`Loading Lagos… ${p}%`;},110);}
 
-/* ============ UI helpers ============ */
-const $=id=>document.getElementById(id);
-function updateHUD(){$('money').textContent=fmt(S.money);$('clock').textContent=fmtClock();
- $('bHappy').style.width=S.happy+'%';$('bHunger').style.width=S.hunger+'%';$('bEnergy').style.width=S.energy+'%';save();}
-function fmtClock(){const h=S.hour%24,ap=h<12?'AM':'PM',hh=((h+11)%12)+1;return `${hh}:00 ${ap} · Day ${S.day}`}
-function toast(m,ms=2600){const t=document.createElement('div');t.className='toast';t.innerHTML=m;$('toasts').appendChild(t);
- setTimeout(()=>{t.style.opacity=0;t.style.transition='opacity .4s';setTimeout(()=>t.remove(),400)},ms)}
-function bigTitle(t){$('bigTitleText').textContent=t;$('bigTitle').style.opacity=1;setTimeout(()=>$('bigTitle').style.opacity=0,2200)}
-function openModal(h){$('modal').innerHTML=h;$('modalWrap').classList.add('open')}
-function closeModal(){$('modalWrap').classList.remove('open')}
-function bubble(x,y,text,who){bubbles.push({x,y,text,who,t:4});if(bubbles.length>14)bubbles.shift();}
-function say(who,x,y,text){bubble(x,y,text,who)}
-
-/* ============ GLOBAL CHAT PANEL ============ */
-const CHATLINES=["who dey beach? 🏖️","abeg 2k make I chop 😅","Lagos traffic wan kill person","this game too sweet!","just buy new sofa 🛋️","who wonna host party tonight?","omo see money 💸","anybody don reach club?","I dey come market","my sim just marry o!! 💍","thugs collect my money 😭","police finally catch those boys","job shift done, paid!! 💼","owambe loading 🎊","your house fine o","lagos babe levels 😍"];
-function pushChat(n,t,me){const b=$('chatMsgs'),d=document.createElement('div');d.className='cmsg'+(me?' me':'');
- d.innerHTML=`<b>@${n}</b> ${t}`;b.appendChild(d);b.scrollTop=b.scrollHeight;while(b.children.length>40)b.firstChild.remove();}
-function replyChat(u){const t=u.toLowerCase();let r=null;
- if(/hello|hi|hey|good/.test(t))r=pick(["hellooo 😍","hey hey!","how you dey?"]);
- else if(/party|owambe/.test(t))r=pick(["owambe!! 🎉","where at? I'm coming","host am!"]);
- else if(/money|rich|broke|job/.test(t))r=pick(["office shift dey pay o","hustle! 💰","salary just land"]);
- else if(/marry|love|babe|boyfriend/.test(t))r=pick(["love is in the air 💕","go chapel go marry","find bae for beach o"]);
- else if(/thug|rob|police/.test(t))r=pick(["those boys again?!","report them o","stay for main road"]);
- if(r)setTimeout(()=>pushChat(pick(NAMES),r),rand(1000,3000));}
-function sendChat(){const i=$('chatText'),v=i.value.trim();if(!v)return;pushChat('scar_belle',v.replace(/</g,'&lt;'),true);i.value='';replyChat(v)}
-$('chatText').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
-const toggleChat=()=>$('chatPanel').classList.toggle('open');
-$('chatToggle').onclick=toggleChat;
-let chatT=0,chatEvery=7;
-function chatTick(dt){chatT+=dt;if(chatT>chatEvery){chatT=0;chatEvery=rand(6,13);pushChat(pick(NAMES),pick(CHATLINES));$('onlineCount').textContent=irand(9,26)}}
-
-/* ============ SAY BAR (in-room talking) ============ */
-function sayIt(){const i=$('sayText'),v=i.value.trim();if(!v)return;i.value='';
- say('me',S.x,S.y-70,v.replace(/</g,'&lt;'));
- setTimeout(()=>{const p=pick(sceneNPCs);if(p)say(p.name,p.x,p.y-70,roomReply(v))},rand(900,2200));
- if(Math.random()<0.4)setTimeout(()=>{const p=pick(sceneNPCs);if(p)say(p.name,p.x,p.y-70,pick(CHATLINES))},rand(2500,5000));}
-$('sayText').addEventListener('keydown',e=>{if(e.key==='Enter')sayIt()});
-function roomReply(u){const t=u.toLowerCase();
- if(/hello|hi|hey/.test(t))return pick(["hey!! 😄","hii","yooo","hello dear"]);
- if(/fine|cute|beautiful|sexy|fine girl|handsome/.test(t))return pick(["aww stop it 🥰","you sef fine! 😍","blushing!! ☺️","thank you love 💕"]);
- if(/dance/.test(t))return pick(["make we dance! 💃","🕺🕺","catch my steps!"]);
- if(/drink|buy me|chop|food|eat/.test(t))return pick(["buy me suya first 😋","I dey hungry o","amala on you? 😂"]);
- if(/love|marry|boo|girlfriend|boyfriend/.test(t))return pick(["hmm 😏💕","you go treat me right?","are you serious?! 🥺"]);
- if(/party/.test(t))return pick(["party!! 🎉","owambe mood 🥳","I'm down!"]);
- return pick(["lol 😂","true true","no be lie","haha okay","gist me more","Lagos things 😅","oya nau"]);}
-
-/* ============ MOVEMENT ============ */
-const keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key.toLowerCase()==='e')tryInteract();if(e.key==='Escape'&&inside)exitInterior();});
-addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
-let clickT=null,walking=false,ph=0,cam={x:0,y:0};
-function bounds(){return inside?{w:INTERIORS[inside].w,h:INTERIORS[inside].h}:{w:CITY.w,h:CITY.h}}
-cv.addEventListener('click',e=>{
- if($('modalWrap').classList.contains('open'))return;
- const r=cv.getBoundingClientRect(),wx=e.clientX-r.left+cam.x,wy=e.clientY-r.top+cam.y;
- if(!inside){for(const l of LOCS)if(Math.hypot(wx-l.x,wy-l.y)<70){enterInterior(l.id);return}}
- clickT={x:wx,y:wy};});
-function move(dt){let dx=0,dy=0,sp=175;
+/* ============================= MOVEMENT ============================= */
+const keys={};let clickT=null,walking=false,ph=0,cam={x:0,y:0};
+addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key.toLowerCase()==='e')tryInteract();});
+addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
+cv.addEventListener('pointerdown',e=>{
+  if($('sheetRoot').children.length)return;
+  const r=cv.getBoundingClientRect(),wx=e.clientX-r.left+cam.x,wy=e.clientY-r.top+cam.y;
+  if(ME.scene==='city'){const l=LOCS.find(l=>d2({x:wx,y:wy},l)<80);if(l){openVenueSheet(l);return;}}
+  if(ME.scene.startsWith('home_')){const hx=Math.floor(wx/110),hy=Math.floor(wy/110);nearFurni={x:hx,y:hy};return;}
+  clickT={x:wx,y:wy};});
+function bounds(){if(ME.scene==='city')return{w:CITYW,h:CITYH};if(ME.scene.startsWith('home_'))return{w:880,h:660};const l=loc(ME.scene);return{w:l?1100:1100,h:l?760:760};}
+function move(dt){let dx=0,dy=0,sp=180;
  if(keys['w']||keys['arrowup'])dy-=1;if(keys['s']||keys['arrowdown'])dy+=1;
  if(keys['a']||keys['arrowleft'])dx-=1;if(keys['d']||keys['arrowright'])dx+=1;
- if(dx||dy){clickT=null;const m=Math.hypot(dx,dy);S.x+=dx/m*sp*dt;S.y+=dy/m*sp*dt;walking=true;}
- else if(clickT){const d=dist(S,clickT),m=Math.hypot(clickT.x-S.x,clickT.y-S.y)||1;
-  if(d>6){S.x+=(clickT.x-S.x)/m*sp*dt;S.y+=(clickT.y-S.y)/m*sp*dt;walking=true}else{clickT=null;walking=false}}
+ if(dx||dy){clickT=null;const m=Math.hypot(dx,dy);ME.x+=dx/m*sp*dt;ME.y+=dy/m*sp*dt;walking=true;}
+ else if(clickT){const d=d2(ME,clickT),m=Math.hypot(clickT.x-ME.x,clickT.y-ME.y)||1;
+  if(d>8){ME.x+=(clickT.x-ME.x)/m*sp*dt;ME.y+=(clickT.y-ME.y)/m*sp*dt;walking=true;}else{clickT=null;walking=false;}}
  else walking=false;
- const b=bounds();S.x=clamp(S.x,30,b.w-30);S.y=clamp(S.y,30,b.h-30);}
+ const b=bounds();ME.x=clamp(ME.x,20,b.w-20);ME.y=clamp(ME.y,20,b.h-20);writePresence();}
 
-/* ============ INTERIOR enter/exit ============ */
-function enterInterior(id){
- inside=id;const d=INTERIORS[id];clickT=null;
- S.x=d.w/2;S.y=d.h-80;
- sceneNPCs=[];const pool=[...PDEF].sort(()=>Math.random()-.5);
- for(let i=0;i<d.npcN;i++){const pd=pool[i%pool.length];
-  sceneNPCs.push(mkNpc(rand(150,d.w-150),rand(140,d.h-160),pd));}
- if(id==='home'&&S.married){sceneNPCs.push(mkNpc(d.w/2+80,d.h-160,{name:S.spouse.name,skin:'#8d5524',shirt:'#f472b6',emoji:'🧑'}));}
- if(id==='office')sceneNPCs[0].name='Boss_'+sceneNPCs[0].name;
- if(id==='police')sceneNPCs[0].name='Officer_'+sceneNPCs[0].name;
- if(id==='church')sceneNPCs[0].name='Pastor_Ade';
- $('nHome').innerHTML='<span>🚪</span>Exit bldg';
- $('saybar').style.display='block';
- $('chips').innerHTML=d.chips.map(c=>`<button class="chip" onclick="chipAct('${c}')">${c}</button>`).join('');
- bigTitle(d.emoji+' '+d.name);
- toast(d.greet);
- pushChat(pick(NAMES),'I dey '+d.name+' now! '+d.emoji);
-}
-function exitInterior(){inside=null;sceneNPCs=[];bubbles=[];clickT=null;
- const l=loc(S._lastLoc||'home');S.x=l.x;S.y=l.y+120;
- $('saybar').style.display='none';$('nHome').innerHTML='<span>🏠</span>Home';}
-$('nHome').onclick=()=>{if(inside)exitInterior();else{if(dist(S,loc('home'))<140)enterInterior('home');else travelTo('home')}};
+/* ============================= SCENES ============================= */
+function goScene(sc,x,y){showLoading(()=>{ME.scene=sc;ME.x=x;ME.y=y;clickT=null;bubbles=[];roomMsgs=[];listenVenueChat();renderVisitTag();writePresence();hud();});}
+function renderVisitTag(){if(ME.scene.startsWith('home_')&&ME.scene!==ME.homeId){$('visitTag').classList.remove('hidden');DB.ref('users/'+ME.scene.slice(5)+'/name').get().then(s=>$('visitName').textContent=s.val()||'friend');}else $('visitTag').classList.add('hidden');}
+$('visitTag').onclick=()=>goScene('city',1300,980);
+function listenVenueChat(){if(ME.scene==='city'||ME.scene.startsWith('home_')){DB.ref('chat/city').off();return;}
+ DB.ref('chat/'+ME.scene).limitToLast(30).off();
+ DB.ref('chat/'+ME.scene).limitToLast(30).on('child_added',s=>{const m=s.val();roomMsgs.push(m);if(roomMsgs.length>30)roomMsgs.shift();
+  const snd=others[m.uid];if(snd)bubbles.push({uid:m.uid,text:m.text,t:5});if(bubbles.length>12)bubbles.shift();});}
 
-/* ============ NPC proximity + talk ============ */
-let nearNpc=null;
-function scanNpc(){nearNpc=null;if(!inside)return;let best=70;
- for(const p of sceneNPCs){const d=dist(S,p);if(d<best){best=d;nearNpc=p}}
- const pr=$('prompt');
- if(nearNpc){pr.style.display='block';pr.textContent=`Press E — talk to @${nearNpc.name}`}
- else if(!inside){let bl=null,bd=95;for(const l of LOCS){const d=dist(S,l);if(d<bd){bd=d;bl=l}}
-  if(bl){pr.style.display='block';pr.textContent=`Press E — enter ${bl.emoji} ${bl.name}`}else pr.style.display='none';}
- else pr.style.display='none';}
-function tryInteract(){if(inside&&nearNpc)talkMenu(nearNpc);else if(!inside){for(const l of LOCS)if(dist(S,l)<95){enterInterior(l.id);return}}}
-function relOf(p){if(!S.rel[p.name])S.rel[p.name]={lvl:0};return S.rel[p.name];}
-function talkMenu(p){
- const r=relOf(p),isBoo=S.partner&&S.partner.name===p.name,isSp=S.spouse&&S.spouse.name===p.name;
- const greetLines=["how you dey? 😄","omo you fine o","wetin dey happen?","you come here often? 😏","lagos no easy my guy","make we gist!"];
- openModal(`
-  <h2>${p.emoji} @${p.name}</h2>
-  <div class="sub">"${pick(greetLines)}" · ${isSp?'💍 your spouse':isBoo?`💕 your boo (level ${S.partner.lvl}/5)`:'online player'}${r.lvl>0&&!isBoo&&!isSp?` · friend lvl ${r.lvl}`:''}</div>
-  <button class="act" onclick="npcChat('${p.name}')">💬 Chat <small>free</small></button>
-  <button class="act" onclick="npcCompliment('${p.name}')">🥰 Compliment <small>+friendship</small></button>
-  ${(!S.partner&&!S.married&&!isBoo)?`<button class="act green" onclick="npcAskOut('${p.name}')">💘 Ask to be your boo</button>`:''}
-  ${isBoo?`<button class="act green" onclick="npcDate('${p.name}')">💑 Date night <small>₦8,000 · lvl ${S.partner.lvl}/5</small></button>
-  <button class="act" onclick="npcGift('${p.name}')">🎁 Gift <small>₦10,000 · +1 lvl</small></button>`:''}
-  ${isBoo&&S.partner.lvl>=5?`<button class="act green" onclick="npcPropose('${p.name}')">💍 PROPOSE <small>ring ₦50,000</small></button>`:''}
-  <button class="act" onclick="closeModal()">👋 Bye</button>`);
-}
-function findNpc(n){return sceneNPCs.find(p=>p.name===n)}
-function npcChat(n){const p=findNpc(n);closeModal();
- say('me',S.x,S.y-70,pick(["how you dey?","you fine o 😍","wetin dey?","make we vibe!","enjoying Lagos?"]));
- setTimeout(()=>{if(p)say(n,p.x,p.y-70,roomReply('hello'))},900);
- relOf(p).lvl++;S.happy=clamp(S.happy+2,0,100);updateHUD();}
-function npcCompliment(n){const p=findNpc(n);closeModal();
- say('me',S.x,S.y-70,pick(["you too fine! 😍","I like your vibes","you dey glow today ✨"]));
- setTimeout(()=>{if(p)say(n,p.x,p.y-70,pick(["aww 🥰","stop it ☺️","you sef fine o!","thank you love 💕"]))},1000);
- relOf(p).lvl++;S.happy=clamp(S.happy+3,0,100);updateHUD();}
-function npcAskOut(n){const p=findNpc(n);closeModal();
- if(S.partner){toast(`You're dating @${S.partner.name} already!`);return}
- if(relOf(p).lvl<2){say(n,p.x,p.y-70,"we just met 😅 gist small first");toast('💬 Befriend them first — chat & compliment a couple times.');return}
- if(Math.random()<0.8){S.partner={name:n,lvl:1};bigTitle('💘 IT\'S A MATCH!');
-  say(n,p.x,p.y-70,"YES!! I go be your boo 😍");pushChat(n,'omgg yesss 💕');
-  pushChat(pick(NAMES),'new couple alert!! 🥳');toast(`💘 Dating @${n}! Grow love: date nights at 💒 chapel, gifts, compliments.`)}
- else{say(n,p.x,p.y-70,"hmm let me think 😅");toast('Not yet... build more friendship first.')}
- updateHUD();}
-function npcDate(n){if(S.money<8000){toast('Date night costs ₦8,000');return}
- S.money-=8000;S.partner.lvl=clamp(S.partner.lvl+1,0,5);S.happy=clamp(S.happy+18,0,100);S.hour=(S.hour+3)%24;
- closeModal();bigTitle('💑 DATE NIGHT');pushChat(n,'best date ever 😍');
- toast(`💑 @${n} level ${S.partner.lvl}/5`);updateHUD();}
-function npcGift(n){if(S.money<10000){toast('Gift costs ₦10,000');return}
- S.money-=10000;S.partner.lvl=clamp(S.partner.lvl+1,0,5);const p=findNpc(n);closeModal();
- if(p)say(n,p.x,p.y-70,"omgg a gift?! love you!! 🥺💕");pushChat(n,'my boo too sweet 🥺💕');
- toast(`🎁 Level ${S.partner.lvl}/5`);updateHUD();}
-function npcPropose(n){if(S.money<50000){toast('The ring costs ₦50,000!');return}
- S.money-=50000;closeModal();bigTitle('💍 SHE SAID YES!!');
- S.married=true;S.spouse=S.partner;S.partner=null;
- pushChat(n,'I SAID YES!!! 💍💒');pushChat(pick(NAMES),'wedding loading!!! 🥳');
- setTimeout(()=>bigTitle('💒 Just Married!'),2400);toast('💒 Married! Visit 🏠 Home → 👶 Family to grow your family.');updateHUD();}
-
-/* ============ CHIPS (quick room actions) ============ */
-function chipAct(c){
- const id=inside;if(!id)return;
- if(/rave/.test(c)){if(S.money<2500){toast('₦2,500 to join the rave');return}S.money-=2500;S.happy=clamp(S.happy+22,0,100);S.energy=clamp(S.energy-15,0,100);S.hour=(S.hour+3)%24;bigTitle('🎉 BEACH RAVE!!');pushChat(pick(NAMES),'rave dey MADT 🔥');toast('🎉 You danced till sunset!')}
- else if(/DJ/.test(c)){S.happy=clamp(S.happy+10,0,100);const d=sceneNPCs[0];if(d)say(d.name,d.x,d.y-70,"THIS DJ SICK!! 🎧");toast('🎧 The DJ played your request!')}
- else if(/Suya/.test(c)){if(S.money<1200){toast('₦1,200');return}S.money-=1200;S.hunger=clamp(S.hunger+30,0,100);S.happy=clamp(S.happy+6,0,100);toast('🍢 Suya & Chapman! Belly happy.')}
- else if(/Swim/.test(c)){if(S.money<1500){toast('₦1,500');return}S.money-=1500;S.hygiene=clamp(S.hygiene-10,0,100);S.happy=clamp(S.happy+10,0,100);toast('🏊 Atlantic ocean dip!')}
- else if(/bottles/.test(c)){clubSpend(10000,26)}else if(/Dancefloor/.test(c)){clubSpend(1000,9)}else if(/Snap/.test(c)){if(S.money<2000){toast('₦2,000');return}S.money-=2000;S.happy=clamp(S.happy+7,0,100);toast('📸 Pics for the gram!')}
- else if(/Host party/.test(c)){hostParty()}
- else if(/Work shift/.test(c)){workShift()}else if(/Promotion/.test(c)){promote()}else if(/Print/.test(c)){toast('🖨️ Documents printed. Boss nods approvingly.')}
- else if(/Sleep/.test(c)){doSleep()}else if(/Cook/.test(c)){cookEat()}else if(/House party/.test(c)){hostParty()}else if(/Family/.test(c)){familyMenu()}
- else if(/Trade/.test(c)){marketHustle()}else if(/foodstuffs/.test(c)){if(S.money<1500){toast('₦1,500');return}S.money-=1500;S.hunger=clamp(S.hunger+22,0,100);toast('🥬 Fresh foodstuffs!')}else if(/asoebi/.test(c)){if(S.money<7000){toast('₦7,000');return}S.money-=7000;S.happy=clamp(S.happy+10,0,100);toast('👗 Asoebi fabric acquired!')}
- else if(/Workout/.test(c)){gymAct(2000,11,18)}else if(/Cardio/.test(c)){gymAct(1500,7,12)}else if(/Spa/.test(c)){if(S.money<4000){toast('₦4,000');return}S.money-=4000;S.hygiene=100;S.happy=clamp(S.happy+10,0,100);toast('🧖 So fresh!')}
- else if(/Report thugs/.test(c)){if(S.thugReports>0){const rw=S.thugReports*3000;S.money+=rw;S.thugReports=0;toast(`🚔 Reports acted on! Reward ${fmt(rw)}`);updateHUD()}else toast('🚔 No open cases. Report thugs when they approach you outside.')}
- else if(/permit/.test(c)){if(S.money>=5000){S.money-=5000;toast('🪪 Permit granted!');updateHUD()}else toast('₦5,000 needed')}
- else if(/Pray/.test(c)){S.happy=clamp(S.happy+6,0,100);toast('🙏 Peace of mind.');updateHUD()}
- else if(/Date night/.test(c)){if(S.partner)npcDate(S.partner.name);else toast('You need a boo first! Meet people inside buildings 💕')}
- else if(/Proposal/.test(c)){if(S.partner&&S.partner.lvl>=5)npcPropose(S.partner.name);else toast('💍 Grow your relationship to level 5 first!')}
- else if(/New hair/.test(c)){if(S.money<5000){toast('₦5,000');return}S.money-=5000;S.hygiene=clamp(S.hygiene+15,0,100);S.happy=clamp(S.happy+12,0,100);toast('💇 You look FIRE 🔥');updateHUD()}
- else if(/Mani/.test(c)){if(S.money<4000){toast('₦4,000');return}S.money-=4000;S.hygiene=clamp(S.hygiene+20,0,100);S.happy=clamp(S.happy+7,0,100);toast('💅 Soft like butter');updateHUD()}
- else if(/Amala/.test(c)){eatOut(2500,45)}else if(/Rice/.test(c)){eatOut(1200,25)}
- else if(/Furniture/.test(c)){buyItem('sofa',30000,'🛋️ Sofa')}else if(/Electronics/.test(c)){buyItem('tv',45000,'📺 TV')}else if(/Fashion/.test(c)){if(S.money<12000){toast('₦12,000');return}S.money-=12000;S.happy=clamp(S.happy+10,0,100);toast('👟 Fresh drip!');updateHUD()}
- updateHUD();}
-function clubSpend(c,h){if(S.money<c){toast('Bouncer: "your money no reach" 😬');return}S.money-=c;S.happy=clamp(S.happy+h,0,100);S.energy=clamp(S.energy-18,0,100);S.hour=(S.hour+4)%24;bigTitle('🎶 OWAMBE NIGHT');pushChat(pick(NAMES),'Quilox dey POP 🍾');toast('🍾 What a night!')}
-function hostParty(){if(S.money<15000){toast('Hosting costs ₦15,000');return}S.money-=15000;S.happy=100;S.energy=clamp(S.energy-25,0,100);
- bigTitle('🎊 YOUR PARTY IS LIT 🔥');
- for(let i=0;i<irand(4,9);i++)setTimeout(()=>pushChat(pick(NAMES),pick(['party madt!! 🎉','this host sabi! 🙌','owambe 🥳','we dey your party!!','champagne dey flow 🍾'])),rand(500,4000));
- for(const p of sceneNPCs)setTimeout(()=>{if(p)say(p.name,p.x,p.y-70,pick(['🥳🥳','party!!','this DJ!! 🔥','spray money! 💸']))},rand(300,2500));
- toast('🎊 Everyone pulled up!');updateHUD();}
-function workShift(){const wage=9000+S.jobLevel*3500;closeModal();bigTitle('💼 Working shift...');
- setTimeout(()=>{S.money+=wage;S.energy=clamp(S.energy-20,0,100);S.hunger=clamp(S.hunger-12,0,100);S.hour=(S.hour+4)%24;S.shifts++;toast(`💼 Shift done! Paid ${fmt(wage)}`);pushChat(pick(NAMES),'salary landed 💰');updateHUD()},4000);}
-function promote(){if(S.shifts<S.jobLevel*3){toast(`Boss: "do ${S.jobLevel*3-S.shifts} more shifts first"`);return}S.jobLevel++;bigTitle('📈 PROMOTED · LVL '+S.jobLevel);pushChat(pick(NAMES),'omo promotion!! 🎉');updateHUD();}
-function marketHustle(){closeModal();bigTitle('🧺 Hustling...');setTimeout(()=>{const e=irand(4000,9000);S.money+=e;S.energy=clamp(S.energy-15,0,100);S.hour=(S.hour+3)%24;toast(`🧺 Earned ${fmt(e)}`);updateHUD()},3500);}
-function gymAct(c,h,e){if(S.money<c){toast(fmt(c)+' needed');return}S.money-=c;S.happy=clamp(S.happy+h,0,100);S.energy=clamp(S.energy-e,0,100);toast('💪 Session complete! Feel the burn.');updateHUD();}
-function eatOut(c,f){if(S.money<c){toast(fmt(c)+' needed');return}S.money-=c;S.hunger=clamp(S.hunger+f,0,100);S.happy=clamp(S.happy+5,0,100);toast('🍲 That hit the spot!');updateHUD();}
-function buyItem(key,cost,label){if(S.furniture.includes(key)){toast('Already owned.');return}if(S.money<cost){toast(fmt(cost)+' needed');return}S.money-=cost;S.furniture.push(key);S.happy=clamp(S.happy+6,0,100);toast(`🛍️ ${label} delivered home!`);updateHUD();}
-function doSleep(){S.energy=100;S.hygiene=clamp(S.hygiene+10,0,100);S.hour=(S.hour+8)%24;if(S.hour<8)S.day++;S.hunger=clamp(S.hunger-25,0,100);bigTitle('☀️ Good morning!');toast('You slept well. Energy full!');updateHUD();}
-function cookEat(){if(S.money<800){toast('Groceries cost ₦800');return}S.money-=800;S.hunger=clamp(S.hunger+45,0,100);S.happy=clamp(S.happy+4,0,100);toast('🍛 Nice home meal!');updateHUD();}
-function familyMenu(){
- if(!S.married){openModal(`<h2>💕 Family</h2><div class="sub">You're single! Meet people inside the beach, club, mall... chat, compliment, ask them out, then 💍 at the chapel.</div><button class="act" onclick="closeModal()">😌 Okay</button>`);return}
- openModal(`<h2>💕 The ${S.spouse.name} Family</h2><div class="sub">Married to @${S.spouse.name} 💍</div>
- ${S.baby?`<button class="act green" onclick="famTime()">👶 Family time <small>+happiness</small></button>`:`<button class="act green" onclick="tryBaby()">🍼 Try for a baby <small>private moment</small></button>`}
- <button class="act" onclick="closeModal()">Back</button>`);}
-function famTime(){S.happy=clamp(S.happy+15,0,100);closeModal();toast('👶 Beautiful family moment!');updateHUD();}
-function tryBaby(){closeModal();toast('💕 A lovely private evening together...');
- setTimeout(()=>{if(Math.random()<0.65){S.baby=true;bigTitle('👶 You\'re expecting!');pushChat(S.spouse.name,'BABY ON THE WAY 🍼')}else toast('Not this time... try another day 💕');updateHUD()},2500);}
-
-/* ============ CITY npcs, cars, thugs, travel ============ */
-const CITYPEDS=[];for(let i=0;i<26;i++)CITYPEDS.push({x:rand(50,CITY.w-50),y:pick(RH)+pick([-58,58]),dir:pick([-1,1]),speed:rand(25,55),skin:pick(['#8d5524','#a0663a','#5d4037','#c68642']),shirt:pick(['#94a3b8','#f472b6','#60a5fa','#34d399'])});
-const CARS=[];for(let i=0;i<10;i++)CARS.push({x:rand(0,CITY.w),y:pick(RH)+pick([-16,16]),dir:pick([-1,1]),speed:rand(90,160),color:pick(['#facc15','#f8fafc','#ef4444','#22c55e','#3b82f6'])});
-let travelling=null,thugCool=40,thugActive=false;
-const MODES=[{id:'trek',n:'Trek',i:'🚶',c:0,s:55,mx:20},{id:'keke',n:'Keke',i:'🛺',c:100,s:170},{id:'danfo',n:'Danfo',i:'🚌',c:100,s:190},{id:'okada',n:'Okada',i:'🏍️',c:350,s:320},{id:'cab',n:'Cab',i:'🚕',c:650,s:520}];
-function travelMenu(){if(inside){toast('🚪 Exit the building first');return}
- let rows='';for(const l of LOCS){if(dist(S,l)<110)continue;rows+=`<button class="act" onclick="pickMode('${l.id}')"><span>${l.emoji} ${l.name}</span><small>~${Math.round(dist(S,l)/10)*10}m</small></button>`}
- openModal(`<h2>🚕 Travel</h2><div class="sub">Where to?</div>${rows}`);}
-function pickMode(id){const d=dist(S,loc(id));let rows='';
- for(const m of MODES){const t=m.id==='trek'?Math.min(m.mx,d/60):d/m.s;rows+=`<button class="act ${m.id==='cab'?'green':''}" onclick="startTravel('${id}','${m.id}')"><span>${m.i} ${m.n}</span><small>${m.c?fmt(m.c):'Free'} · ${t.toFixed(0)}s</small></button>`}
- openModal(`<h2>${loc(id).emoji} ${loc(id).name}</h2><div class="sub">Pick transport (trek max 20s)</div>${rows}<button class="act" onclick="travelMenu()">⬅ Back</button>`);}
-function startTravel(id,mid){const m=MODES.find(x=>x.id===mid),l=loc(id);
- if(S.money<m.c){toast(fmt(m.c)+' needed for '+m.n);return}
- S.money-=m.c;updateHUD();closeModal();S._lastLoc=id;
- const d=dist(S,l),dur=m.id==='trek'?Math.min(m.mx,d/60):clamp(d/m.s,1.2,15);
- travelling={from:{x:S.x,y:S.y},to:l,t:0,dur,mode:m};bigTitle(m.i+' '+m.n+' ride...');}
-function travelTo(id){startTravel(id,'cab')}
+/* ============================= SHEETS ============================= */
+const MODES=[['🚶','Trek',0,55,20],['🛺','Keke',100,170],['🚌','Danfo',100,190],['🏍️','Okada',350,320],['🚕','Cab',650,520]];
+let travelSel=3,travelLoc=null;
+function openVenueSheet(l){travelLoc=l;travelSel=3;
+ sheet(`<button class="xBtn" onclick="closeSheet()">✕</button>
+ <h2>${l.e} ${l.n}</h2><div class="sub">${l.d}</div>
+ ${l.acts.map((a,i)=>`<button class="act" onclick="venueAct('${l.id}',${i})">${a[0]}</button>`).join('')}
+ <h3 style="font-size:13px;color:#6b7280;margin:12px 0 4px">Get there</h3>
+ <div class="tiles" id="tTiles">${MODES.map((m,i)=>`<div class="tmode ${i===travelSel?'sel':''}" data-i="${i}"><div class="ic">${m[0]}</div><b>${m[1]}</b><small>${m[2]?fmt(m[2]):'Free'}</small></div>`).join('')}</div>
+ <button id="goBtn" onclick="doTravel()">Go · ${fmt(MODES[travelSel][2])}</button>`);
+ $('tTiles').querySelectorAll('.tmode').forEach(t=>t.onclick=()=>{travelSel=+t.dataset.i;$('tTiles').querySelectorAll('.tmode').forEach(x=>x.classList.remove('sel'));t.classList.add('sel');$('goBtn').textContent='Go · '+fmt(MODES[travelSel][2]);});}
+let travelling=null;
+function doTravel(){const m=MODES[travelSel],l=travelLoc;
+ if(ME.money<m[2]){toast('You need '+fmt(m[2]));return;}
+ ME.money-=m[2];closeSheet();hud();
+ const d=Math.hypot(l.x-ME.x,l.y-ME.y);
+ const dur=m[1]==='Trek'?Math.min(m[4],d/55):clamp(d/m[3],1.5,16);
+ travelling={fx:ME.x,fy:ME.y,tx:l.x,ty:l.y+95,t:0,dur,icon:m[0]};bigTitleFn(m[0]+' '+m[1]+'…');}
 function travelTick(dt){if(!travelling)return false;const tr=travelling;tr.t+=dt;const k=clamp(tr.t/tr.dur,0,1);
- const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
- S.x=tr.from.x+(tr.to.x-tr.from.x)*e;S.y=tr.from.y+(tr.to.y-tr.from.y)*e;walking=tr.mode.id==='trek';
- if(k>=1){travelling=null;walking=false;toast('📍 Arrived: '+tr.to.name);enterInterior(tr.to.id)}return true;}
-function thugTick(dt){if(inside||thugActive)return;thugCool-=dt;
- const night=S.hour>=20||S.hour<5;
- if(thugCool<=0){thugCool=night?rand(40,90):rand(90,180);
-  if(dist(S,loc('police'))<260||dist(S,loc('home'))<200)return;
-  if(Math.random()<(night?0.75:0.35)){thugActive=true;const demand=irand(2000,8000),nm=pick(['Shina','Rambo','Eku','Kazeem']);
-  openModal(`<h2>😈 Street Thug: "${nm}"</h2><div class="sub">"Oga, drop ${fmt(demand)} make we no wound you."</div>
-  <button class="act" onclick="thugPay(${demand})">💸 Pay ${fmt(demand)}</button>
-  <button class="act" onclick="thugRun()">🏃 Run!</button>
-  <button class="act" onclick="thugPolice()">🚔 Call police</button>`);}}}
-function thugPay(d){S.money=Math.max(0,S.money-d);thugActive=false;closeModal();toast(`😈 You paid ${fmt(d)}... painful.`);updateHUD();}
-function thugRun(){thugActive=false;closeModal();
- if(Math.random()<0.6)toast('🏃 You escaped!');else{const f=irand(1000,3000);S.money=Math.max(0,S.money-f);S.energy=clamp(S.energy-15,0,100);toast(`😈 They caught you! Took ${fmt(f)}`)}updateHUD();}
-function thugPolice(){S.thugReports++;thugActive=false;closeModal();toast('🚔 Report filed! Collect reward at the station.');pushChat(pick(NAMES),'police dey come that axis o');updateHUD();}
+ const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;ME.x=tr.fx+(tr.tx-tr.fx)*e;ME.y=tr.fy+(tr.ty-tr.fy)*e;walking=tr.icon==='🚶';writePresence();
+ if(k>=1){travelling=null;walking=false;enterVenue(travelLoc);}return true;}
+function enterVenue(l){showLoading(()=>{ME.scene=l.id;ME.x=550;ME.y=620;roomMsgs=[];listenVenueChat();writePresence();
+ $('venueBar').style.display='block';renderVChips(l);hud();});}
+function exitVenue(){DB.ref('chat/'+ME.scene).off();$('venueBar').style.display='none';goScene('city',1300,980);}
+function renderVChips(l){$('vChips').innerHTML=`<button class="vchip" onclick="vQuick('👋 Say Hello')">👋 Say Hello</button><button class="vchip" onclick="vQuick('💬 Gist')">💬 Gist</button><button class="vchip" onclick="vQuick('😂 Crack Joke')">😂 Crack Joke</button><button class="vchip" onclick="vQuick('😏 Throw Shade')">😏 Throw Shade</button>${l.id==='quilox'||l.id==='beach'?'<button class="vchip" onclick="vQuick(\'💃 Dance!!\')">💃 Dance!!</button>':''}`;}
+function vQuick(q){const gain={ '👋 Say Hello':[2,2],'💬 Gist':[3,3],'😂 Crack Joke':[5,4],'😏 Throw Shade':[4,1],'💃 Dance!!':[6,3]}[q];
+ ME.happy=clamp(ME.happy+gain[0],0,100);ME.hygiene=clamp(ME.hygiene-1,0,100);hud();
+ sendVenueMsg(q);}
+$('vSend').onclick=()=>{const v=$('vInput').value.trim();if(!v)return;$('vInput').value='';ME.happy=clamp(ME.happy+1,0,100);sendVenueMsg(v);};
+$('vInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('vSend').click();});
+function sendVenueMsg(text){DB.ref('chat/'+ME.scene).push({uid:ME.uid,n:ME.name,text:esc(text).slice(0,140),ts:Date.now()});
+ bubbles.push({uid:ME.uid,text:esc(text),t:5});}
 
-/* ============ PHONE ============ */
-function phoneMenu(){openModal(`<h2>📱 scar_belle's phone</h2><div class="sub">Lagos, Day ${S.day}</div>
- <button class="act" onclick="toast('💼 Office shifts + Market trading = money')">💼 <b>Jobs</b><small>career lvl ${S.jobLevel} · ${S.shifts} shifts</small></button>
- <button class="act" onclick="toast('🏦 Balance: ${fmt(S.money)}')">🏦 <b>Bank</b><small>${fmt(S.money)}</small></button>
- <button class="act" onclick="familyMenu()">💕 <b>${S.married?'Married to @'+S.spouse.name+(S.baby?' · expecting 👶':''):S.partner?'Dating @'+S.partner.name+' (lvl '+S.partner.lvl+'/5)':'Single 😏'}</b></button>
- <button class="act" onclick="howTo()">📖 <b>How to play</b></button>
- <button class="act red" onclick="if(confirm('Start a new life?')){localStorage.removeItem('sb_ll2');location.reload()}">🗑️ <b>Restart life</b></button>
- <button class="act" onclick="closeModal()">Close</button>`);}
-function howTo(){openModal(`<h2>📖 How to play</h2><div class="sub">
-🚶 <b>Move:</b> WASD / arrows or click. Walk into any building to enter it.<br><br>
-👥 <b>Inside buildings</b> you'll see other people — walk close and press <b>E</b> to talk, compliment, date, marry. Use the <b>"Say something out loud"</b> bar to chat with the room.<br><br>
-💼 <b>Earn:</b> office shifts, market trading. 🍗 Keep hunger, energy & happiness up.<br><br>
-💘 Date → level 5 → 💍 propose at the chapel → 🏠 home → 👶 family.<br><br>
-😈 Thugs appear on streets at night — pay, run, or report at 🚔.<br><br>
-🚕 Travel button: keke, danfo, okada, cab (trek max 20s).</div>
-<button class="act green" onclick="closeModal()">Got it!</button>`);}
-$('nTravel').onclick=travelMenu;$('nPhone').onclick=phoneMenu;
+/* ---------- venue activities ---------- */
+function venueAct(id,i){const l=loc(id),a=l.acts[i];const k=a[1];closeSheet();
+ if(k==='eat'){if(!pay(a[2]))return;ME.hunger=clamp(ME.hunger+a[3]*(ME.traits.includes('Foodie')?1.4:1),0,100);ME.happy=clamp(ME.happy+5,0,100);toast('🍲 That hit the spot!');}
+ else if(k==='fun'){if(!pay(a[2]))return;ME.happy=clamp(ME.happy+a[3],0,100);toast(pick(['🔥 Nice one!','😍 Sweet!','⭐ Loved it!']));hud();}
+ else if(k==='gym'){if(!pay(2000))return;ME.happy=clamp(ME.happy+11,0,100);ME.energy=clamp(ME.energy-(ME.traits.includes('Gym Rat')?10:18),0,100);toast('💪 Session complete!');}
+ else if(k==='spa'){if(!pay(4000))return;ME.hygiene=100;ME.happy=clamp(ME.happy+10,0,100);toast('🧖 So fresh!');}
+ else if(k==='study'){ME.happy=clamp(ME.happy+4,0,100);ME.energy=clamp(ME.energy-5,0,100);toast('📖 Mind expanded!');}
+ else if(k==='pitch'){if(!pay(5000))return;if(Math.random()<0.3){ME.money+=25000;bigTitleFn('🦄 STARTUP FUNDED! +₦25,000');}else toast('🚀 Investors said "come back later"...');}
+ else if(k==='sleephotel'){if(!pay(15000))return;ME.energy=100;advanceHours(6);bigTitleFn('🛏️ Slept like a baby');}
+ else if(k==='trade'){workShift(irand(4000,9000),3);}
+ else if(k==='club'){if(!pay(a[2]))return;const boost=ME.traits.includes('Owambe Spirit')||ME.traits.includes('Musical')?1.4:1;
+  ME.happy=clamp(ME.happy+a[3]*boost,0,100);ME.energy=clamp(ME.energy-16,0,100);advanceHours(4);bigTitleFn('🎶 OWAMBE NIGHT');}
+ else if(k==='rave'){if(!pay(2500))return;ME.happy=clamp(ME.happy+22,0,100);ME.energy=clamp(ME.energy-14,0,100);advanceHours(3);bigTitleFn('🎉 BEACH RAVE!!');}
+ else if(k==='party'){if(!pay(25000))return;ME.happy=100;ME.energy=clamp(ME.energy-25,0,100);DB.ref('chat/'+ME.scene).push({uid:ME.uid,n:ME.name,text:'🎊 PARTY AT MY PLACE!! Everyone come through!! 🎉',ts:Date.now()});bigTitleFn('🎊 PARTY IS LIT 🔥');}
+ else if(k==='reward'){DB.ref('users/'+ME.uid+'/thugReports').get().then(s=>{const n=s.val()||0;if(!n){toast('🚔 No open reports.');return;}ME.money+=n*3000;DB.ref('users/'+ME.uid+'/thugReports').set(0);toast(`🚔 Reward collected: ${fmt(n*3000)}`);hud();});return;}
+ else if(k==='permit'){if(!pay(5000))return;toast('🪪 Permit granted!');}
+ else if(k==='marry'){doMarry();return;}
+ else if(k==='pray'){ME.happy=clamp(ME.happy+6,0,100);toast('🙏 Peace of mind.');}
+ else if(k==='date'){doDate();return;}
+ hud();}
+function pay(c){if(ME.money<c){toast('You need '+fmt(c));return false;}ME.money-=c;hud();return true;}
+function workShift(amount,hrs){bigTitleFn('💼 Working shift…');setTimeout(()=>{let amt=amount;
+ if(ME.traits.includes('Hustler'))amt*=1.15;if(ME.traits.includes('Lazy Bone'))amt*=0.9;
+ if((ME.job==='Tech'||ME.scene==='cc')&&ME.traits.includes('Tech Bro or Sis'))amt*=1.2;
+ ME.money+=Math.round(amt);ME.shifts++;ME.energy=clamp(ME.energy-15,0,100);ME.hunger=clamp(ME.hunger-10,0,100);advanceHours(hrs);
+ if(ME.shifts%3===0){ME.jobLevel=(ME.jobLevel||1)+1;bigTitleFn('📈 PROMOTED!');}
+ toast('💼 Shift done! Paid '+fmt(amt));hud();},3800);}
+function advanceHours(h){ME.hour+=h;if(ME.hour>=24){ME.hour%=24;ME.day++;checkRent();}}
+function checkRent(){if(ME.day-ME.lastRentDay>=7){ME.lastRentDay=ME.day;ME.money=Math.max(0,ME.money-ME.rent);toast(`🏠 Weekly rent paid: ${fmt(ME.rent)}`);}}
 
-/* ============ TIME ============ */
-let tAcc=0;
-function tickTime(dt){tAcc+=dt;if(tAcc>=8){tAcc=0;S.hour++;
- S.hunger=clamp(S.hunger-1.1,0,100);S.energy=clamp(S.energy-0.9,0,100);S.hygiene=clamp(S.hygiene-0.7,0,100);S.happy=clamp(S.happy-0.35,0,100);
- if(S.hour>=24){S.hour=0;S.day++}
- if(S.hunger<=0||S.energy<=0)S.happy=clamp(S.happy-3,0,100);
- updateHUD();}}
+/* ---------- marry / date / baby ---------- */
+function doDate(){if(!ME.partnerUid){toast('You need a boo first! 💕 Ask someone out.');return;}
+ if(!pay(8000))return;ME.relLvl=clamp(ME.relLvl+1,0,5);ME.happy=clamp(ME.happy+18,0,100);advanceHours(3);
+ DB.ref('dm/'+dmId(ME.partnerUid)).push({uid:ME.uid,n:ME.name,text:'💑 Date night was amazing 😍',ts:Date.now()});
+ bigTitleFn('💑 DATE NIGHT');toast(`💕 Relationship level ${ME.relLvl}/5`);hud();}
+function doMarry(){if(!ME.partnerUid){toast('💕 You need a boo first!');return;}
+ if(ME.relLvl<5){toast(`💍 Grow your relationship to level 5 (now ${ME.relLvl})`);return;}
+ if(!pay(50000))return;
+ ME.married=true;ME.relLvl=5;
+ DB.ref('users/'+ME.partnerUid).update({married:true});
+ DB.ref('dm/'+dmId(ME.partnerUid)).push({uid:ME.uid,n:ME.name,text:'💍 WILL YOU MARRY ME?!',ts:Date.now()});
+ bigTitleFn('💍 SHE SAID YES!!');setTimeout(()=>bigTitleFn('💒 Just Married!'),2200);hud();}
+let babyCd=0;
+function tryBaby(){if(Date.now()<babyCd)return;babyCd=Date.now()+3e4;
+ toast('💕 A beautiful private moment together…');
+ setTimeout(()=>{const ok=Math.random()<0.65;
+  ME.baby=ok;if(ok)DB.ref('users/'+ME.partnerUid).update({baby:true});
+  DB.ref('dm/'+dmId(ME.partnerUid)).push({uid:ME.uid,n:ME.name,text:ok?'👶 We\'re expecting!! I love you ❤️':'💕 Tonight was lovely…',ts:Date.now()});
+  if(ok)bigTitleFn('👶 BABY ON THE WAY!!');else toast('💕 Not this time…');hud();},2600);}
 
-/* ============ DRAWING ============ */
-function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath();}
-function human(x,y,o,s=1,phase=0){cx.save();cx.translate(x,y);
- cx.fillStyle='rgba(0,0,0,.25)';cx.beginPath();cx.ellipse(0,14*s,11*s,4*s,0,0,7);cx.fill();
+/* ============================= PLAYER INTERACTION ============================= */
+function openPlayer(uid){const p=others[uid];if(!p)return;
+ const isBoo=ME.partnerUid===uid,isSp=ME.married&&isBoo;
+ const relPct=isBoo?ME.relLvl*20:0;
+ DB.ref('requests/'+uid+'/'+ME.uid).get().then(s=>{
+ sheet(`<button class="xBtn" onclick="closeSheet()">✕</button>
+ <div style="display:flex;gap:12px;align-items:center;margin-bottom:4px">
+   <div style="width:56px;height:56px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid ${isBoo?'#db2777':'#e5e7eb'}">🧑🏾</div>
+   <div><h2 style="margin:0">@${esc(p.n)} ${p.ring?'💍':''}${p.baby?'👶':''}</h2><div class="sub" style="margin:0">Real player · only you two can see this</div></div>
+ </div>
+ ${ME.pending&&ME.pending[uid]?`<div class="act pink">💕 @${esc(p.n)} asked YOU out! <button onclick="acceptBoo('${uid}')" style="margin-left:auto;background:#fff;border:none;border-radius:9px;padding:6px 12px;font-weight:800;color:#db2777">Accept</button></div>`:''}
+ ${isBoo?`<div style="background:#fdf2f8;border-radius:12px;padding:10px;font-size:12px;color:#9d174d;margin-bottom:8px">💕 ${isSp?'Married 💍':'Your boo'} · Relationship level ${ME.relLvl}/5<div style="height:7px;background:#fbcfe8;border-radius:5px;margin-top:6px"><div style="height:100%;width:${relPct}%;background:#db2777;border-radius:5px"></div></div></div>`:''}
+ <button class="act green" onclick="openDM('${uid}')">💬 Chat <small>private</small></button>
+ ${isBoo?`<button class="act pink" onclick="openDM('${uid}');setTimeout(()=>dmQuick('💑 Date night? 😍'),300)">💑 Date night <small>₦8,000 · +level</small></button>
+ <button class="act" onclick="openDM('${uid}');setTimeout(()=>dmQuick('🎁 I got you a gift 🥺'),300)">🎁 Send gift <small>₦10,000 · +level</small></button>`:''}
+ ${!isBoo&&!ME.partnerUid?(s.val()?`<div class="act" style="background:#fce7f3;color:#9d174d">💘 Request sent… waiting for @${esc(p.n)}</div>`:`<button class="act pink" onclick="askBoo('${uid}')">💘 Ask to be my boo <small>chat & hang out more</small></button>`):''}
+ ${ME.partnerUid&&!isBoo?`<div class="act" style="background:#fdf2f8;color:#9d174d">💕 You're with @${esc(ME.partnerName)}</div>`:''}
+ <button class="act" onclick="sendMoneySheet('${uid}')">💸 Send money</button>
+ ${isBoo?`<button class="act" onclick="inviteOver('${uid}')">🏠 Invite over <small>to your home</small></button>
+ <button class="act" onclick="visitThem('${uid}')">🚪 Visit them</button>`:''}
+ <div class="quickRow">
+   <button class="qb" onclick="dmOpenQuick('${uid}','How far? 👋')">How far? 👋</button>
+   <button class="qb" onclick="dmOpenQuick('${uid}','I dey o 😄')">I dey o 😄</button>
+   <button class="qb" onclick="dmOpenQuick('${uid}','Wetin dey happen?')">Wetin dey happen?</button>
+   <button class="qb" onclick="dmOpenQuick('${uid}','Where you dey?')">Where you dey?</button>
+ </div>
+ <button class="act red" onclick="reportPlayer('${uid}')" style="margin-top:6px">🚫 Block / Report</button>`);});}
+function askBoo(uid){const p=others[uid];DB.ref('requests/'+uid+'/'+ME.uid).set({from:ME.uid,n:ME.name,ts:Date.now()});
+ DB.ref('dm/'+dmId(uid)).push({uid:ME.uid,n:ME.name,text:'💘 Will you be my boo? 😍',ts:Date.now()});
+ toast('💘 Request sent to @'+p.n+'!');closeSheet();}
+function acceptBoo(uid){const p=others[uid]||{n:'?'};
+ ME.partnerUid=uid;ME.partnerName=p.n;ME.relLvl=1;
+ DB.ref('users/'+ME.uid).update({partnerUid:uid,partnerName:p.n,relLvl:1});
+ DB.ref('users/'+uid).update({partnerUid:ME.uid,partnerName:ME.name,relLvl:1});
+ DB.ref('requests/'+ME.uid+'/'+uid).remove();
+ DB.ref('dm/'+dmId(uid)).push({uid:ME.uid,n:ME.name,text:'💕 YES!! We\'re official!! 😍🥰',ts:Date.now()});
+ bigTitleFn('💘 IT\'S OFFICIAL!');closeSheet();hud();}
+function dmId(uid){return [ME.uid,uid].sort().join('_');}
+function dmOpenQuick(uid,text){openDM(uid);setTimeout(()=>dmSend(text),350);}
+function sendMoneySheet(uid){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>💸 Send money</h2><div class="sub">To @${esc(others[uid].n)}</div>
+ <button class="act" onclick="sendMoney('${uid}',1000)">₦1,000</button><button class="act" onclick="sendMoney('${uid}',5000)">₦5,000</button>
+ <button class="act" onclick="sendMoney('${uid}',10000)">₦10,000</button><button class="act" onclick="sendMoney('${uid}',50000)">₦50,000</button>`);}
+function sendMoney(uid,amt){if(ME.money<amt){toast('Not enough money');return;}ME.money-=amt;
+ DB.ref('users/'+uid+'/money').get().then(s=>{DB.ref('users/'+uid+'/money').set((s.val()||0)+amt);});
+ DB.ref('dm/'+dmId(uid)).push({uid:ME.uid,n:ME.name,text:'💸 sent you '+fmt(amt),ts:Date.now()});
+ toast('💸 Sent '+fmt(amt));closeSheet();hud();}
+function inviteOver(uid){DB.ref('dm/'+dmId(uid)).push({uid:ME.uid,n:ME.name,text:'🏠 Come over to my place! Tap Phone → Houses → Visit '+ME.name,ts:Date.now()});
+ DB.ref('online/'+uid+'/invite').set({from:ME.uid,n:ME.name,home:ME.homeId});toast('🏠 Invite sent!');}
+function visitThem(uid){const p=others[uid];if(!p){toast('They went offline');return;}
+ DB.ref('users/'+uid+'/homeId').get().then(s=>{if(s.val())goScene(s.val(),450,520);else toast('They haven\'t set a home yet');});}
+DB&&setInterval(()=>{ // receive invites
+ if(!ME)return;DB.ref('online/'+ME.uid+'/invite').get().then(s=>{const v=s.val();if(!v)return;DB.ref('online/'+ME.uid+'/invite').remove();
+  sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🏠 Invitation!</h2><div class="sub">@${esc(v.n)} invited you to their home 💕</div>
+  <button class="act green" onclick="closeSheet();goScene('${v.home}',450,520)">Go now 🚕</button>
+  <button class="act" onclick="closeSheet()">Later</button>`);});
+},2500);
+function reportPlayer(uid){DB.ref('reports/'+uid).push({by:ME.uid,ts:Date.now()});toast('🚫 Reported. They can\'t bother you again.');closeSheet();}
+
+/* ---------- DM ---------- */
+let dmUid=null;
+function openDM(uid){dmUid=uid;const p=others[uid];
+ sheet(`<button class="xBtn" onclick="closeSheet()">✕</button>
+ <h2>💬 @${esc(p?p.n:'player')}</h2><div class="sub">Private · only you two can see this</div>
+ <div id="dmMsgs"></div>
+ <div class="quickRow"><button class="qb" onclick="dmQuick('How far? 👋')">How far? 👋</button><button class="qb" onclick="dmQuick('I dey o 😄')">I dey o 😄</button><button class="qb" onclick="dmQuick('Wetin dey happen?')">Wetin dey happen?</button><button class="qb" onclick="dmQuick('😂😂😂')">😂😂😂</button><button class="qb" onclick="dmQuick('I miss you ❤️')">I miss you ❤️</button></div>
+ <div id="dmRow"><input id="dmInput" placeholder="Message…" maxlength="200"><button onclick="dmSend()">Send</button></div>`);
+ DB.ref('dm/'+dmId(uid)).limitToLast(60).off();
+ DB.ref('dm/'+dmId(uid)).limitToLast(60).on('child_added',s=>{const m=s.val();const d=document.createElement('div');
+  d.className='dmB '+(m.uid===ME.uid?'me':'them');const t=new Date(m.ts);
+  d.innerHTML=`${esc(m.text)}<small>${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}</small>`;
+  const box=$('dmMsgs');if(box){box.appendChild(d);box.scrollTop=box.scrollHeight;}});}
+function dmQuick(t){dmSend(t);}
+function dmSend(preset){const i=$('dmInput');const v=(preset||i.value).trim();if(!v)return;if(i)i.value='';
+ DB.ref('dm/'+dmId(dmUid)).push({uid:ME.uid,n:ME.name,text:esc(v).slice(0,200),ts:Date.now()});}
+
+/* ---------- requests bell ---------- */
+$('bell').onclick=()=>{DB.ref('requests/'+ME.uid).get().then(s=>{const r=s.val()||{};
+ const rows=Object.entries(r).map(([uid,q])=>`<button class="act pink" onclick="acceptBoo('${uid}')">💘 @${esc(q.n)} asked to be your boo <small>tap to accept</small></button>`).join('');
+ sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🔔 Requests</h2><div class="sub">${rows?'People crushing on you 👀':'No new requests'}</div>${rows||''}
+ <button class="act" onclick="closeSheet()">Close</button>`);});};
+
+/* ============================= PHONE ============================= */
+$('nPhone').onclick=()=>{phoneHome();};
+function phoneHome(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button>
+ <div style="text-align:center;padding:8px 0 2px"><div style="font-size:38px;font-weight:800;background:linear-gradient(90deg,#7c3aed,#db2777);-webkit-background-clip:text;color:transparent" id="phTime"></div>
+ <div class="sub">Lagos · 💕</div></div>
+ <div class="appGrid">
+  ${appBtn('💼','#16a34a','Jobs','phoneJobs()')}${appBtn('💬','#2563eb','Messages','phoneMsgs()')}${appBtn('🏦','#7c3aed','Bank','phoneBank()')}${appBtn('🚕','#f59e0b','Ride','phoneRide()')}
+  ${appBtn('🏠','#0891b2','Houses','phoneHouses()')}${appBtn('💕','#db2777','Family','phoneFamily()')}${appBtn('🩺','#dc2626','Health','phoneHealth()')}${appBtn('⚽','#059669','LagosBet','phoneBet()')}
+ </div>
+ <button class="act red" onclick="AUTH.signOut();location.reload()">🚪 Log out</button>`);
+ const h=ME.hour%24;$('phTime').textContent=`${((h+11)%12)+1}:00 ${h<12?'AM':'PM'}`;}
+function appBtn(ic,bg,label,fn){return `<button class="app" onclick="${fn}"><div class="ic" style="background:${bg}22;border:2px solid ${bg}55">${ic}</div><span>${label}</span></button>`;}
+function phoneJobs(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>💼 Jobs</h2><div class="sub">${ME.job?`Current: <b>${ME.job}</b> · ${ME.shifts} shifts done · lvl ${ME.jobLevel||1}`:'No job yet — pick one!'} Shifts are 1 hour, anytime.</div>
+ ${JOBS.map(j=>`<div class="jobCard"><div class="ji">${j[0]}</div><div style="flex:1"><b>${j[1]} <span class="pay">${fmt(j[2])}/shift</span></b><small>${j[3]}</small></div>
+ ${ME.job===j[1]?`<button class="apply" style="background:#2563eb" onclick="phoneWork('${j[1]}',${j[2]})">Work now</button>`:`<button class="apply" onclick="setJob('${j[1]}')">Apply</button>`}</div>`).join('')}
+ <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
+function setJob(j){ME.job=j;ME.shifts=0;ME.jobLevel=1;saveProfile();toast('💼 Hired as '+j+'! Start tomorrow — or work now 😉');phoneJobs();}
+function phoneWork(j,p){closeSheet();workShift(p*1.15*(ME.jobLevel||1),1);}
+function phoneMsgs(){DB.ref('dm').get().then(s=>{const all=s.val()||{};const convs=[];
+ for(const key in all){if(!key.includes(ME.uid))continue;const msgs=Object.values(all[key]).sort((a,b)=>a.ts-b.ts);const last=msgs[msgs.length-1];if(!last)continue;
+  const otherUid=key.split('_').find(u=>u!==ME.uid);convs.push({otherUid,last});}
+ sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>💬 Messages</h2><div class="sub">Your private chats</div>
+ ${convs.sort((a,b)=>b.last.ts-a.last.ts).map(c=>{const on=others[c.otherUid];return `<button class="act" onclick="openDM('${c.otherUid}')">💬 @${esc(on?on.n:'player')} ${on?'🟢':''}<small>${esc(c.last.text).slice(0,30)}</small></button>`}).join('')||'<div class="sub">No chats yet — tap a player in a venue 💕</div>'}
+ <button class="act" onclick="phoneHome()">⬅ Back</button>`);});}
+function phoneBank(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🏦 Bank</h2><div class="sub" style="font-size:15px">Balance: <b style="color:#16a34a;font-size:22px">${fmt(ME.money)}</b><br>Dream: ${ME.dream||'—'} · Home: ${ME.homeName}</div>
+ <button class="act" onclick="closeSheet();toast('🏦 Money dey your pocket already 😄')">Withdraw</button>
+ <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
+function phoneRide(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🚕 Ride</h2><div class="sub">Where to?</div>
+ ${LOCS.map(l=>`<button class="act" onclick="closeSheet();ME.x=${l.x};ME.y=${l.y+95};writePresence();toast('🚕 Dropped at ${l.n}')">${l.e} ${l.n}<small>₦650</small></button>`).join('')}
+ <button class="act" onclick="closeSheet();goScene(ME.homeId,450,520)">🏠 Go home <small>₦650</small></button>
+ <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
+function phoneHouses(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🏠 Houses</h2><div class="sub">Your crib: ${ME.homeName} · rent ${fmt(ME.rent)}/wk</div>
+ <button class="act green" onclick="closeSheet();goScene(ME.homeId,450,520)">🏠 Enter my home</button>
+ ${ME.partnerUid?`<button class="act pink" onclick="closeSheet();visitThem('${ME.partnerUid}')">💕 Visit @${esc(ME.partnerName)}</button>`:''}
+ <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
+function phoneFamily(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>💕 Family</h2><div class="sub">${ME.married?`Married to @${esc(ME.partnerName)} 💍${ME.baby?' · expecting 👶':''}`:ME.partnerUid?`Dating @${esc(ME.partnerName)} · level ${ME.relLvl}/5`:'Single & ready 😏 Meet people in venues!'}</div>
+ ${ME.partnerUid&&!ME.married?`<button class="act pink" onclick="closeSheet();visitThem('${ME.partnerUid}')">💕 Visit @${esc(ME.partnerName)}</button>`:''}
+ ${ME.married&&!ME.baby?`<button class="act pink" onclick="closeSheet();goScene(ME.homeId,330,240);setTimeout(()=>toast('💕 Both lie on the bed together to try for a baby 👶'),800)">🍼 Try for a baby <small>at home, both on bed</small></button>`:''}
+ ${ME.baby?`<button class="act green" onclick="ME.happy=clamp(ME.happy+15,0,100);closeSheet();toast('👶 Family time!')">👶 Spend time with baby</button>`:''}
+ <button class="act" onclick="phoneHome()">⬅ Back</button>`;}
+function phoneHealth(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🩺 Health</h2><div class="sub">😊 ${Math.round(ME.happy)} · 🍗 ${Math.round(ME.hunger)} · ⚡ ${Math.round(ME.energy)} · 🧼 ${Math.round(ME.hygiene)}<br>Traits: ${ME.traits.join(', ')||'none'}</div>
+ <button class="act green" onclick="ME.energy=100;ME.hygiene=clamp(ME.hygiene+10,0,100);ME.hour=(ME.hour+8)%24;if(ME.hour<8){ME.day++;checkRent();}ME.hunger=clamp(ME.hunger-25,0,100);closeSheet();bigTitleFn('☀️ Good morning!');hud()">😴 Sleep 8 hours <small>₦0 at home, ₦15k hotel</small></button>
+ <button class="act" onclick="closeSheet();goScene('amala',550,620)">🍲 Go eat</button>
+ <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
+function phoneBet(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>⚽ LagosBet</h2><div class="sub">Stake small, enjoy the banter 😅</div>
+ ${[1000,5000,20000].map(a=>`<button class="act" onclick="bet(${a})">Stake ${fmt(a)} <small>50/50 win 2x</small></button>`).join('')}
+ <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
+function bet(a){if(!pay(a))return;if(Math.random()<0.5){ME.money+=a*2;toast('⚽ YOU WIN '+fmt(a*2)+'!!');}else toast('⚽ Cut! Bookies chop your money 😭');hud();phoneBet();}
+
+/* ============================= HOME / BUY ============================= */
+$('nHome').onclick=()=>{if(ME.scene.startsWith('home_')){goScene('city',1300,980);}else if(ME.scene!=='city'){exitVenue();}else goScene(ME.homeId,450,520);};
+$('nMap').onclick=()=>{if(ME.scene!=='city')goScene('city',1300,980);else toast('🗺️ You dey map already — tap a building!');};
+$('nBuy').onclick=()=>{if(ME.scene.startsWith('home_'))openBuy();else toast('🛋️ Buy mode works inside a home (yours or boo\'s)');};
+let nearFurni=null;
+function openBuy(cat='comfort'){const items=ITEMS[cat];
+ sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🛋️ Buy mode</h2><div class="sub">Balance: <b style="color:#16a34a">${fmt(ME.money)}</b> · furniture appears in the room</div>
+ <div class="catTabs">${CATS.map(c=>`<button class="catTab ${c[1]===cat?'sel':''}" onclick="openBuy('${c[1]}')">${c[0]}</button>`).join('')}</div>
+ <div class="catGrid">${items.map((it,i)=>`<div class="itemCard"><div class="ie">${it[0]}</div><b>${it[1]}</b><div class="st">${'★'.repeat(it[4])}</div><div class="pr">${fmt(it[2])}</div><button onclick="buyItem('${cat}',${i})" ${ME.money<it[2]?'disabled':''}>Buy</button></div>`).join('')}</div>`);}
+function buyItem(cat,i){const it=ITEMS[cat][i];if(!pay(it[2]))return;
+ const spot=freeSpot();ME.furni.push({t:it[1],e:it[0],x:spot.x,y:spot.y});saveProfile();toast('🛋️ '+it[1]+' delivered!');openBuy(cat);}
+function freeSpot(){for(let y=1;y<5;y++)for(let x=1;x<7;x++){if(!ME.furni.some(f=>f.x===x&&f.y===y))return{x,y};}return{x:irand(1,6),y:irand(1,4)};}
+function homeInteract(){const f=ME.furni.find(f=>f.x===nearFurni.x&&f.y===nearFurni.y);if(!f)return;
+ if(/Bed/.test(f.t)){const partnerHere=ME.partnerUid&&others[ME.partnerUid]&&others[ME.partnerUid].sc===ME.scene;
+  sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🛏️ ${f.t}</h2>
+  <button class="act green" onclick="closeSheet();ME.energy=100;ME.hour=(ME.hour+8)%24;if(ME.hour<8){ME.day++;checkRent();}ME.hunger=clamp(ME.hunger-25,0,100);bigTitleFn('☀️ Good morning!');hud()">😴 Sleep</button>
+  ${partnerHere&&ME.married&&!ME.baby?`<button class="act pink" onclick="closeSheet();tryBaby()">💕 Lie down together <small>private · maybe a baby 👶</small></button>`:''}
+  ${partnerHere&&!ME.married?`<button class="act" onclick="closeSheet();toast('💍 Get married at the Love Chapel first!')">💕 Cuddle <small>marry first 😉</small></button>`:''}`);}
+ else if(/Stove|Cooler|Cabinet/.test(f.t)){if(!pay(800))return;ME.hunger=clamp(ME.hunger+45,0,100);ME.happy=clamp(ME.happy+4,0,100);toast('🍳 Nice home-cooked meal!');}
+ else if(/Shower|Bathtub/.test(f.t)){ME.hygiene=100;toast('🚿 Sparkling clean!');}
+ else if(/WC/.test(f.t)){ME.hygiene=clamp(ME.hygiene+15,0,100);toast('🚽 Relief!');}
+ else if(/TV|PS5/.test(f.t)){ME.happy=clamp(ME.happy+10,0,100);ME.energy=clamp(ME.energy-5,0,100);toast('📺 Enjoying your '+f.t);}
+ else if(/Chair|Sofa|Armchair/.test(f.t)){ME.happy=clamp(ME.happy+3,0,100);ME.energy=clamp(ME.energy+3,0,100);toast('🛋️ Comfy!');}
+ hud();}
+
+/* ============================= THUGS ============================= */
+let thugCool=60,thugActive=false;
+setInterval(()=>{if(!ME||ME.scene!=='city'||thugActive)return;thugCool-=5;const night=ME.hour>=20||ME.hour<5;
+ if(thugCool<=0){thugCool=night?rand(45,90):rand(100,200);if(d2(ME,{x:330,y:1290})<300)return;
+ if(Math.random()<(night?0.7:0.3)){thugActive=true;const demand=irand(2000,8000);
+ sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>😈 Street Thug</h2><div class="sub">"Oga, drop ${fmt(demand)} make we no wound you."</div>
+ <button class="act" onclick="thugPay(${demand})">💸 Pay ${fmt(demand)}</button>
+ <button class="act" onclick="thugRun()">🏃 Run!</button>
+ <button class="act" onclick="thugPolice()">🚔 Call police</button>`);}}},5000);
+function thugPay(d){ME.money=Math.max(0,ME.money-d);thugActive=false;closeSheet();toast('😈 Painful… '+fmt(d)+' gone.');hud();}
+function thugRun(){thugActive=false;closeSheet();
+ if(ME.traits.includes('Night Crawler')||Math.random()<0.6)toast('🏃 You escaped!');
+ else{const f=irand(1000,3000);ME.money=Math.max(0,ME.money-f);ME.energy=clamp(ME.energy-15,0,100);toast('😈 They caught you! Took '+fmt(f));}hud();}
+function thugPolice(){thugActive=false;closeSheet();DB.ref('users/'+ME.uid+'/thugReports').set(firebase.database.ServerValue.increment(1));toast('🚔 Report filed — collect reward at Police Station!');}
+
+/* ============================= STATS TICK ============================= */
+setInterval(()=>{if(!ME||$('game').classList.contains('hidden'))return;
+ ME.hour++;ME.hunger=clamp(ME.hunger-1.1,0,100);ME.energy=clamp(ME.energy-(ME.traits.includes('Gym Rat')?0.5:0.9),0,100);
+ ME.hygiene=clamp(ME.hygiene-(ME.traits.includes('Clean Pikin')?0.3:0.7),0,100);ME.happy=clamp(ME.happy-0.35,0,100);
+ if(ME.hour>=24){ME.hour=0;ME.day++;checkRent();}
+ if(ME.hunger<=0||ME.energy<=0)ME.happy=clamp(ME.happy-3,0,100);
+ if(ME.money>=1e6&&!ME.dreamDone){ME.dreamDone=true;ME.happy=100;bigTitleFn('🏆 LIFETIME WISH COMPLETE! Lagos don see you ✨');}
+ hud();saveProfile();},10000);
+$('spRadio').onclick=()=>toast('📻 Naija Radio: '+pick(['Wizkid — Essence 🔥','Burna Boy — Last Last','Asake — Lonely At The Top','Ayra Starr — Rush','Davido — Feel','Rema — Calm Down']));
+
+/* ============================= DRAWING ============================= */
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function human(x,y,p,s=1,phase=0,isMe){ctx.save();ctx.translate(x,y);
+ ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(0,14*s,11*s,4*s,0,0,7);ctx.fill();
  const bob=Math.sin(phase)*2*s,lp=Math.sin(phase)*7*s;
- cx.strokeStyle='#1f2937';cx.lineWidth=5*s;cx.lineCap='round';
- cx.beginPath();cx.moveTo(-3*s,2*s+bob*.3);cx.lineTo(-3*s+lp,14*s);cx.stroke();
- cx.beginPath();cx.moveTo(3*s,2*s+bob*.3);cx.lineTo(3*s-lp,14*s);cx.stroke();
- cx.fillStyle=o.shirt;rr(-8*s,-20*s+bob*.3,16*s,22*s,6*s);cx.fill();
- cx.fillStyle=o.skin;cx.beginPath();cx.arc(0,-28*s+bob*.3,8*s,0,7);cx.fill();
- cx.fillStyle='#111';cx.beginPath();cx.arc(0,-31*s+bob*.3,8*s,Math.PI,2*Math.PI);cx.fill();cx.restore();}
-function bubbleDraw(){for(const b of bubbles){cx.font='600 12px sans-serif';const tw=cx.measureText(b.text).width+16;
- cx.fillStyle=b.who==='me'?'rgba(22,163,74,.95)':'rgba(255,255,255,.95)';rr(b.x-tw/2,b.y-26,tw,22,11);cx.fill();
- cx.fillStyle=b.who==='me'?'#fff':'#111827';cx.textAlign='center';cx.fillText(b.text,b.x,b.y-10);cx.textAlign='left';}}
-function label(x,y,txt){cx.font='600 13px sans-serif';const tw=cx.measureText(txt).width+18;
- cx.fillStyle='rgba(255,255,255,.95)';rr(x-tw/2,y-16,tw,24,12);cx.fill();
- cx.fillStyle='#1f2937';cx.textAlign='center';cx.fillText(txt,x,y+2);cx.textAlign='left';}
+ ctx.strokeStyle='#1f2937';ctx.lineWidth=5*s;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(-3*s,2*s+bob*.3);ctx.lineTo(-3*s+lp,14*s);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(3*s,2*s+bob*.3);ctx.lineTo(3*s-lp,14*s);ctx.stroke();
+ const shirt={'Casual':'#fbbf24','Hoodie':'#7c3aed','Office':'#1e3a8a','Chill':'#059669','Owambe':'#dc2626','Street':'#111827'}[p.o]||'#fbbf24';
+ ctx.fillStyle=shirt;rr(-8*s,-20*s+bob*.3,16*s,22*s,6*s);ctx.fill();
+ ctx.fillStyle='#7c4a22';ctx.beginPath();ctx.arc(0,-28*s+bob*.3,8*s,0,7);ctx.fill();
+ ctx.fillStyle='#111';
+ if(p.h==='Bald'){}
+ else if(p.h==='Afro'||p.h==='Curls'){ctx.beginPath();ctx.arc(0,-31*s+bob*.3,9*s,Math.PI,2*Math.PI);ctx.fill();}
+ else if(p.h==='Gele'){ctx.fillStyle='#dc2626';ctx.beginPath();ctx.arc(0,-32*s+bob*.3,9*s,Math.PI,2*Math.PI);ctx.fill();}
+ else if(p.h==='Braids'||p.h==='Locs'){ctx.beginPath();ctx.arc(0,-30*s+bob*.3,8.5*s,Math.PI,2*Math.PI);ctx.fill();ctx.fillRect(-10*s,-28*s+bob*.3,4*s,18*s);ctx.fillRect(6*s,-28*s+bob*.3,4*s,18*s);}
+ else{ctx.beginPath();ctx.arc(0,-30*s+bob*.3,8.5*s,Math.PI,2*Math.PI);ctx.fill();}
+ ctx.font='700 11px sans-serif';ctx.textAlign='center';
+ ctx.fillStyle=isMe?'#0a7a4a':'#374151';ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=3;
+ const nm='@'+p.n+(p.ring?' 💍':'')+(p.baby?' 👶':'')+(isMe?' (you)':'');
+ ctx.strokeText(nm,0,-46*s);ctx.fillText(nm,0,-46*s);ctx.textAlign='left';ctx.restore();}
+function bubbleDraw(){for(const b of bubbles){let x,y;const t=b.uid===ME.uid;
+ if(t){x=ME.x;y=ME.y-78;}else if(others[b.uid]&&others[b.uid].sc===ME.scene){x=others[b.uid].x;y=others[b.uid].y-78;}else continue;
+ ctx.font='600 12px sans-serif';const tw=ctx.measureText(b.text).width+16;
+ ctx.fillStyle=t?'rgba(22,163,74,.95)':'rgba(255,255,255,.95)';rr(x-tw/2,y-24,tw,22,11);ctx.fill();
+ ctx.fillStyle=t?'#fff':'#111827';ctx.textAlign='center';ctx.fillText(b.text,x,y-8);ctx.textAlign='left';}}
+function locLabel(x,y,txt){ctx.font='600 13px sans-serif';const tw=ctx.measureText(txt).width+18;
+ ctx.fillStyle='rgba(255,255,255,.95)';rr(x-tw/2,y-14,tw,24,12);ctx.fill();
+ ctx.fillStyle='#1f2937';ctx.textAlign='center';ctx.fillText(txt,x,y+3);ctx.textAlign='left';}
 
-/* ---- city ---- */
 function drawCity(){
- cx.fillStyle='#9ccc65';cx.fillRect(0,0,CITY.w,CITY.h);
- // lagoon
- cx.fillStyle='#4fc3f7';cx.fillRect(0,LAGOON.y,CITY.w,LAGOON.h);
- cx.fillStyle='#0288d1';cx.font='bold 36px sans-serif';cx.fillText('LAGOS LAGOON 🌊',1050,LAGOON.y+88);
- // sand strip under lagoon
- cx.fillStyle='#ffe082';cx.fillRect(0,LAGOON.y+LAGOON.h,CITY.w,60);
+ ctx.fillStyle='#9ccc65';ctx.fillRect(0,0,CITYW,CITYH);
+ // lagoon & ocean
+ ctx.fillStyle='#4fc3f7';ctx.fillRect(0,LAGY,CITYW,LAGH);
+ ctx.fillStyle='#0288d1';ctx.font='bold 34px sans-serif';ctx.fillText('LAGOS LAGOON 🌊',1080,LAGY+80);
+ ctx.fillStyle='#81d4fa';ctx.fillRect(0,OCEANY,CITYW,CITYH-OCEANY);
+ ctx.fillStyle='#0288d1';ctx.font='bold 26px sans-serif';ctx.fillText('EKO ATLANTIC OCEAN 🌊',1620,OCEANY+40);
+ ctx.fillStyle='#ffe082';ctx.fillRect(0,LAGY+LAGH,CITYW,46);
  // roads
- cx.fillStyle='#78909c';
- for(const y of RH)cx.fillRect(0,y-28,CITY.w,56);
- for(const x of RV)cx.fillRect(x-28,0,56,CITY.h);
- cx.strokeStyle='rgba(255,255,255,.6)';cx.lineWidth=3;cx.setLineDash([24,20]);
- for(const y of RH){cx.beginPath();cx.moveTo(0,y);cx.lineTo(CITY.w,y);cx.stroke()}
- for(const x of RV){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,CITY.h);cx.stroke()}
- cx.setLineDash([]);
+ ctx.fillStyle='#78909c';for(const y of ROADS_Y)ctx.fillRect(0,y-28,CITYW,56);for(const x of ROADS_X)ctx.fillRect(x-28,0,56,OCEANY);
+ ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=3;ctx.setLineDash([24,20]);
+ for(const y of ROADS_Y){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(CITYW,y);ctx.stroke();}
+ for(const x of ROADS_X){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,OCEANY);ctx.stroke();}
+ ctx.setLineDash([]);
  // billboards
- for(let i=0;i<6;i++){const bx=300+i*380,by=pick([RH[1]-70,RH[2]+52]);
-  cx.fillStyle='#374151';cx.fillRect(bx,by,6,34);cx.fillRect(bx+70,by,6,34);
-  cx.fillStyle=pick(['#0288d1','#16a34a']);cx.fillRect(bx-8,by-26,92,32);
-  cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.fillText(pick(['GLO 📶','MTN','LAGOS LIFE','BET9JA']),bx,by-5);}
+ for(let i=0;i<7;i++){const bx=220+i*340,by=ROADS_Y[1]-76;
+  ctx.fillStyle='#374151';ctx.fillRect(bx,by,6,36);ctx.fillRect(bx+76,by,6,36);
+  ctx.fillStyle=pick(['#0288d1','#16a34a','#f59e0b']);ctx.fillRect(bx-8,by-26,98,32);
+  ctx.fillStyle='#fff';ctx.font='bold 11px sans-serif';ctx.fillText(pick(['GLO 📶','MTN','LAGOS LIFE','BET9JA','DStv']),bx,by-5);}
+ // airport & refinery tags like the video
+ ctx.fillStyle='#facc15';rr(1050,320,240,44,22);ctx.fill();ctx.fillStyle='#111';ctx.font='bold 15px sans-serif';ctx.fillText('🚧 ✈️ Airport · Coming soon',1070,348);
+ ctx.fillStyle='#facc15';rr(360,1340,260,44,22);ctx.fill();ctx.fillStyle='#111';ctx.fillText('🚧 🛢️ Refinery · Coming soon',380,1368);
  // buildings
- for(const l of LOCS)drawBuilding(l);
- // pedestrians
- for(const p of CITYPEDS){p.x+=p.dir*p.speed*0.016;if(p.x<0)p.x=CITY.w;if(p.x>CITY.w)p.x=0;
-  human(p.x,p.y,{skin:p.skin,shirt:p.shirt},0.95,p.x*0.05);}
- // cars
- for(const c of CARS){c.x+=c.dir*c.speed*0.016;if(c.dir>0&&c.x>CITY.w+60)c.x=-60;if(c.dir<0&&c.x<-60)c.x=CITY.w+60;
-  cx.save();cx.translate(c.x,c.y);if(c.dir<0)cx.scale(-1,1);
-  cx.fillStyle=c.color;rr(-22,-11,44,22,7);cx.fill();
-  cx.fillStyle='rgba(180,220,255,.9)';rr(-8,-9,16,10,3);cx.fill();
-  cx.fillStyle='#111';cx.beginPath();cx.arc(-12,12,5,0,7);cx.arc(12,12,5,0,7);cx.fill();cx.restore();}
-}
-function drawBuilding(l){
- cx.save();cx.translate(l.x,l.y);
- cx.fillStyle='rgba(0,0,0,.2)';rr(-52,-34+10,110,78,10);cx.fill();
- cx.fillStyle='#f5f5f4';rr(-55,-40,110,80,10);cx.fill();
- cx.strokeStyle='rgba(0,0,0,.15)';cx.lineWidth=2;rr(-55,-40,110,80,10);cx.stroke();
- cx.fillStyle=l.color;cx.beginPath();cx.moveTo(-55,-40);cx.lineTo(-40,-58);cx.lineTo(70,-58);cx.lineTo(55,-40);cx.closePath();cx.fill();
- cx.strokeStyle='rgba(0,0,0,.15)';cx.stroke();
- cx.font='34px sans-serif';cx.textAlign='center';cx.fillText(l.emoji,0,8);cx.textAlign='left';
- cx.restore();label(l.x,l.y-66,l.emoji+' '+l.name);}
+ for(const l of LOCS){ctx.save();ctx.translate(l.x,l.y);
+  ctx.fillStyle='rgba(0,0,0,.2)';rr(-50,-26,104,72,8);ctx.fill();
+  ctx.fillStyle='#f5f5f4';rr(-52,-44,104,82,8);ctx.fill();ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=2;rr(-52,-44,104,82,8);ctx.stroke();
+  ctx.fillStyle='#d6d3d1';ctx.beginPath();ctx.moveTo(-52,-44);ctx.lineTo(-38,-62);ctx.lineTo(66,-62);ctx.lineTo(52,-44);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.font='32px sans-serif';ctx.textAlign='center';ctx.fillText(l.e,0,4);ctx.textAlign='left';ctx.restore();
+  locLabel(l.x,l.y-70,l.e+' '+l.n);}
+ // trees
+ for(let i=0;i<14;i++){ctx.font='30px sans-serif';ctx.fillText('🌴',irand(100,CITYW-100),pick([600,700,1100,1150]));}
+ drawPlayersCity();}
+function drawPlayersCity(){for(const uid in others){const p=others[uid];if(p.sc!=='city')continue;
+ human(p.x,p.y,p,1,p.x*0.04);}}
+function drawVenue(){const l=loc(ME.scene),st=VENUE_STYLE[ME.scene]||{floor:'#e8e6e3',accent:'#7c3aed'};
+ ctx.fillStyle=st.floor;ctx.fillRect(0,0,1100,760);
+ if(ME.scene==='quilox'){ctx.strokeStyle='rgba(168,85,247,.18)';ctx.lineWidth=1;
+  for(let x=0;x<1100;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,760);ctx.stroke();}
+  for(let y=0;y<760;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(1100,y);ctx.stroke();}
+  ctx.fillStyle='#f472b6';for(let i=0;i<6;i++)for(let j=0;j<4;j++){ctx.fillStyle=['#f472b6','#60a5fa','#34d399','#facc15'][(i+j)%4];ctx.fillRect(430+i*56,330+j*56,56,56);}}
+ if(ME.scene==='beach'){ctx.fillStyle=['#f472b6','#60a5fa','#34d399','#facc15'];for(let i=0;i<6;i++)for(let j=0;j<4;j++){ctx.fillStyle=['#f472b6','#60a5fa','#34d399','#facc15'][(i+j)%4];ctx.fillRect(430+i*56,330+j*56,56,56);}}
+ ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=10;ctx.strokeRect(5,5,1090,750);
+ for(const pr of (V_PROPS[ME.scene]||[]))drawProp(pr[0],pr[1]*1100,pr[2]*760);
+ locLabel(550,36,l.e+' '+l.n+' — '+(Object.values(others).filter(p=>p.sc===ME.scene).length+1)+' here');
+ for(const uid in others){const p=others[uid];if(p.sc===ME.scene)human(p.x,p.y,p,1,p.x*0.04);}
+ // chat feed bottom-left
+ ctx.font='600 11px sans-serif';let fy=700;
+ for(const m of roomMsgs.slice(-4)){ctx.fillStyle='rgba(255,255,255,.75)';const tw=ctx.measureText('@'+m.n+': '+m.text).width+14;rr(12,fy-14,tw,20,10);ctx.fill();
+  ctx.fillStyle='#1f2937';ctx.fillText('@'+m.n+': '+m.text,19,fy);fy-=24;}}
+function drawProp(t,x,y){ctx.save();ctx.translate(x,y);
+ const P={stage:()=>{ctx.fillStyle='#111827';rr(-110,-40,220,90,10);ctx.fill();ctx.fillStyle='#a855f7';rr(-100,-32,200,50,6);ctx.fill();},
+ bar:()=>{ctx.fillStyle='#7c2d12';rr(-90,-25,180,50,8);ctx.fill();ctx.font='24px sans-serif';ctx.textAlign='center';ctx.fillText('🍾🥂🍷',0,8);},
+ light:()=>{ctx.fillStyle='rgba(250,204,21,.25)';ctx.beginPath();ctx.arc(0,0,60,0,7);ctx.fill();ctx.font='28px sans-serif';ctx.textAlign='center';ctx.fillText('💡',0,8);},
+ palm:()=>{ctx.font='46px sans-serif';ctx.textAlign='center';ctx.fillText('🌴',0,10);},
+ umbrella:()=>{ctx.font='46px sans-serif';ctx.textAlign='center';ctx.fillText('⛱️',0,12);},
+ fire:()=>{ctx.font='36px sans-serif';ctx.textAlign='center';ctx.fillText('🔥',0,10);},
+ dj:()=>{ctx.font='44px sans-serif';ctx.textAlign='center';ctx.fillText('🎧',0,10);},
+ pot:()=>{ctx.font='44px sans-serif';ctx.textAlign='center';ctx.fillText('🍲',0,10);},
+ table2:()=>{ctx.fillStyle='#b08968';ctx.beginPath();ctx.arc(0,0,34,0,7);ctx.fill();ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText('🍽️',0,6);},
+ weights:()=>{ctx.font='40px sans-serif';ctx.textAlign='center';ctx.fillText('🏋️',0,8);},
+ treadmill:()=>{ctx.fillStyle='#475569';rr(-35,-18,70,36,5);ctx.fill();ctx.fillStyle='#94a3b8';ctx.fillRect(-25,-10,50,8);},
+ shelf:()=>{ctx.fillStyle='#94a3b8';rr(-80,-20,160,40,4);ctx.fill();ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText('📚📚📚',0,6);},
+ desk2:()=>{ctx.fillStyle='#b08968';rr(-50,-25,100,50,6);ctx.fill();ctx.font='24px sans-serif';ctx.textAlign='center';ctx.fillText('💻',0,6);},
+ altar:()=>{ctx.fillStyle='#d4af37';rr(-70,-25,140,50,6);ctx.fill();ctx.font='32px sans-serif';ctx.textAlign='center';ctx.fillText('💒',0,8);},
+ pew:()=>{ctx.fillStyle='#8b5e34';rr(-70,-16,140,32,6);ctx.fill();},
+ stall:()=>{ctx.fillStyle='#a16207';rr(-55,-20,110,44,6);ctx.fill();ctx.fillStyle=pick(['#ef4444','#16a34a','#facc15']);ctx.beginPath();ctx.moveTo(-62,-20);ctx.lineTo(0,-52);ctx.lineTo(62,-20);ctx.closePath();ctx.fill();ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText('🥬🍅',0,12);},
+ cell:()=>{ctx.fillStyle='#64748b';rr(-45,-35,90,70,4);ctx.fill();ctx.strokeStyle='#1e293b';ctx.lineWidth=4;for(let i=-30;i<=30;i+=15){ctx.beginPath();ctx.moveTo(i,-35);ctx.lineTo(i,35);ctx.stroke();}},
+ board:()=>{ctx.fillStyle='#1e3a8a';rr(-40,-25,80,50,4);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText('WANTED 🚨',0,4);},
+ pool:()=>{ctx.fillStyle='#38bdf8';rr(-90,-45,180,90,10);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.strokeRect(-90,-45,180,90);}};
+ (P[t]||(()=>{}))();ctx.restore();}
+function drawHome(){const isMine=ME.scene===ME.homeId;
+ ctx.fillStyle='#7f9c96';ctx.fillRect(0,0,880,660); // walls-ish bg
+ ctx.fillStyle='#8a6b48';ctx.fillRect(0,0,880,120);ctx.fillRect(0,0,120,660); // wall bands
+ ctx.fillStyle='#c8a06a';ctx.fillRect(120,120,760,540);
+ ctx.strokeStyle='rgba(0,0,0,.08)';for(let x=120;x<=880;x+=55){ctx.beginPath();ctx.moveTo(x,120);ctx.lineTo(x,660);ctx.stroke();}
+ for(let y=120;y<=660;y+=55){ctx.beginPath();ctx.moveTo(120,y);ctx.lineTo(880,y);ctx.stroke();}
+ // window & door
+ ctx.fillStyle='#bae6fd';ctx.fillRect(700,20,120,80);ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.strokeRect(700,20,120,80);
+ ctx.fillStyle='#7c4a1e';ctx.fillRect(10,300,100,140);
+ locLabel(440,40,(isMine?'🏠 Your home — '+ME.homeName:'🏠 Visiting')+' · '+(Object.values(others).filter(p=>p.sc===ME.scene).length+1)+' here');
+ const furni=isMine?ME.furni:(homeCache[ME.scene]||[]);
+ for(const f of furni){const fx=140+f.x*108,fy=150+f.y*100;
+  ctx.font='46px sans-serif';ctx.textAlign='center';ctx.fillText({'Wooden Bed':'🛏️','Double Bed':'🛏️','Cooler':'🧊','Stove':'🍳','Kitchen Cabinet':'🗄️','WC':'🚽','Shower':'🚿','Bathtub':'🛁','Plastic Chair':'🪑','3-Seater Sofa':'🛋️','Royal Gold Sofa':'👑','Velvet Sofa':'🛋️','TV':'📺','PS5 Setup':'🎮','Snooker Table':'🎱','Standing Lamp':'💡','Air Conditioner':'❄️','Plant':'🪴','Wall Art':'🖼️','Teddy Bear':'🧸','bed':'🛏️','chair':'🪑','cooler':'🧊'}[f.t]||'📦',fx,fy+16);}
+ ctx.textAlign='left';
+ for(const uid in others){const p=others[uid];if(p.sc===ME.scene)human(p.x,p.y,p,1,p.x*0.04);}
+ if(nearFurni){ctx.strokeStyle='#16a34a';ctx.lineWidth=3;ctx.strokeRect(140+nearFurni.x*108-50,150+nearFurni.y*100-44,100,88);
+  const pr=$('prompt');pr.style.display='block';pr.textContent='Press E — use furniture / open Buy mode';
+ } else if(!ME.scene.startsWith('home_')){} }
+let homeCache={};
+function loadHomeCache(){if(!ME.scene.startsWith('home_')||ME.scene===ME.homeId)return;
+ DB.ref('users/'+ME.scene.slice(5)+'/furni').get().then(s=>homeCache[ME.scene]=s.val()||[]);}
 
-/* ---- interiors ---- */
-const FLOORS={sand:['#f4d58d','#ecc878'],club:['#1e1b2e','#171422'],office:['#e8e6e3','#dfdcd8'],home:['#caa06a','#a86b32'],market:['#d9c8a9','#cbb894'],gym:['#dfe5ea','#cfd6dd'],police:['#c9d4e4','#bcc9dc'],church:['#f3ead9','#e8dcc4'],salon:['#f6e3ee','#eccfe0'],resto:['#e7d3b3','#dcc397'],shop:['#eef1f4','#e2e7ec']};
-function drawInterior(){
- const d=INTERIORS[inside];const f=FLOORS[d.floor];
- cx.fillStyle=f[0];cx.fillRect(0,0,d.w,d.h);
- if(d.floor==='club'){ // neon grid
-  cx.strokeStyle='rgba(255,0,255,.15)';cx.lineWidth=1;
-  for(let x=0;x<d.w;x+=60){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,d.h);cx.stroke()}
-  for(let y=0;y<d.h;y+=60){cx.beginPath();cx.moveTo(0,y);cx.lineTo(d.w,y);cx.stroke()}}
- if(d.floor==='home'){cx.fillStyle='#7c4a1e';cx.fillRect(0,0,d.w,d.h*0.55);
-  cx.fillStyle=f[1];for(let i=0;i<10;i++)for(let j=0;j<6;j++)if((i+j)%2===0)cx.fillRect(i*100-((j%2)*50),d.h*0.55+j*52,100,52);}
- if(d.floor==='sand'){ // dance floor tiles
-  const cols=['#f472b6','#60a5fa','#34d399','#facc15'];
-  for(let i=0;i<6;i++)for(let j=0;j<4;j++){cx.fillStyle=cols[(i+j)%4];cx.fillRect(480+i*55,300+j*55,55,55);}
-  cx.strokeStyle='rgba(255,255,255,.5)';cx.strokeRect(480,300,330,220);}
- // walls border
- cx.strokeStyle='rgba(0,0,0,.35)';cx.lineWidth=10;cx.strokeRect(5,5,d.w-10,d.h-10);
- // props
- for(const p of d.props)drawProp(p,d);
- // room label
- label(d.w/2,44,d.emoji+' '+d.name);
-}
-function drawProp(p,d){
- cx.save();cx.translate(p.x,p.y);
- switch(p.t){
-  case 'stage':cx.fillStyle='#111827';rr(-110,-40,220,90,10);cx.fill();
-   cx.fillStyle='#a855f7';rr(-100,-32,200,50,6);cx.fill();break;
-  case 'dj':cx.font='46px sans-serif';cx.textAlign='center';cx.fillText('🎧',0,0);break;
-  case 'palm':cx.fillStyle='#6d4c41';cx.fillRect(-6,-10,12,40);cx.font='44px sans-serif';cx.textAlign='center';cx.fillText('🌴',0,-6);break;
-  case 'umbrella':cx.font='50px sans-serif';cx.textAlign='center';cx.fillText('⛱️',0,10);break;
-  case 'fire':cx.font='38px sans-serif';cx.textAlign='center';cx.fillText('🔥',0,10);break;
-  case 'bar':cx.fillStyle='#7c2d12';rr(-90,-25,180,50,8);cx.fill();cx.font='26px sans-serif';cx.textAlign='center';cx.fillText('🍾🥂🍷',0,6);break;
-  case 'light':cx.fillStyle='rgba(250,204,21,.25)';cx.beginPath();cx.arc(0,0,60,0,7);cx.fill();cx.font='30px sans-serif';cx.textAlign='center';cx.fillText('💡',0,8);break;
-  case 'desk':cx.fillStyle='#b08968';rr(-50,-25,100,50,6);cx.fill();cx.font='26px sans-serif';cx.textAlign='center';cx.fillText('💻',0,6);break;
-  case 'bossdesk':cx.fillStyle='#8b5e34';rr(-60,-30,120,60,8);cx.fill();cx.font='30px sans-serif';cx.textAlign='center';cx.fillText('🧑‍💼',0,8);break;
-  case 'plant':cx.font='44px sans-serif';cx.textAlign='center';cx.fillText('🪴',0,10);break;
-  case 'bed':cx.fillStyle='#e7e5e4';rr(-60,-35,120,70,8);cx.fill();cx.fillStyle='#dc2626';rr(-58,-33,80,66,6);cx.fill();cx.fillStyle='#fff';rr(22,-33,38,66,6);cx.fill();break;
-  case 'chair':cx.fillStyle='#dc2626';rr(-14,-18,28,36,4);cx.fill();break;
-  case 'cooler':cx.fillStyle='#2563eb';rr(-18,-14,36,30,4);cx.fill();cx.fillStyle='#fff';cx.fillRect(-18,-14,36,8);break;
-  case 'table':cx.fillStyle='#d6d3d1';rr(-25,-16,50,32,4);cx.fill();cx.font='18px sans-serif';cx.textAlign='center';cx.fillText('🫙',0,4);break;
-  case 'window':cx.fillStyle='#bae6fd';rr(-30,-20,60,40,4);cx.fill();cx.strokeStyle='#fff';cx.lineWidth=3;cx.strokeRect(-30,-20,60,40);break;
-  case 'rug':cx.fillStyle='rgba(220,38,38,.4)';cx.beginPath();cx.ellipse(0,0,70,45,0,0,7);cx.fill();break;
-  case 'stall':cx.fillStyle='#a16207';rr(-55,-25,110,50,6);cx.fill();cx.fillStyle=pick(['#ef4444','#16a34a','#facc15']);cx.beginPath();cx.moveTo(-60,-25);cx.lineTo(0,-55);cx.lineTo(60,-25);cx.closePath();cx.fill();cx.font='20px sans-serif';cx.textAlign='center';cx.fillText(pick(['🥬🍅','🍠🌶️','🐟','🍚🫘']),0,10);break;
-  case 'weights':cx.font='40px sans-serif';cx.textAlign='center';cx.fillText('🏋️',0,8);break;
-  case 'treadmill':cx.fillStyle='#475569';rr(-35,-18,70,36,5);cx.fill();cx.fillStyle='#94a3b8';cx.fillRect(-25,-10,50,8);break;
-  case 'mat':cx.fillStyle='#3b82f6';rr(-40,-25,80,50,6);cx.fill();break;
-  case 'cell':cx.fillStyle='#64748b';rr(-45,-35,90,70,4);cx.fill();cx.strokeStyle='#1e293b';cx.lineWidth=4;for(let i=-30;i<=30;i+=15){cx.beginPath();cx.moveTo(i,-35);cx.lineTo(i,35);cx.stroke()}break;
-  case 'board':cx.fillStyle='#1e3a8a';rr(-40,-25,80,50,4);cx.fill();cx.fillStyle='#fff';cx.font='10px sans-serif';cx.textAlign='center';cx.fillText('WANTED 🚨',0,4);break;
-  case 'altar':cx.fillStyle='#d4af37';rr(-70,-25,140,50,6);cx.fill();cx.font='34px sans-serif';cx.textAlign='center';cx.fillText('💒✝️',0,8);break;
-  case 'pew':cx.fillStyle='#8b5e34';rr(-70,-16,140,32,6);cx.fill();break;
-  case 'chair2':cx.fillStyle='#475569';rr(-16,-16,32,32,6);cx.fill();cx.font='22px sans-serif';cx.textAlign='center';cx.fillText('💇',0,6);break;
-  case 'mirror':cx.fillStyle='#bae6fd';rr(-25,-30,50,60,8);cx.fill();break;
-  case 'table2':cx.fillStyle='#b08968';cx.beginPath();cx.arc(0,0,34,0,7);cx.fill();cx.font='20px sans-serif';cx.textAlign='center';cx.fillText('🍲',0,6);break;
-  case 'pot':cx.font='44px sans-serif';cx.textAlign='center';cx.fillText('🍲',0,10);break;
-  case 'shelf':cx.fillStyle='#94a3b8';rr(-80,-20,160,40,4);cx.fill();cx.font='20px sans-serif';cx.textAlign='center';cx.fillText(pick(['🛋️📺','👟👗','🧊🍽️']),0,6);break;
- }
- cx.restore();}
-function drawSceneNPCs(dt){
- for(const p of sceneNPCs){
-  if(p.dance){p.ph+=dt*8;p.x+=Math.sin(p.ph*.5)*0.4;}else{
-   p.sayT-=dt;if(p.sayT<=0){p.sayT=rand(6,16);p.tx=clamp(p.x+rand(-180,180),80,INTERIORS[inside].w-80);p.ty=clamp(p.y+rand(-160,160),90,INTERIORS[inside].h-90)}
-   const d=dist(p,{x:p.tx,y:p.ty});
-   if(d>4){const m=Math.hypot(p.tx-p.x,p.ty-p.y);p.x+=(p.tx-p.x)/m*p.speed*dt;p.y+=(p.ty-p.y)/m*p.speed*dt;p.ph+=dt*7}
-   if(Math.random()<0.002)say(p.name,p.x,p.y-70,pick(['😂','omo!!','lagos sweet','as e dey hot 🔥','no be lie','🎶🎶','check my steps 💃','chai']));}
-  const isBoo=(S.partner&&S.partner.name===p.name)||(S.spouse&&S.spouse.name===p.name);
-  human(p.x,p.y,p,1.0,p.ph);
-  cx.font='700 11px sans-serif';cx.textAlign='center';
-  cx.fillStyle=isBoo?'#e11d48':'#fff';cx.strokeStyle='rgba(0,0,0,.5)';cx.lineWidth=3;
-  cx.strokeText('@'+p.name+(isBoo?' 💕':''),p.x,p.y-46);cx.fillText('@'+p.name+(isBoo?' 💕':''),p.x,p.y-46);cx.textAlign='left';}
-}
-function drawPlayer(){
+/* ============================= PROMPT / INTERACT ============================= */
+let promptTick=0;
+function tryInteract(){
+ if(ME.scene.startsWith('home_')){if(nearFurni)homeInteract();else openBuy();return;}
+ if(ME.scene!=='city'){exitVenue();return;}
+ const l=LOCS.find(l=>d2(ME,l)<95);if(l)openVenueSheet(l);}
+function updatePrompt(){const pr=$('prompt');if(ME.scene.startsWith('home_'))return; // home handles own
+ if(ME.scene==='city'){const l=LOCS.find(l=>d2(ME,l)<95);
+  if(l){pr.style.display='block';pr.textContent=`Tap — ${l.e} ${l.n}`;return;}}
+ if(ME.scene!=='city'){pr.style.display='block';pr.textContent='Press E — leave venue · tap someone to chat';return;}
+ pr.style.display='none';}
+
+/* ============================= MAIN LOOP ============================= */
+let last=0,frame=0;
+function loop(t){requestAnimationFrame(loop);if(!ME||$('game').classList.contains('hidden'))return;
+ const dt=Math.min(0.05,(t-last)/1000||0.016);last=t;frame++;
+ if(!travelTick(dt))move(dt);
  if(walking)ph+=0.16;
- if(S.married){cx.font='20px sans-serif';cx.fillText('💍',S.x+10,S.y-50)}
- if(S.baby){cx.font='16px sans-serif';cx.fillText('👶',S.x-22,S.y-50)}
- human(S.x,S.y,{skin:'#8d5524',shirt:'#fbbf24'},1.1,ph);
- cx.font='800 12px sans-serif';cx.textAlign='center';
- cx.fillStyle='#0a7a4a';cx.strokeStyle='rgba(255,255,255,.8)';cx.lineWidth=3;
- cx.strokeText('@scar_belle (you)',S.x,S.y-56);cx.fillText('@scar_belle (you)',S.x,S.y-56);cx.textAlign='left';
- if(travelling&&travelling.mode.id!=='trek'){cx.font='40px sans-serif';cx.textAlign='center';cx.fillText(travelling.mode.i,S.x,S.y-6);cx.textAlign='left';}}
-
-/* ============ MAIN LOOP ============ */
-let last=0;
-function loop(t){const dt=Math.min(0.05,(t-last)/1000||0.016);last=t;
- tickTime(dt);chatTick(dt);thugTick(dt);
  for(const b of bubbles)b.t-=dt;bubbles=bubbles.filter(b=>b.t>0);
- if(!inside){if(!travelTick(dt))move(dt);scanNpc();
-  cam.x=clamp(S.x-W/2,0,Math.max(0,CITY.w-W));cam.y=clamp(S.y-H/2,0,Math.max(0,CITY.h-H));
-  cx.save();cx.translate(-cam.x,-cam.y);drawCity();drawPlayer();bubbleDraw();cx.restore();}
- else{const d=INTERIORS[inside];move(dt);scanNpc();
-  cam.x=clamp(S.x-W/2,0,Math.max(0,d.w-W));cam.y=clamp(S.y-H/2,0,Math.max(0,d.h-H));
-  cx.save();cx.translate(-cam.x,-cam.y);drawInterior();drawSceneNPCs(dt);drawPlayer();bubbleDraw();cx.restore();}
- requestAnimationFrame(loop);}
-
-/* ============ BOOT ============ */
-updateHUD();bigTitle("💕 scar_belle's love life");
-pushChat('system','👋 Welcome! Walk into any building — people are inside waiting to gist with you.');
-setTimeout(()=>toast('🚶 WASD / click to walk · Walk into a building to enter · E to talk to people'),1200);
-setTimeout(()=>pushChat(pick(NAMES),'who dey beach?? 🏖️'),3000);
+ if(frame%60===0){updatePrompt();loadHomeCache();}
+ const b=bounds();cam.x=clamp(ME.x-VW/2,0,Math.max(0,b.w-VW));cam.y=clamp(ME.y-VH/2,0,Math.max(0,b.h-VH));
+ ctx.save();ctx.translate(-cam.x,-cam.y);
+ if(ME.scene==='city')drawCity();
+ else if(ME.scene.startsWith('home_'))drawHome();
+ else drawVenue();
+ human(ME.x,ME.y,{n:ME.name,o:ME.outfit,h:ME.hair,ring:ME.married?1:0,baby:ME.baby?1:0},1.1,ph,true);
+ if(travelling)ctx.fillText(travelling.icon,ME.x-14,ME.y-10);
+ bubbleDraw();ctx.restore();}
 requestAnimationFrame(loop);
 </script>
 </body>
 </html>
 '''
 with open('/mnt/agents/output/index.html','w') as f:
-    f.write(code)
-print('written', len(code), 'chars')
+    f.write(game)
+print('chars:',len(game))
