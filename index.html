@@ -1,861 +1,664 @@
-<!DOCTYPE html>
+html_head = '''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>scar_belle's love life 💕</title>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>scar_belle's love life 👑</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:#0b1020;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;user-select:none}
-#cv{display:block;position:absolute;inset:0}
-.hidden{display:none!important}
-button{font-family:inherit;cursor:pointer}
-
-/* ===== auth ===== */
-#authScreen{position:absolute;inset:0;background:linear-gradient(160deg,#1e1b4b,#4c1d95,#831843);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;padding:20px;overflow-y:auto}
-#authScreen h1{color:#fff;font-size:26px;margin-bottom:4px;text-align:center}
-#authScreen p{color:#e9d5ff;font-size:13px;margin-bottom:18px;text-align:center}
-.authCard{background:rgba(255,255,255,.97);border-radius:22px;padding:22px;width:min(400px,94vw);box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.authCard input{width:100%;padding:13px 14px;border-radius:12px;border:2px solid #e5e7eb;margin-bottom:10px;font-size:14px;outline:none}
-.authCard input:focus{border-color:#16a34a}
-.bigBtn{width:100%;padding:14px;border:none;border-radius:14px;background:#16a34a;color:#fff;font-size:15px;font-weight:700;margin-top:6px}
-.bigBtn:disabled{opacity:.5}
-.linkBtn{background:none;border:none;color:#7c3aed;font-weight:600;font-size:13px;margin-top:12px}
-#setupBox{background:#fffbeb;border:2px solid #f59e0b;border-radius:16px;padding:16px;width:min(520px,94vw);color:#78350f;font-size:12.5px;line-height:1.65;margin-top:14px}
-#setupBox b{color:#92400e}
-#setupBox code{background:#fef3c7;padding:1px 5px;border-radius:5px}
-
-/* ===== creator ===== */
-#creator{position:absolute;inset:0;background:#eef2ff;display:flex;flex-direction:column;z-index:190}
-#crTop{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(255,255,255,.85)}
-#crTop h2{font-size:17px;color:#111827}
-#crNext{background:#16a34a;color:#fff;border:none;border-radius:999px;padding:9px 22px;font-weight:700;font-size:14px}
-#crNext:disabled{background:#a7f3d0}
-#crStage{flex:1;position:relative;overflow:hidden}
-#crAvatar{position:absolute;left:50%;top:8%;transform:translateX(-50%);text-align:center;pointer-events:none}
-#crSheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:28px 28px 0 0;padding:20px 18px 30px;max-height:56%;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.15)}
-#crSheet h3{font-size:14px;color:#6b7280;font-weight:600;margin-bottom:10px}
-.crRow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.chip{border:2px solid #e5e7eb;background:#f9fafb;border-radius:999px;padding:10px 16px;font-size:14px;font-weight:600;color:#111827}
-.chip.sel{background:#1f2937;color:#fff;border-color:#1f2937}
-.crCard{width:100%;text-align:left;border:2px solid #e5e7eb;border-radius:16px;padding:13px;margin-bottom:9px;background:#fff}
-.crCard.sel{border-color:#16a34a;background:#f0fdf4}
-.crCard b{font-size:15px;color:#111827}
-.crCard small{display:block;color:#6b7280;font-size:12px;margin-top:3px;line-height:1.45}
-#crNameInput{width:100%;padding:13px;border-radius:12px;border:2px solid #e5e7eb;font-size:16px;font-weight:600;margin-bottom:12px;outline:none}
-#crNameInput:focus{border-color:#16a34a}
-#lotteryCard{background:#fde68a;border-radius:22px;padding:30px;text-align:center;margin:10px 0}
-#lotteryCard .big{font-size:52px}
-#lotteryCard h4{font-size:22px;margin:10px 0 6px}
-#lotteryCard p{font-size:13px;color:#713f12}
-#crGo{width:100%;padding:15px;border:none;border-radius:16px;background:#16a34a;color:#fff;font-size:16px;font-weight:800;margin-top:8px}
-
-/* ===== HUD ===== */
-#hud{position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:60;flex-wrap:wrap;justify-content:center;max-width:98vw}
-.pill{background:rgba(255,255,255,.95);border-radius:999px;padding:6px 11px;font-size:11.5px;font-weight:600;color:#1a2233;box-shadow:0 3px 10px rgba(0,0,0,.25);display:flex;align-items:center;gap:4px;white-space:nowrap}
-.pill b{color:#0a7a4a}
-.sbar{width:46px;height:7px;background:#e5e7eb;border-radius:5px;overflow:hidden;display:inline-block}
-.sbar i{display:block;height:100%;border-radius:5px}
-#hudSub{position:absolute;top:44px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:60}
-.spill{background:rgba(255,255,255,.9);border:none;border-radius:999px;padding:5px 11px;font-size:11px;font-weight:600;color:#374151;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-
-/* ===== bottom nav ===== */
-#nav{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:rgba(255,255,255,.97);padding:8px;border-radius:24px;z-index:60;box-shadow:0 8px 30px rgba(0,0,0,.35)}
-#nav button{background:transparent;border:none;color:#6b7280;font-size:10px;font-weight:700;padding:5px 13px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:56px}
-#nav button span{font-size:19px}
-#nav button.active{background:#1f2937;color:#fff}
-
-/* ===== sheets ===== */
-.sheetWrap{position:absolute;inset:0;background:rgba(10,12,25,.5);z-index:100;display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:#fff;width:100%;max-width:480px;max-height:82vh;overflow-y:auto;border-radius:26px 26px 0 0;padding:18px 16px 28px;animation:up .25s ease}
-@keyframes up{from{transform:translateY(60px);opacity:.3}to{transform:translateY(0);opacity:1}}
-.sheet h2{font-size:19px;color:#111827}
-.sheet .sub{color:#6b7280;font-size:12.5px;margin:3px 0 14px;line-height:1.5}
-.xBtn{float:right;background:#f3f4f6;border:none;border-radius:999px;width:32px;height:32px;font-size:14px;font-weight:700;color:#374151}
-.act{width:100%;text-align:left;background:#f3f4f6;border:none;border-radius:14px;padding:13px 14px;margin-bottom:8px;font-size:14px;font-weight:600;color:#111827;display:flex;justify-content:space-between;align-items:center}
-.act:hover{background:#e5e7eb}.act.green{background:#16a34a;color:#fff}.act.pink{background:#db2777;color:#fff}.act.red{background:#fee2e2;color:#991b1b}
-.act small{color:#6b7280;font-weight:500;font-size:11.5px}.act.green small,.act.pink small{color:rgba(255,255,255,.85)}
-.tiles{display:flex;gap:6px;margin:10px 0 14px}
-.tmode{flex:1;border:2px solid #e5e7eb;border-radius:14px;background:#fff;padding:10px 4px;text-align:center}
-.tmode.sel{border-color:#2563eb;background:#eff6ff}
-.tmode .ic{font-size:22px}
-.tmode b{display:block;font-size:11.5px;margin-top:3px}
-.tmode small{font-size:10.5px;color:#6b7280}
-#goBtn{width:100%;padding:14px;border:none;border-radius:16px;background:#16a34a;color:#fff;font-size:15px;font-weight:800}
-.chipRow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-.mchip{border:none;background:#f3f4f6;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:600;color:#111827}
-
-/* venue chat bar */
-#venueBar{position:absolute;bottom:66px;left:50%;transform:translateX(-50%);width:min(460px,94vw);z-index:55;display:none}
-#venueBar .vrow{display:flex;gap:6px;background:rgba(255,255,255,.97);border-radius:16px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
-#venueBar input{flex:1;border:none;outline:none;font-size:13px;padding:8px;background:transparent;color:#111827}
-#venueBar button{background:#16a34a;border:none;color:#fff;border-radius:11px;padding:0 15px;font-weight:800}
-#vChips{display:flex;gap:5px;margin-top:5px;justify-content:center;flex-wrap:wrap}
-.vchip{background:rgba(255,255,255,.95);border:none;border-radius:999px;padding:6px 11px;font-size:11px;font-weight:700;color:#111827;box-shadow:0 2px 8px rgba(0,0,0,.25)}
-
-/* DM */
-#dmMsgs{height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:6px 2px}
-.dmB{border-radius:14px;padding:8px 11px;font-size:13px;max-width:80%;line-height:1.4}
-.dmB.them{background:#f3f4f6;color:#111827;align-self:flex-start}
-.dmB.me{background:#2563eb;color:#fff;align-self:flex-end}
-.dmB small{display:block;font-size:9.5px;opacity:.6;margin-top:2px}
-#dmRow{display:flex;gap:6px;margin-top:10px}
-#dmRow input{flex:1;padding:11px;border-radius:12px;border:2px solid #e5e7eb;font-size:13px;outline:none}
-#dmRow button{background:#16a34a;border:none;color:#fff;border-radius:12px;padding:0 16px;font-weight:800}
-.quickRow{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-.qb{background:#eef2ff;border:none;border-radius:999px;padding:7px 11px;font-size:11.5px;font-weight:600;color:#3730a3}
-
-/* phone */
-.appGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px;margin:14px 0}
-.app{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none}
-.app .ic{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:0 4px 10px rgba(0,0,0,.12)}
-.app span{font-size:10.5px;font-weight:600;color:#374151}
-.jobCard{display:flex;gap:12px;align-items:center;border:2px solid #f3f4f6;border-radius:16px;padding:12px;margin-bottom:9px}
-.jobCard .ji{width:46px;height:46px;border-radius:13px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:23px}
-.jobCard b{font-size:14.5px}
-.jobCard small{display:block;color:#6b7280;font-size:11.5px;margin-top:2px;line-height:1.4}
-.jobCard .apply{margin-left:auto;background:#16a34a;border:none;color:#fff;border-radius:10px;padding:9px 12px;font-size:11px;font-weight:700;white-space:nowrap}
-.jobCard .pay{color:#16a34a;font-weight:800;font-size:12px}
-
-/* catalogue */
-.catTabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}
-.catTab{white-space:nowrap;border:none;background:#f3f4f6;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:700;color:#374151}
-.catTab.sel{background:#1f2937;color:#fff}
-.catGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.itemCard{border:2px solid #f3f4f6;border-radius:14px;padding:10px 6px;text-align:center;background:#fff}
-.itemCard .ie{font-size:30px}
-.itemCard b{display:block;font-size:11px;margin-top:4px;color:#111827}
-.itemCard .pr{color:#16a34a;font-weight:800;font-size:12px;margin-top:2px}
-.itemCard .st{color:#f59e0b;font-size:9px}
-.itemCard button{margin-top:6px;width:100%;border:none;border-radius:9px;background:#16a34a;color:#fff;font-size:11px;font-weight:700;padding:7px 0}
-.itemCard button:disabled{background:#d1d5db}
-
-/* misc */
-#prompt{position:absolute;bottom:112px;left:50%;transform:translateX(-50%);z-index:55;background:rgba(17,24,39,.94);color:#fff;padding:9px 17px;border-radius:999px;font-size:12.5px;font-weight:600;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.4)}
-#toasts{position:absolute;top:76px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:5px;align-items:center;pointer-events:none;width:94vw}
-.toast{background:rgba(17,24,39,.95);color:#fff;padding:10px 17px;border-radius:999px;font-size:12.5px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.4);animation:tin .3s ease;max-width:94vw;text-align:center}
-@keyframes tin{from{transform:translateY(-12px);opacity:0}to{transform:translateY(0);opacity:1}}
-#bigTitle{position:absolute;top:30%;left:0;right:0;text-align:center;z-index:250;pointer-events:none;opacity:0;transition:opacity .5s}
-#bigTitle h1{font-size:30px;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.65)}
-#loader{position:absolute;inset:0;background:rgba(10,14,30,.88);z-index:180;display:none;align-items:center;justify-content:center;flex-direction:column}
-#loader .box{background:#fff;border-radius:18px;padding:16px 26px;font-weight:700;color:#111827;font-size:14px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
-#bell{position:absolute;top:44px;right:10px;z-index:65;background:rgba(255,255,255,.95);border:none;border-radius:999px;width:36px;height:36px;font-size:16px;box-shadow:0 3px 10px rgba(0,0,0,.3)}
-#bellCount{position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;border-radius:999px;font-size:9.5px;font-weight:800;padding:2px 6px}
-#visitTag{position:absolute;top:44px;left:10px;z-index:65;background:rgba(219,39,119,.95);color:#fff;border:none;border-radius:999px;padding:8px 14px;font-size:11.5px;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+html,body{width:100%;height:100%;overflow:hidden;background:#0b1020;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;user-select:none}
+#game{position:fixed;inset:0;touch-action:none}
+canvas{display:block}
+/* ---------- HUD ---------- */
+#hudTop{position:fixed;top:10px;left:10px;right:10px;display:flex;gap:8px;z-index:20;pointer-events:none}
+.pill{background:rgba(255,255,255,.92);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;color:#1a1f36;box-shadow:0 4px 14px rgba(0,0,0,.25);display:flex;align-items:center;gap:6px;pointer-events:auto}
+#moneyPill{color:#0a7a3d}
+#hudBars{position:fixed;top:56px;left:10px;z-index:20;display:flex;flex-direction:column;gap:4px;pointer-events:none}
+.bar{width:130px;height:16px;background:rgba(0,0,0,.45);border-radius:8px;overflow:hidden;position:relative;font-size:10px}
+.bar span{position:absolute;left:6px;top:1px;color:#fff;font-weight:700;text-shadow:0 1px 2px #000;z-index:2}
+.bar i{position:absolute;left:0;top:0;bottom:0;transition:width .4s}
+#bHunger i{background:#e67e22}#bEnergy i{background:#2980b9}#bFun i{background:#8e44ad}
+/* ---------- bottom nav ---------- */
+#nav{position:fixed;bottom:12px;left:10px;right:10px;display:flex;gap:6px;z-index:20}
+#nav button{flex:1;border:none;border-radius:16px;padding:10px 4px;font-weight:700;font-size:12px;color:#3a4160;background:rgba(255,255,255,.94);box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer}
+#nav button:active{transform:scale(.95)}
+#nav button.on{background:#1a1f36;color:#ffd54a}
+/* ---------- bottom sheet panel ---------- */
+#panel{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-radius:24px 24px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.9,.3,1.1);max-height:72vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,.4)}
+#panel.open{transform:translateY(0)}
+#panelHead{display:flex;justify-content:space-between;align-items:center;padding:16px 18px 6px;position:sticky;top:0;background:#fff;border-radius:24px 24px 0 0}
+#panelTitle{font-size:18px;font-weight:800;color:#1a1f36}
+#panelClose{border:none;background:#f0f1f6;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer}
+#panelBody{padding:6px 18px 18px;font-size:14px;color:#3a4160;line-height:1.5}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;margin:8px 0;padding:13px 14px;border:1.5px solid #e4e6f0;border-radius:14px;background:#fafbff;font-size:14px;font-weight:600;color:#1a1f36;cursor:pointer;text-align:left}
+.opt small{display:block;font-weight:400;color:#7a819e}
+.opt:active{transform:scale(.98)}
+.opt.green{background:#e9f9ef;border-color:#9adbb3}
+.opt.pink{background:#fdeef5;border-color:#f3b6d3}
+/* ---------- chat ---------- */
+#chat{position:fixed;top:0;right:0;bottom:0;width:min(340px,88vw);background:#fff;z-index:50;transform:translateX(105%);transition:transform .3s;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.35)}
+#chat.open{transform:translateX(0)}
+#chatHead{padding:14px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;font-weight:800}
+#chatMsgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.msg{background:#f1f2f8;border-radius:12px;padding:8px 10px;font-size:13px}
+.msg b{color:#b06ab3}
+.msg.sys{background:#e9f9ef;color:#0a7a3d;text-align:center;font-size:12px}
+#chatIn{display:flex;gap:6px;padding:10px;border-top:1px solid #eee}
+#chatIn input{flex:1;border:1.5px solid #e0e2ee;border-radius:12px;padding:10px;font-size:14px;outline:none}
+#chatIn button{border:none;background:#1a1f36;color:#fff;border-radius:12px;padding:0 16px;font-weight:700;cursor:pointer}
+/* ---------- modals ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,12,30,.65);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.card{background:#fff;border-radius:22px;padding:22px;width:100%;max-width:380px;max-height:86vh;overflow-y:auto;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.card h2{color:#1a1f36;margin-bottom:6px;font-size:20px}
+.card p{color:#5a6180;font-size:14px;margin-bottom:14px;line-height:1.5}
+.card input{width:100%;padding:13px;border:1.5px solid #dfe2ef;border-radius:12px;font-size:15px;margin:6px 0;outline:none}
+.bigBtn{width:100%;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;color:#fff;background:linear-gradient(135deg,#11998e,#38ef7d);cursor:pointer;margin-top:8px}
+.bigBtn.pink{background:linear-gradient(135deg,#b06ab3,#4568dc)}
+.bigBtn.gray{background:#c3c7d9}
+.genderRow{display:flex;gap:10px;margin:8px 0}
+.genderRow div{flex:1;border:2px solid #e4e6f0;border-radius:14px;padding:14px;font-weight:700;cursor:pointer;color:#3a4160}
+.genderRow div.sel{border-color:#b06ab3;background:#fdeef5}
+#toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:#1a1f36;color:#fff;padding:11px 18px;border-radius:14px;font-size:13px;font-weight:600;z-index:70;opacity:0;transition:all .3s;pointer-events:none;max-width:88vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#interactBtn{position:fixed;right:12px;bottom:76px;z-index:25;border:none;background:linear-gradient(135deg,#ff5f9e,#b06ab3);color:#fff;font-weight:800;font-size:13px;padding:12px 16px;border-radius:16px;box-shadow:0 6px 18px rgba(255,95,158,.5);display:none;cursor:pointer}
+#prog{position:fixed;top:46%;left:50%;transform:translate(-50%,-50%);z-index:55;background:#fff;border-radius:16px;padding:18px 22px;display:none;text-align:center;font-weight:700;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+#progBar{width:220px;height:10px;background:#eee;border-radius:6px;margin-top:10px;overflow:hidden}
+#progBar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#11998e,#38ef7d)}
+#onlinePill{position:fixed;top:56px;right:10px;z-index:20;background:rgba(26,31,54,.85);color:#7CFC9A;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px}
+@media(min-width:700px){#chat{width:380px}}
 </style>
 </head>
-<body>
-<canvas id="cv"></canvas>
+'''
+with open('/mnt/agents/output/scar_belles_love_life.html','w') as f: f.write(html_head)
+print('part1 ok', len(html_head))
+html_body = '''<body>
+<div id="game"><canvas id="cv"></canvas></div>
 
-<!-- ================= AUTH ================= -->
-<div id="authScreen">
-  <h1>💕 scar_belle's love life</h1>
-  <p>Real people. Real Lagos. One link — invite your friends & meet them in the game.</p>
-  <div class="authCard">
-    <input id="em" type="email" placeholder="Email" autocomplete="email">
-    <input id="pw" type="password" placeholder="Password (6+ chars)" autocomplete="current-password">
-    <button class="bigBtn" id="authBtn">Create account / Log in</button>
-    <div style="text-align:center"><button class="linkBtn" id="authSwap">New here? Create account</button></div>
-    <div id="authErr" style="color:#dc2626;font-size:12px;margin-top:8px;text-align:center"></div>
-  </div>
-  <div id="setupBox" class="hidden">
-    <b>One-time setup (5 mins) for real multiplayer:</b><br>
-    1. Go to <code>console.firebase.google.com</code> → "Add project" (any name, Google Analytics off).<br>
-    2. Build → <b>Realtime Database</b> → Create → choose location → <b>Start in test mode</b>.<br>
-    3. Project settings → "Add app" → Web (</>) → copy the <code>firebaseConfig</code> values.<br>
-    4. Paste them into <code>FIREBASE_CONFIG</code> at the top of the script in this file.<br>
-    5. In Authentication → Sign-in method → enable <b>Email/Password</b>. Commit. Done! ✅
-  </div>
+<div id="hudTop">
+  <div class="pill" id="timePill">🌙 10:00 PM</div>
+  <div class="pill" id="moodPill">🙂 Happy</div>
+  <div class="pill" id="moneyPill">💰 ₦100,000</div>
+</div>
+<div id="hudBars">
+  <div class="bar" id="bHunger"><span>🍲 Hunger</span><i style="width:80%"></i></div>
+  <div class="bar" id="bEnergy"><span>⚡ Energy</span><i style="width:90%"></i></div>
+  <div class="bar" id="bFun"><span>🎉 Fun</span><i style="width:60%"></i></div>
+</div>
+<div id="onlinePill">● <span id="onlineN">1</span> online</div>
+
+<div id="nav">
+  <button id="navHome">🏠<br>Home</button>
+  <button id="navWork">💼<br>Work</button>
+  <button id="navChat">💬<br>Chat</button>
+  <button id="navProfile">👤<br>Me</button>
 </div>
 
-<!-- ================= CREATOR ================= -->
-<div id="creator" class="hidden">
-  <div id="crTop">
-    <div style="width:70px"></div>
-    <div style="text-align:center">
-      <h2 id="crTitle">Look</h2>
-      <div id="crProg" style="display:flex;gap:5px;justify-content:center;margin-top:5px"></div>
+<button id="interactBtn">❤️ Interact</button>
+
+<div id="panel">
+  <div id="panelHead"><div id="panelTitle">Lagos</div><button id="panelClose">✕</button></div>
+  <div id="panelBody"></div>
+</div>
+
+<div id="chat">
+  <div id="chatHead"><span>💬 Lagos Group Chat</span><button id="chatClose" style="border:none;background:#f0f1f6;width:32px;height:32px;border-radius:50%;cursor:pointer">✕</button></div>
+  <div id="chatMsgs"></div>
+  <div id="chatIn"><input id="chatTxt" placeholder="Say something..." maxlength="200"><button id="chatSend">Send</button></div>
+</div>
+
+<!-- welcome / account -->
+<div class="modal show" id="mWelcome">
+  <div class="card">
+    <div style="font-size:44px">👑</div>
+    <h2>scar_belle's love life</h2>
+    <p>Live your Lagos story. Work, hustle, fall in love, marry & raise a family — with real people online.</p>
+    <input id="accName" placeholder="Choose your name (e.g. scar_belle)" maxlength="16">
+    <div class="genderRow">
+      <div id="gW" class="sel">👩 Woman</div>
+      <div id="gM">👨 Man</div>
     </div>
-    <button id="crNext" disabled>Next</button>
-  </div>
-  <div id="crStage">
-    <div id="crAvatar"><canvas id="crCv" width="220" height="320"></canvas><div style="font-size:11px;color:#9ca3af;margin-top:-24px">your look</div></div>
-    <div id="crSheet"></div>
+    <button class="bigBtn" id="startBtn">Start life in Lagos 🚀</button>
+    <p style="font-size:11px;margin-top:10px" id="netNote">Multiplayer: add your free Firebase config (see code top) to see & chat with real players.</p>
   </div>
 </div>
 
-<!-- ================= GAME ================= -->
-<div id="game" class="hidden">
-  <div id="hud">
-    <div class="pill">🌙 <span id="hudClock">8:00 AM · Day 1</span></div>
-    <div class="pill">💰 <b id="hudMoney">₦0</b></div>
-    <div class="pill">😊<span class="sbar"><i id="sbH" style="background:#f59e0b"></i></span></div>
-    <div class="pill">🍗<span class="sbar"><i id="sbF" style="background:#ef4444"></i></span></div>
-    <div class="pill">⚡<span class="sbar"><i id="sbE" style="background:#3b82f6"></i></span></div>
-    <div class="pill">🧼<span class="sbar"><i id="sbY" style="background:#06b6d4"></i></span></div>
-  </div>
-  <div id="hudSub">
-    <button class="spill" id="spRadio">📻 Naija Radio</button>
-    <button class="spill">👀 <span id="spVisits">7.2m</span> visits</button>
-    <button class="spill">🟢 <span id="spOnline">1</span> online</button>
-  </div>
-  <button id="bell" class="hidden">🔔<span id="bellCount" class="hidden">0</span></button>
-  <button id="visitTag" class="hidden">🏠 <span id="visitName"></span>'s home · tap to leave</button>
-
-  <div id="venueBar">
-    <div class="vrow"><input id="vInput" placeholder="Say something to the players here..."><button id="vSend">➤</button></div>
-    <div id="vChips"></div>
-  </div>
-
-  <div id="prompt"></div>
-  <div id="toasts"></div>
-  <div id="bigTitle"><h1 id="bigText"></h1></div>
-  <div id="loader"><div class="box" id="loaderText">Loading Lagos… 0%</div></div>
-
-  <div id="nav" class="hidden">
-    <button id="nHome"><span>🏠</span>Home</button>
-    <button id="nBuy"><span>🛋️</span>Buy</button>
-    <button id="nMap" class="active"><span>🗺️</span>Map</button>
-    <button id="nPhone"><span>📱</span>Phone</button>
+<!-- generic request modal -->
+<div class="modal" id="mReq">
+  <div class="card">
+    <div style="font-size:40px" id="reqIcon">💌</div>
+    <h2 id="reqTitle">Request</h2>
+    <p id="reqText"></p>
+    <button class="bigBtn pink" id="reqYes">Accept 💕</button>
+    <button class="bigBtn gray" id="reqNo">Decline</button>
   </div>
 </div>
 
-<div id="sheetRoot"></div>
+<div id="prog"><div id="progTxt">Working...</div><div id="progBar"><i></i></div></div>
+<div id="toast"></div>
 
-<script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+'''
+with open('/mnt/agents/output/scar_belles_love_life.html','a') as f: f.write(html_body)
+print('part2 ok', len(html_body))
+js1 = '''<script>
 /* =====================================================================
-   scar_belle's love life — REAL MULTIPLAYER Lagos life sim
-   ===================================================================== */
-
-/* >>> PASTE YOUR FIREBASE CONFIG HERE (see setup box on login screen) <<< */
-const FIREBASE_CONFIG = {
-  apiKey: "PASTE_HERE",
-  authDomain: "PASTE_HERE",
-  databaseURL: "PASTE_HERE",
-  projectId: "PASTE_HERE",
-  storageBucket: "PASTE_HERE",
-  messagingSenderId: "PASTE_HERE",
-  appId: "PASTE_HERE"
+   scar_belle's love life — single-file Lagos life sim
+   REAL MULTIPLAYER: paste your free Firebase config below (see README
+   in final chat message). Until then the game runs with smart simulated
+   Lagosians so the city is never empty.
+===================================================================== */
+var firebaseConfig = {
+  apiKey: "PASTE_YOUR_API_KEY",
+  authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://PASTE_YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "PASTE_YOUR_PROJECT",
+  storageSenderId: "PASTE",
+  appId: "PASTE_YOUR_APP_ID"
 };
+var MULTI = firebaseConfig.apiKey.indexOf('PASTE') !== 0;
+var db = null, myRef = null, uid = localStorage.getItem('sb_uid') || ('u'+Math.random().toString(36).slice(2,10));
+localStorage.setItem('sb_uid', uid);
+if (MULTI) { try { firebase.initializeApp(firebaseConfig); db = firebase.database(); } catch(e){ MULTI=false; } }
 
-const $=id=>document.getElementById(id);
-const rand=(a,b)=>a+Math.random()*(b-a),irand=(a,b)=>Math.floor(rand(a,b+1)),pick=a=>a[irand(0,a.length-1)];
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),d2=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const fmt=n=>'₦'+Math.round(n).toLocaleString('en-NG');
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let DB=null,AUTH=null,ME=null;
-const configured=()=>FIREBASE_CONFIG.apiKey!=="PASTE_HERE";
-
-/* ============================= AUTH ============================= */
-let isLogin=false;
-if(!configured()){$('setupBox').classList.remove('hidden');}
-else{firebase.initializeApp(FIREBASE_CONFIG);AUTH=firebase.auth();DB=firebase.database();}
-$('authSwap').onclick=()=>{isLogin=!isLogin;$('authSwap').textContent=isLogin?'New here? Create account':'Have an account? Log in';$('authBtn').textContent=isLogin?'Log in':'Create account / Log in';};
-$('authBtn').onclick=async()=>{
-  if(!configured()){toast('Paste your Firebase config first (see yellow box)');return}
-  const em=$('em').value.trim(),pw=$('pw').value;
-  $('authErr').textContent='';
-  try{
-    if(isLogin){await AUTH.signInWithEmailAndPassword(em,pw);}
-    else{const c=await AUTH.createUserWithEmailAndPassword(em,pw);await DB.ref('users/'+c.user.uid).set(newProfile());}
-  }catch(e){$('authErr').textContent=e.message.replace('Firebase: ','');return}
-};
-AUTH&&AUTH.onAuthStateChanged(async u=>{
-  if(!u)return;
-  ME=(await DB.ref('users/'+u.uid).get()).val()||newProfile();
-  ME.uid=u.uid;
-  if(!ME.name){startCreator();}
-  else{enterGame();}
-});
-function newProfile(){return{name:'',money:0,happy:70,hunger:80,energy:90,hygiene:90,day:1,hour:8,
-  body:'Woman',hair:'Braids',outfit:'Casual',traits:[],dream:'',origin:'',homeId:'',homeName:'',
-  rent:0,x:1300,y:900,scene:'city',job:'',shifts:0,partnerUid:'',partnerName:'',relLvl:0,married:false,baby:false,
-  furni:[],lastRentDay:1,banned:false};}
-
-/* ============================= CREATOR ============================= */
-const HAIRS=['Low cut','Bald','Curls','Afro','Locs','Braids','Classic','Gele'];
-const OUTFITS=['Casual','Hoodie','Office','Chill','Owambe','Street'];
-const TRAITS=[['💼','Hustler','Sees money everywhere. Work pays more.'],['🍲','Foodie','Food restores extra hunger.'],['🎉','Owambe Spirit','Parties boost happiness more.'],['💪','Gym Rat','Energy drains slower.'],['🥰','Smooth Talker','Relationships grow faster.'],['😴','Lazy Bone','Energy lasts longer, work pays a bit less.'],['🧼','Clean Pikin','Hygiene drops slower.'],['🌙','Night Crawler','Thugs fear you at night.'],['💻','Tech Bro or Sis','Office & CcHub pay +20%.'],['🎵','Musical','Club & beach vibes hit different.']];
-const DREAMS=[['👔','Oga at the Top','Reach career level 5.'],['🏡','Lekki Landlord','Build a net worth of ₦1,000,000.'],['🎤','Afrobeats Star','Max out the music life.'],['🤝','Everybody\'s Padi','Befriend 10 players.'],['🦄','Yaba Unicorn','Get your startup funded at CcHub.']];
-const ORIGINS=[['🏦','LAPO Baby!','₦60,000 loan to start — hustle starts at 2.','+₦60,000 start',60000],['👶','Aje Butter','Soft life. Start with ₦150,000.','+₦150,000 start',150000],['🧑‍🌾','Village Champion','Grandma sent ₦40,000 & prayers.','+₦40,000 start',40000]];
-const HOMES=[['🎓','UNILAG Student · Akoka','Student life','Start ₦14,000','Rent ₦1,200/wk',14000,1200],['🚪','Face-me-I-face-you · Mushin','Hard start','Start ₦76,000','Rent ₦2,400/wk',76000,2400],['🏠','Self-contain · Yaba','Balanced','Start ₦96,000','Rent ₦6,000/wk',96000,6000],['🏢','Mini-flat · Lekki Phase 1','Big spender','Start ₦250,000','Rent ₦18,000/wk',250000,18000]];
-let crStep=0,crTraits=[];
-function startCreator(){$('authScreen').classList.add('hidden');$('creator').classList.remove('hidden');crStep=0;crRender();}
-function crProg(){const p=['Look','Personality','Dream','Birth lottery','Home'];$('crProg').innerHTML=p.map((t,i)=>`<div style="width:26px;height:5px;border-radius:3px;background:${i<=crStep?'#16a34a':'#e5e7eb'}"></div>`).join('');}
-function crRender(){
-  crProg();const sh=$('crSheet');$('crNext').disabled=true;drawCrAvatar();
-  if(crStep===0){$('crTitle').textContent='Look';
-    sh.innerHTML=`<input id="crNameInput" maxlength="16" placeholder="@yourname" value="${esc(ME.name||'')}">
-    <h3>Body</h3><div class="crRow" id="crBody">${['Woman','Man'].map(b=>`<button class="chip ${ME.body===b?'sel':''}" data-v="${b}">${b}</button>`).join('')}</div>
-    <h3>Hairstyle</h3><div class="crRow" id="crHair">${HAIRS.map(h=>`<button class="chip ${ME.hair===h?'sel':''}" data-v="${h}">${h}</button>`).join('')}</div>
-    <h3>Outfit</h3><div class="crRow" id="crOut">${OUTFITS.map(o=>`<button class="chip ${ME.outfit===o?'sel':''}" data-v="${o}">${o}</button>`).join('')}</div>`;
-    $('crNameInput').oninput=e=>{ME.name=e.target.value.replace(/[^a-zA-Z0-9_]/g,'').toLowerCase();$('crNext').disabled=ME.name.length<3;drawCrAvatar();};
-    wireChips('crBody',v=>ME.body=v,()=>{drawCrAvatar();});wireChips('crHair',v=>ME.hair=v,()=>{drawCrAvatar();});wireChips('crOut',v=>ME.outfit=v,()=>{drawCrAvatar();});
-    $('crNext').disabled=ME.name.length<3;
-  }
-  if(crStep===1){$('crTitle').textContent='Personality';crTraits=[];
-    sh.innerHTML=`<div class="sub" style="color:#6b7280;font-size:13px;margin-bottom:10px">Choose 2 traits for @${esc(ME.name)}.</div>`+
-    TRAITS.map((t,i)=>`<button class="crCard" data-i="${i}"><b>${t[0]} ${t[1]}</b><small>${t[2]}</small></button>`).join('');
-    sh.querySelectorAll('.crCard').forEach(c=>c.onclick=()=>{const i=+c.dataset.i;
-      if(crTraits.includes(i)){crTraits=crTraits.filter(x=>x!==i);c.classList.remove('sel');}
-      else if(crTraits.length<2){crTraits.push(i);c.classList.add('sel');}
-      $('crNext').disabled=crTraits.length!==2;});
-  }
-  if(crStep===2){$('crTitle').textContent='Dream';
-    sh.innerHTML=`<div class="sub" style="color:#6b7280;font-size:13px;margin-bottom:10px">What's @${esc(ME.name)}'s big dream?</div>`+
-    DREAMS.map((d,i)=>`<button class="crCard" data-i="${i}"><b>${d[0]} ${d[1]}</b><small>${d[2]}</small></button>`).join('');
-    sh.querySelectorAll('.crCard').forEach(c=>c.onclick=()=>{sh.querySelectorAll('.crCard').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');ME.dream=DREAMS[+c.dataset.i][1];$('crNext').disabled=false;});
-  }
-  if(crStep===3){$('crTitle').textContent='Birth lottery';
-    sh.innerHTML=`<div class="sub" style="color:#6b7280;font-size:13px;margin-bottom:6px;text-align:center">Every Lagosian is born into something.<br>What was @${esc(ME.name)} born into?</div><div id="lotteryCard"><div class="big">🎲</div><h4>Rolling…</h4><p>Tap roll to see your fate</p></div><button class="bigBtn" id="rollBtn">🎲 Roll my birth</button>`;
-    $('rollBtn').onclick=()=>{const o=pick(ORIGINS);ME.origin=o[1];ME.originBonus=o[4];
-      $('lotteryCard').innerHTML=`<div class="big">${o[0]}</div><h4>${o[1]}</h4><p>${o[2]}</p><p style="font-weight:800;color:#16a34a;margin-top:6px">${o[3]}</p>`;
-      $('rollBtn').style.display='none';$('crNext').disabled=false;};
-  }
-  if(crStep===4){$('crTitle').textContent='Home';
-    sh.innerHTML=`<div class="sub" style="color:#6b7280;font-size:13px;margin-bottom:6px">Where will @${esc(ME.name)} live? Rent is paid every 7 days.</div>`+
-    HOMES.map((h,i)=>`<button class="crCard" data-i="${i}"><b>${h[0]} ${h[1]} <span style="float:right;font-size:10.5px;background:#e0e7ff;color:#3730a3;border-radius:999px;padding:2px 9px">${h[2]}</span></b><small><b style="color:#16a34a">${h[3]}</b> &nbsp; <b style="color:#dc2626">${h[4]}</b></small></button>`).join('')+
-    `<button id="crGo" disabled>Move in 🚚</button>`;
-    let sel=-1;sh.querySelectorAll('.crCard').forEach(c=>c.onclick=()=>{sh.querySelectorAll('.crCard').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');sel=+c.dataset.i;$('crGo').disabled=false;});
-    $('crGo').onclick=()=>{const h=HOMES[sel];ME.homeId='home_'+ME.uid;ME.homeName=h[1];ME.money=h[3+2-2+2]+0;ME.money=h[5]?h[5]:0;ME.money=h[6];ME.rent=h[7];ME.money=h[5]+ME.originBonus;ME.traits=crTraits.map(i=>TRAITS[i][1]);ME.furni=[{t:'bed',x:2,y:1},{t:'chair',x:4,y:3},{t:'cooler',x:6,y:1}];saveProfile(enterGame);bigTitleFn('🏡 Welcome to '+h[1]);};
-  }
-}
-function wireChips(id,fn,after){$(id).querySelectorAll('.chip').forEach(c=>c.onclick=()=>{$(id).querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');fn(c.dataset.v);after();});}
-$('crNext').onclick=()=>{if(crStep===1)ME.traits=crTraits.map(i=>TRAITS[i][1]);crStep++;crRender();};
-function drawCrAvatar(){const c=$('crCv').getContext('2d');c.clearRect(0,0,220,320);
-  c.fillStyle='rgba(0,0,0,.08)';c.beginPath();c.ellipse(110,290,70,18,0,0,7);c.fill();
-  const woman=ME.body==='Woman';
-  c.fillStyle='#7c4a22'; // legs
-  c.fillRect(88,200,16,84);c.fillRect(116,200,16,84);
-  c.fillStyle=ME.outfit==='Office'?'#1f2937':ME.outfit==='Owambe'?'#dc2626':'#334155'; // trousers/skirt
-  if(woman||ME.outfit==='Office'){c.fillRect(84,140,52,70);}else{c.fillRect(88,150,16,58);c.fillRect(116,150,16,58);}
-  c.fillStyle='#fbbf24';c.beginPath();c.moveTo(78,90);c.lineTo(142,90);c.lineTo(woman?146:140,woman?150:140);c.lineTo(woman?74:80,woman?150:140);c.closePath();c.fill(); // top
-  c.fillStyle='#7c4a22';c.fillRect(74,92,10,58);c.fillRect(136,92,10,58); // arms
-  c.fillStyle='#7c4a22';c.beginPath();c.arc(110,64,26,0,7);c.fill(); // head
-  c.fillStyle='#111'; // hair
-  if(ME.hair==='Bald'){}
-  else if(ME.hair==='Afro'||ME.hair==='Curls'){c.beginPath();c.arc(110,52,30,Math.PI,2*Math.PI);c.fill();}
-  else if(ME.hair==='Gele'){c.fillStyle='#dc2626';c.beginPath();c.arc(110,44,24,Math.PI,2*Math.PI);c.fill();}
-  else if(ME.hair==='Braids'||ME.hair==='Locs'){c.beginPath();c.arc(110,56,26,Math.PI,2*Math.PI);c.fill();c.fillRect(84,56,10,44);c.fillRect(126,56,10,44);}
-  else{c.beginPath();c.arc(110,56,26,Math.PI,2*Math.PI);c.fill();}
-  c.fillStyle='#dc2626';c.fillRect(84,282,22,10);c.fillRect(114,282,22,10); // shoes
-}
-
-/* ============================= GAME CORE ============================= */
-const cv=$('cv'),ctx=cv.getContext('2d');let VW,VH;
-const rs=()=>{VW=cv.width=innerWidth;VH=cv.height=innerHeight};addEventListener('resize',rs);rs();
-function saveProfile(cb){DB.ref('users/'+ME.uid).set(ME).then(cb||(()=>{}));}
-function toast(m,ms=2800){const t=document.createElement('div');t.className='toast';t.innerHTML=m;$('toasts').appendChild(t);setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity=0;setTimeout(()=>t.remove(),400)},ms);}
-function bigTitleFn(t){$('bigText').textContent=t;$('bigTitle').style.opacity=1;setTimeout(()=>$('bigTitle').style.opacity=0,2300);}
-function sheet(html){$('sheetRoot').innerHTML=`<div class="sheetWrap" onclick="if(event.target===this)closeSheet()"><div class="sheet">${html}</div></div>`;}
-function closeSheet(){$('sheetRoot').innerHTML='';}
-function hud(){$('hudMoney').textContent=fmt(ME.money);const h=ME.hour%24,ap=h<12?'AM':'PM';$('hudClock').textContent=`${((h+11)%12)+1}:00 ${ap} · Day ${ME.day}`;
- $('sbH').style.width=ME.happy+'%';$('sbF').style.width=ME.hunger+'%';$('sbE').style.width=ME.energy+'%';$('sbY').style.width=ME.hygiene+'%';}
-
-/* ---------- world data ---------- */
-const CITYW=2600,CITYH=1500,LAGY=170,LAGH=130,OCEANY=1380;
-const ROADS_Y=[520,920,1240],ROADS_X=[680,1240,1800];
-const LOCS=[
- {id:'amala',n:'Amala Shitta',e:'🍲',x:360,y:400,d:'Correct amala & ewedu. Chop life!',acts:[['🍲 Amala combo · ₦2,500','eat',2500,45],['🍚 Rice plate · ₦1,200','eat',1200,25]]},
- {id:'gym',n:'i-Fitness',e:'💪',x:960,y:360,d:'Leg day every day.',acts:[['🏋️ Workout · ₦2,000','gym'],['🧖 Spa · ₦4,000','spa']]},
- {id:'library',n:'The Library',e:'📚',x:1390,y:390,d:'Read & level up your mind.',acts:[['📖 Study (free)','study']]},
- {id:'canopy',n:'Canopy Walk',e:'🌉',x:1840,y:370,d:'Lekki bridge views.',acts:[['🚶 Walk the bridge · ₦1,000','fun',1000,10]]},
- {id:'cc',n:'CcHub',e:'💡',x:700,y:640,d:'Yaba tech hub. Startups dey here.',acts:[['🚀 Pitch startup · ₦5,000','pitch']]},
- {id:'unilag',n:'UNILAG',e:'🎓',x:2250,y:430,d:'University of Lagos.',acts:[['📚 Attend lecture (free)','study']]},
- {id:'court',n:'High Court',e:'⚖️',x:420,y:800,d:'Justice for all.',acts:[]},
- {id:'eko',n:'Eko Hotels & Suites',e:'🏨',x:1180,y:780,d:"Lagos' most famous hotel. Pool, buffet, live band.",acts:[['🏊 Swim · ₦5,000','fun',5000,14],['🍽️ Buffet · ₦8,500','eat',8500,60],['🎷 Live band · ₦3,000','fun',3000,16],['🛏️ Sleep in a Deluxe Room · ₦15,000','sleephotel']]},
- {id:'freedom',n:'Freedom Park',e:'🎭',x:440,y:1080,d:'Chill spot with history.',acts:[['🧺 Picnic · ₦2,000','fun',2000,12]]},
- {id:'market',n:'Market',e:'🧺',x:230,y:1050,d:'Oja! Buy cheap, sell dear.',acts:[['🧺 Trade stall (earn ₦4k–₦9k)','trade']]},
- {id:'police',n:'Police Station',e:'🚔',x:330,y:1290,d:'Report street thugs here.',acts:[['🚨 Collect thug rewards','reward'],['🪪 Get permit · ₦5,000','permit']]},
- {id:'quilox',n:'Quilox',e:'🎉',x:1500,y:1030,d:'Bottles on bottles. The beat is heavy.',acts:[['🍾 Table & bottles · ₦10,000','club',10000,26],['💃 Dancefloor · ₦1,000','club',1000,9],['🎊 Host party · ₦25,000','party']]},
- {id:'beach',n:'Beach',e:'🏖️',x:2120,y:1200,d:'The bass is shaking the sand.',acts:[['🎉 Beach rave · ₦2,500','rave'],['🏊 Swim · ₦1,500','fun',1500,10],['🍢 Suya & Chapman · ₦1,200','eat',1200,30],['🐎 Horse ride · ₦3,000','fun',3000,12]]},
- {id:'chapel',n:'Love Chapel',e:'💒',x:1700,y:1330,d:'Where Lagos lovers tie the knot.',acts:[['💍 Get married (needs boo, level 5)','marry'],['🙏 Pray (free)','pray'],['💑 Date night · ₦8,000','date']]}
+/* ---------------- world ---------------- */
+var TW=64, TH=32, WORLD=42;
+var ROADX=[4,12,20,28,36], ROADY=[6,12,18,24];
+var LAGOON_Y=3;
+var BUILDINGS=[
+ {n:'🏠 Your Home · Surulere',x:8,y:9,w:3,h:3,c:'#c0392b',t:'home',z:34},
+ {n:'🏢 Dangote Tower',x:16,y:8,w:3,h:3,c:'#7f8c8d',t:'job',z:60},
+ {n:'🛒 Balogun Market',x:25,y:10,w:3,h:3,c:'#e67e22',t:'market',z:18},
+ {n:'🍲 Amala Shitta',x:10,y:15,w:2,h:2,c:'#d35400',t:'food',z:14},
+ {n:'🎵 Quilox Club',x:18,y:14,w:3,h:3,c:'#8e44ad',t:'club',z:26},
+ {n:'🏖️ Elegushi Beach',x:27,y:20,w:4,h:3,c:'#e8c547',t:'beach',z:6},
+ {n:'🚓 Lagos Police HQ',x:31,y:7,w:3,h:3,c:'#2c5f8a',t:'police',z:30},
+ {n:'🏥 LUTH Hospital',x:5,y:20,w:3,h:3,c:'#27ae60',t:'hospital',z:30},
+ {n:'🏦 GTBank',x:33,y:14,w:2,h:2,c:'#c0392b',t:'bank',z:40},
+ {n:'🛍️ Shoprite',x:14,y:22,w:3,h:3,c:'#16a085',t:'market',z:20},
+ {n:'🕌 National Theatre',x:22,y:26,w:3,h:3,c:'#b06ab3',t:'fun',z:24}
 ];
-const loc=id=>LOCS.find(l=>l.id===id);
-const VENUE_STYLE={quilox:{floor:'#2a2438',accent:'#a855f7'},beach:{floor:'#f4d58d',accent:'#f59e0b'},amala:{floor:'#e7d3b3',accent:'#b45309'},gym:{floor:'#dfe5ea',accent:'#2563eb'},library:{floor:'#e8e6e3',accent:'#7c3aed'},chapel:{floor:'#f3ead9',accent:'#d4af37'},market:{floor:'#d9c8a9',accent:'#16a34a'},police:{floor:'#c9d4e4',accent:'#1e3a8a'},eko:{floor:'#eef1f4',accent:'#0891b2'}};
-const V_PROPS={quilox:[['stage',.78,.16],['bar',.16,.18],['light',.4,.08],['light',.6,.08]],
- beach:[['palm',.08,.15],['palm',.92,.8],['umbrella',.22,.5],['umbrella',.42,.68],['fire',.5,.3],['dj',.72,.2]],
- amala:[['pot',.5,.3],['table2',.25,.45],['table2',.55,.6],['table2',.75,.4]],
- gym:[['weights',.2,.3],['weights',.8,.3],['treadmill',.35,.7],['treadmill',.6,.7]],
- library:[['shelf',.2,.25],['shelf',.5,.25],['shelf',.8,.25],['desk2',.4,.6],['desk2',.65,.6]],
- chapel:[['altar',.5,.18],['pew',.3,.5],['pew',.5,.5],['pew',.7,.5],['pew',.4,.72],['pew',.6,.72]],
- market:[['stall',.18,.28],['stall',.48,.28],['stall',.78,.28],['stall',.33,.62],['stall',.63,.62]],
- police:[['desk2',.25,.35],['desk2',.6,.35],['cell',.85,.6],['board',.12,.65]],
- eko:[['pool',.78,.72],['stage',.5,.2],['table2',.2,.5],['table2',.4,.68]]};
-const JOBS=[['💻','Tech',9900,'Starts as Intern. 1-hour shifts, anytime.'],['🏦','Banking',11600,'Starts as Marketer. Charisma is king.'],['🎤','Music',7400,'Starts as Backup Singer. Night shifts at the Shrine.'],['📈','Trading',8100,'Starts as Floor Assistant.'],['🍳','Chef',7800,'Starts as Dishwasher at Amala Shitta.'],['🎬','Content',7400,'Starts as Aspiring Creator at Lekki canopy.'],['💇','Styling',8300,'Starts as hype man at Mama Bisi\'s.'],['🩺','Nursing',9400,'Starts as Student Nurse.'],['⚖️','Law',9100,'Starts as Law Clerk at the High Court.'],['🩻','Medicine',21000,'Starts as House Officer. Stamina needed.']];
-const CATS=[['🛏️ Sleep','sleep'],['🍳 Kitchen','kitchen'],['🛁 Bath','bath'],['🛋️ Comfort','comfort'],['📺 Fun','fun'],['💡 Light','light'],['🪴 Decor','decor']];
-const ITEMS={sleep:[['🛏️','Wooden Bed',4000,'1x1',1],['🛏️','Double Bed',12000,'2x1',2],['🛋️','Velvet Sofa',10200,'2x1',2]],kitchen:[['🧊','Cooler',3500,'1x1',1],['🍳','Stove',6000,'1x1',1],['🗄️','Kitchen Cabinet',9000,'2x1',2]],bath:[['🚽','WC',5000,'1x1',1],['🚿','Shower',7500,'1x1',1],['🛁','Bathtub',15000,'2x1',2]],comfort:[['🪑','Plastic Chair',500,'1x1',1],['🛋️','3-Seater Sofa',24000,'3x1',3],['👑','Royal Gold Sofa',55000,'2x2',4]],fun:[['📺','TV',45000,'wall',1],['🎮','PS5 Setup',850000,'2x1',2],['🎱','Snooker Table',3500000,'3x2',6]],light:[['💡','Standing Lamp',7200,'1x1',1],['❄️','Air Conditioner',650000,'wall',1]],decor:[['🪴','Plant',2000,'1x1',1],['🖼️','Wall Art',8500,'wall',1],['🧸','Teddy Bear',3000,'1x1',1]]};
+var HOME = BUILDINGS[0];
 
-/* ---------- presence ---------- */
-let others={},otherDirty=true,lastWrite=0,bubbles=[],roomMsgs=[],dmListeners={},reqCount=0;
-function enterGame(){
-  $('creator').classList.add('hidden');$('authScreen').classList.add('hidden');$('game').classList.remove('hidden');$('nav').classList.remove('hidden');$('bell').classList.remove('hidden');
-  ME.scene=ME.homeId;ME.x=3;ME.y=3;
-  DB.ref('online/'+ME.uid).onDisconnect().remove();
-  DB.ref('online').on('value',s=>{others=s.val()||{};delete others[ME.uid];otherDirty=true;$('spOnline').textContent=Object.keys(others).length+1;});
-  DB.ref('requests/'+ME.uid).on('value',s=>{const r=s.val()||{};reqCount=Object.keys(r).length;$('bellCount').textContent=reqCount;$('bellCount').classList.toggle('hidden',!reqCount);});
-  listenVenueChat();hud();showLoading(()=>{renderVisitTag();toast(`🏡 Welcome home, @${ME.name}! Invite friends with your link 💕`);});
+/* ---------------- player ---------------- */
+var player = {
+  name: localStorage.getItem('sb_name')||'', gender: localStorage.getItem('sb_gender')||'W',
+  x:11, y:13, tx:11, ty:13, moving:false, phase:0, color:'#f6b93b',
+  money:100000, hunger:80, energy:90, fun:60, savings:0,
+  marriedTo:null, rel:{}, baby:false, atHome:false, busy:false
+};
+var mins = 22*60, dayCount = 1;
+var cam = {x:0,y:0};
+var keys = {};
+var travel = null;          // {tx,ty,dur,t,label,mode}
+var thug = null, thugTimer = 45, party = null, partyT = 0;
+
+/* ---------------- other people ---------------- */
+var remotes = {};   // real online players from Firebase
+var SIMS = [];      // simulated Lagosians
+var SIMNAMES=[['Tunde','M'],['Chidinma','W'],['Emeka','M'],['Funke','W'],['Ibrahim','M'],['Amina','W'],['Segun','M'],['Bisi','W'],['Kelechi','M'],['Ngozi','W'],['Yusuf','M'],['Zainab','W']];
+var SIMCOLORS=['#4568dc','#b06ab3','#ef476f','#06d6a0','#f78c6b','#118ab2','#ffd166','#e56b6f'];
+var CHATLINES=["How far na! 😄","Lagos traffic no be here today 😩","Who dey go Quilox tonight? 🎉","Make we link up at the beach 🏖️","This game sweet o!","E go better 💪","Who wan buy amala? I dey hungry 😂","Elegushi beach dey shake tonight!!","Omo see money 💰","Marry me already 😍❤️"];
+function mkSim(i){
+  var n=SIMNAMES[i%SIMNAMES.length];
+  return {id:'sim'+i,name:n[0],gender:n[1],color:SIMCOLORS[i%SIMCOLORS.length],
+    x:5+Math.random()*30, y:6+Math.random()*26, tx:0,ty:0, moving:false, phase:Math.random()*6,
+    rel:0, say:'', sayT:0};
 }
-function writePresence(){const now=performance.now();if(now-lastWrite<160)return;lastWrite=now;
-  DB.ref('online/'+ME.uid).set({n:ME.name,x:Math.round(ME.x),y:Math.round(ME.y),sc:ME.scene,b:ME.body,h:ME.hair,o:ME.outfit,ring:ME.married?1:0,baby:ME.baby?1:0,ts:firebase.database.ServerValue.TIMESTAMP});}
-function sceneOthers(){const o=[];for(const uid in others){const p=others[uid];if(p.sc===ME.scene&&Date.now()-(p._ts||0)<6e5)o.push({uid,...p});}return o;}
-DB&&setInterval(()=>{ // presence ts tracking
-  for(const uid in others)others[uid]._ts=others[uid].ts||Date.now();
-},3000);
+for (var i=0;i<12;i++){ var s=mkSim(i); s.tx=s.x; s.ty=s.y; SIMS.push(s); }
 
-/* ============================= LOADING ============================= */
-function showLoading(cb){$('loader').style.display='flex';let p=0;const iv=setInterval(()=>{p+=irand(7,18);if(p>=100){p=100;clearInterval(iv);setTimeout(()=>{$('loader').style.display='none';cb&&cb();},250);}$('loaderText').textContent=`Loading Lagos… ${p}%`;},110);}
+/* ---------------- canvas ---------------- */
+var cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+function resize(){ cv.width=innerWidth*devicePixelRatio; cv.height=innerHeight*devicePixelRatio; cv.style.width=innerWidth+'px'; cv.style.height=innerHeight+'px'; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
+addEventListener('resize',resize); resize();
 
-/* ============================= MOVEMENT ============================= */
-const keys={};let clickT=null,walking=false,ph=0,cam={x:0,y:0};
-addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key.toLowerCase()==='e')tryInteract();});
-addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
-cv.addEventListener('pointerdown',e=>{
-  if($('sheetRoot').children.length)return;
-  const r=cv.getBoundingClientRect(),wx=e.clientX-r.left+cam.x,wy=e.clientY-r.top+cam.y;
-  if(ME.scene==='city'){const l=LOCS.find(l=>d2({x:wx,y:wy},l)<80);if(l){openVenueSheet(l);return;}}
-  if(ME.scene.startsWith('home_')){const hx=Math.floor(wx/110),hy=Math.floor(wy/110);nearFurni={x:hx,y:hy};return;}
-  clickT={x:wx,y:wy};});
-function bounds(){if(ME.scene==='city')return{w:CITYW,h:CITYH};if(ME.scene.startsWith('home_'))return{w:880,h:660};const l=loc(ME.scene);return{w:l?1100:1100,h:l?760:760};}
-function move(dt){let dx=0,dy=0,sp=180;
- if(keys['w']||keys['arrowup'])dy-=1;if(keys['s']||keys['arrowdown'])dy+=1;
- if(keys['a']||keys['arrowleft'])dx-=1;if(keys['d']||keys['arrowright'])dx+=1;
- if(dx||dy){clickT=null;const m=Math.hypot(dx,dy);ME.x+=dx/m*sp*dt;ME.y+=dy/m*sp*dt;walking=true;}
- else if(clickT){const d=d2(ME,clickT),m=Math.hypot(clickT.x-ME.x,clickT.y-ME.y)||1;
-  if(d>8){ME.x+=(clickT.x-ME.x)/m*sp*dt;ME.y+=(clickT.y-ME.y)/m*sp*dt;walking=true;}else{clickT=null;walking=false;}}
- else walking=false;
- const b=bounds();ME.x=clamp(ME.x,20,b.w-20);ME.y=clamp(ME.y,20,b.h-20);writePresence();}
+function iso(x,y){ return { x:(x-y)*TW/2 + cam.x, y:(x+y)*TH/2 + cam.y }; }
+function unIso(sx,sy){ sx-=cam.x; sy-=cam.y; var a=sx/(TW/2), b=sy/(TH/2); return { x:(a+b)/2, y:(b-a)/2 }; }
+function isWater(x,y){ return y < LAGOON_Y; }
+function isRoad(x,y){ for(var i=0;i<ROADX.length;i++) if(Math.abs(x-ROADX[i])<0.9) return true; for(var j=0;j<ROADY.length;j++) if(Math.abs(y-ROADY[j])<0.9) return true; return false; }
+function inBuilding(x,y){ for(var i=0;i<BUILDINGS.length;i++){var b=BUILDINGS[i]; if(x>=b.x-0.4&&x<=b.x+b.w+0.4&&y>=b.y-0.4&&y<=b.y+b.h+0.4) return b;} return null; }
+function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
+function fmt(n){ return '₦'+Math.round(n).toLocaleString('en-NG'); }
+function dist(ax,ay,bx,by){ return Math.hypot(ax-bx,ay-by); }
+'''
+with open('/mnt/agents/output/scar_belles_love_life.html','a') as f: f.write(js1)
+print('part3 ok', len(js1))
+js2 = '''/* ---------------- rendering ---------------- */
+var parts=[]; // dust particles
+function dust(x,y,c){ for(var i=0;i<4;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*.03,vy:-Math.random()*.03,t:0,c:c||'#cbb'}) }
 
-/* ============================= SCENES ============================= */
-function goScene(sc,x,y){showLoading(()=>{ME.scene=sc;ME.x=x;ME.y=y;clickT=null;bubbles=[];roomMsgs=[];listenVenueChat();renderVisitTag();writePresence();hud();});}
-function renderVisitTag(){if(ME.scene.startsWith('home_')&&ME.scene!==ME.homeId){$('visitTag').classList.remove('hidden');DB.ref('users/'+ME.scene.slice(5)+'/name').get().then(s=>$('visitName').textContent=s.val()||'friend');}else $('visitTag').classList.add('hidden');}
-$('visitTag').onclick=()=>goScene('city',1300,980);
-function listenVenueChat(){if(ME.scene==='city'||ME.scene.startsWith('home_')){DB.ref('chat/city').off();return;}
- DB.ref('chat/'+ME.scene).limitToLast(30).off();
- DB.ref('chat/'+ME.scene).limitToLast(30).on('child_added',s=>{const m=s.val();roomMsgs.push(m);if(roomMsgs.length>30)roomMsgs.shift();
-  const snd=others[m.uid];if(snd)bubbles.push({uid:m.uid,text:m.text,t:5});if(bubbles.length>12)bubbles.shift();});}
-
-/* ============================= SHEETS ============================= */
-const MODES=[['🚶','Trek',0,55,20],['🛺','Keke',100,170],['🚌','Danfo',100,190],['🏍️','Okada',350,320],['🚕','Cab',650,520]];
-let travelSel=3,travelLoc=null;
-function openVenueSheet(l){travelLoc=l;travelSel=3;
- sheet(`<button class="xBtn" onclick="closeSheet()">✕</button>
- <h2>${l.e} ${l.n}</h2><div class="sub">${l.d}</div>
- ${l.acts.map((a,i)=>`<button class="act" onclick="venueAct('${l.id}',${i})">${a[0]}</button>`).join('')}
- <h3 style="font-size:13px;color:#6b7280;margin:12px 0 4px">Get there</h3>
- <div class="tiles" id="tTiles">${MODES.map((m,i)=>`<div class="tmode ${i===travelSel?'sel':''}" data-i="${i}"><div class="ic">${m[0]}</div><b>${m[1]}</b><small>${m[2]?fmt(m[2]):'Free'}</small></div>`).join('')}</div>
- <button id="goBtn" onclick="doTravel()">Go · ${fmt(MODES[travelSel][2])}</button>`);
- $('tTiles').querySelectorAll('.tmode').forEach(t=>t.onclick=()=>{travelSel=+t.dataset.i;$('tTiles').querySelectorAll('.tmode').forEach(x=>x.classList.remove('sel'));t.classList.add('sel');$('goBtn').textContent='Go · '+fmt(MODES[travelSel][2]);});}
-let travelling=null;
-function doTravel(){const m=MODES[travelSel],l=travelLoc;
- if(ME.money<m[2]){toast('You need '+fmt(m[2]));return;}
- ME.money-=m[2];closeSheet();hud();
- const d=Math.hypot(l.x-ME.x,l.y-ME.y);
- const dur=m[1]==='Trek'?Math.min(m[4],d/55):clamp(d/m[3],1.5,16);
- travelling={fx:ME.x,fy:ME.y,tx:l.x,ty:l.y+95,t:0,dur,icon:m[0]};bigTitleFn(m[0]+' '+m[1]+'…');}
-function travelTick(dt){if(!travelling)return false;const tr=travelling;tr.t+=dt;const k=clamp(tr.t/tr.dur,0,1);
- const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;ME.x=tr.fx+(tr.tx-tr.fx)*e;ME.y=tr.fy+(tr.ty-tr.fy)*e;walking=tr.icon==='🚶';writePresence();
- if(k>=1){travelling=null;walking=false;enterVenue(travelLoc);}return true;}
-function enterVenue(l){showLoading(()=>{ME.scene=l.id;ME.x=550;ME.y=620;roomMsgs=[];listenVenueChat();writePresence();
- $('venueBar').style.display='block';renderVChips(l);hud();});}
-function exitVenue(){DB.ref('chat/'+ME.scene).off();$('venueBar').style.display='none';goScene('city',1300,980);}
-function renderVChips(l){$('vChips').innerHTML=`<button class="vchip" onclick="vQuick('👋 Say Hello')">👋 Say Hello</button><button class="vchip" onclick="vQuick('💬 Gist')">💬 Gist</button><button class="vchip" onclick="vQuick('😂 Crack Joke')">😂 Crack Joke</button><button class="vchip" onclick="vQuick('😏 Throw Shade')">😏 Throw Shade</button>${l.id==='quilox'||l.id==='beach'?'<button class="vchip" onclick="vQuick(\'💃 Dance!!\')">💃 Dance!!</button>':''}`;}
-function vQuick(q){const gain={ '👋 Say Hello':[2,2],'💬 Gist':[3,3],'😂 Crack Joke':[5,4],'😏 Throw Shade':[4,1],'💃 Dance!!':[6,3]}[q];
- ME.happy=clamp(ME.happy+gain[0],0,100);ME.hygiene=clamp(ME.hygiene-1,0,100);hud();
- sendVenueMsg(q);}
-$('vSend').onclick=()=>{const v=$('vInput').value.trim();if(!v)return;$('vInput').value='';ME.happy=clamp(ME.happy+1,0,100);sendVenueMsg(v);};
-$('vInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('vSend').click();});
-function sendVenueMsg(text){DB.ref('chat/'+ME.scene).push({uid:ME.uid,n:ME.name,text:esc(text).slice(0,140),ts:Date.now()});
- bubbles.push({uid:ME.uid,text:esc(text),t:5});}
-
-/* ---------- venue activities ---------- */
-function venueAct(id,i){const l=loc(id),a=l.acts[i];const k=a[1];closeSheet();
- if(k==='eat'){if(!pay(a[2]))return;ME.hunger=clamp(ME.hunger+a[3]*(ME.traits.includes('Foodie')?1.4:1),0,100);ME.happy=clamp(ME.happy+5,0,100);toast('🍲 That hit the spot!');}
- else if(k==='fun'){if(!pay(a[2]))return;ME.happy=clamp(ME.happy+a[3],0,100);toast(pick(['🔥 Nice one!','😍 Sweet!','⭐ Loved it!']));hud();}
- else if(k==='gym'){if(!pay(2000))return;ME.happy=clamp(ME.happy+11,0,100);ME.energy=clamp(ME.energy-(ME.traits.includes('Gym Rat')?10:18),0,100);toast('💪 Session complete!');}
- else if(k==='spa'){if(!pay(4000))return;ME.hygiene=100;ME.happy=clamp(ME.happy+10,0,100);toast('🧖 So fresh!');}
- else if(k==='study'){ME.happy=clamp(ME.happy+4,0,100);ME.energy=clamp(ME.energy-5,0,100);toast('📖 Mind expanded!');}
- else if(k==='pitch'){if(!pay(5000))return;if(Math.random()<0.3){ME.money+=25000;bigTitleFn('🦄 STARTUP FUNDED! +₦25,000');}else toast('🚀 Investors said "come back later"...');}
- else if(k==='sleephotel'){if(!pay(15000))return;ME.energy=100;advanceHours(6);bigTitleFn('🛏️ Slept like a baby');}
- else if(k==='trade'){workShift(irand(4000,9000),3);}
- else if(k==='club'){if(!pay(a[2]))return;const boost=ME.traits.includes('Owambe Spirit')||ME.traits.includes('Musical')?1.4:1;
-  ME.happy=clamp(ME.happy+a[3]*boost,0,100);ME.energy=clamp(ME.energy-16,0,100);advanceHours(4);bigTitleFn('🎶 OWAMBE NIGHT');}
- else if(k==='rave'){if(!pay(2500))return;ME.happy=clamp(ME.happy+22,0,100);ME.energy=clamp(ME.energy-14,0,100);advanceHours(3);bigTitleFn('🎉 BEACH RAVE!!');}
- else if(k==='party'){if(!pay(25000))return;ME.happy=100;ME.energy=clamp(ME.energy-25,0,100);DB.ref('chat/'+ME.scene).push({uid:ME.uid,n:ME.name,text:'🎊 PARTY AT MY PLACE!! Everyone come through!! 🎉',ts:Date.now()});bigTitleFn('🎊 PARTY IS LIT 🔥');}
- else if(k==='reward'){DB.ref('users/'+ME.uid+'/thugReports').get().then(s=>{const n=s.val()||0;if(!n){toast('🚔 No open reports.');return;}ME.money+=n*3000;DB.ref('users/'+ME.uid+'/thugReports').set(0);toast(`🚔 Reward collected: ${fmt(n*3000)}`);hud();});return;}
- else if(k==='permit'){if(!pay(5000))return;toast('🪪 Permit granted!');}
- else if(k==='marry'){doMarry();return;}
- else if(k==='pray'){ME.happy=clamp(ME.happy+6,0,100);toast('🙏 Peace of mind.');}
- else if(k==='date'){doDate();return;}
- hud();}
-function pay(c){if(ME.money<c){toast('You need '+fmt(c));return false;}ME.money-=c;hud();return true;}
-function workShift(amount,hrs){bigTitleFn('💼 Working shift…');setTimeout(()=>{let amt=amount;
- if(ME.traits.includes('Hustler'))amt*=1.15;if(ME.traits.includes('Lazy Bone'))amt*=0.9;
- if((ME.job==='Tech'||ME.scene==='cc')&&ME.traits.includes('Tech Bro or Sis'))amt*=1.2;
- ME.money+=Math.round(amt);ME.shifts++;ME.energy=clamp(ME.energy-15,0,100);ME.hunger=clamp(ME.hunger-10,0,100);advanceHours(hrs);
- if(ME.shifts%3===0){ME.jobLevel=(ME.jobLevel||1)+1;bigTitleFn('📈 PROMOTED!');}
- toast('💼 Shift done! Paid '+fmt(amt));hud();},3800);}
-function advanceHours(h){ME.hour+=h;if(ME.hour>=24){ME.hour%=24;ME.day++;checkRent();}}
-function checkRent(){if(ME.day-ME.lastRentDay>=7){ME.lastRentDay=ME.day;ME.money=Math.max(0,ME.money-ME.rent);toast(`🏠 Weekly rent paid: ${fmt(ME.rent)}`);}}
-
-/* ---------- marry / date / baby ---------- */
-function doDate(){if(!ME.partnerUid){toast('You need a boo first! 💕 Ask someone out.');return;}
- if(!pay(8000))return;ME.relLvl=clamp(ME.relLvl+1,0,5);ME.happy=clamp(ME.happy+18,0,100);advanceHours(3);
- DB.ref('dm/'+dmId(ME.partnerUid)).push({uid:ME.uid,n:ME.name,text:'💑 Date night was amazing 😍',ts:Date.now()});
- bigTitleFn('💑 DATE NIGHT');toast(`💕 Relationship level ${ME.relLvl}/5`);hud();}
-function doMarry(){if(!ME.partnerUid){toast('💕 You need a boo first!');return;}
- if(ME.relLvl<5){toast(`💍 Grow your relationship to level 5 (now ${ME.relLvl})`);return;}
- if(!pay(50000))return;
- ME.married=true;ME.relLvl=5;
- DB.ref('users/'+ME.partnerUid).update({married:true});
- DB.ref('dm/'+dmId(ME.partnerUid)).push({uid:ME.uid,n:ME.name,text:'💍 WILL YOU MARRY ME?!',ts:Date.now()});
- bigTitleFn('💍 SHE SAID YES!!');setTimeout(()=>bigTitleFn('💒 Just Married!'),2200);hud();}
-let babyCd=0;
-function tryBaby(){if(Date.now()<babyCd)return;babyCd=Date.now()+3e4;
- toast('💕 A beautiful private moment together…');
- setTimeout(()=>{const ok=Math.random()<0.65;
-  ME.baby=ok;if(ok)DB.ref('users/'+ME.partnerUid).update({baby:true});
-  DB.ref('dm/'+dmId(ME.partnerUid)).push({uid:ME.uid,n:ME.name,text:ok?'👶 We\'re expecting!! I love you ❤️':'💕 Tonight was lovely…',ts:Date.now()});
-  if(ok)bigTitleFn('👶 BABY ON THE WAY!!');else toast('💕 Not this time…');hud();},2600);}
-
-/* ============================= PLAYER INTERACTION ============================= */
-function openPlayer(uid){const p=others[uid];if(!p)return;
- const isBoo=ME.partnerUid===uid,isSp=ME.married&&isBoo;
- const relPct=isBoo?ME.relLvl*20:0;
- DB.ref('requests/'+uid+'/'+ME.uid).get().then(s=>{
- sheet(`<button class="xBtn" onclick="closeSheet()">✕</button>
- <div style="display:flex;gap:12px;align-items:center;margin-bottom:4px">
-   <div style="width:56px;height:56px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid ${isBoo?'#db2777':'#e5e7eb'}">🧑🏾</div>
-   <div><h2 style="margin:0">@${esc(p.n)} ${p.ring?'💍':''}${p.baby?'👶':''}</h2><div class="sub" style="margin:0">Real player · only you two can see this</div></div>
- </div>
- ${ME.pending&&ME.pending[uid]?`<div class="act pink">💕 @${esc(p.n)} asked YOU out! <button onclick="acceptBoo('${uid}')" style="margin-left:auto;background:#fff;border:none;border-radius:9px;padding:6px 12px;font-weight:800;color:#db2777">Accept</button></div>`:''}
- ${isBoo?`<div style="background:#fdf2f8;border-radius:12px;padding:10px;font-size:12px;color:#9d174d;margin-bottom:8px">💕 ${isSp?'Married 💍':'Your boo'} · Relationship level ${ME.relLvl}/5<div style="height:7px;background:#fbcfe8;border-radius:5px;margin-top:6px"><div style="height:100%;width:${relPct}%;background:#db2777;border-radius:5px"></div></div></div>`:''}
- <button class="act green" onclick="openDM('${uid}')">💬 Chat <small>private</small></button>
- ${isBoo?`<button class="act pink" onclick="openDM('${uid}');setTimeout(()=>dmQuick('💑 Date night? 😍'),300)">💑 Date night <small>₦8,000 · +level</small></button>
- <button class="act" onclick="openDM('${uid}');setTimeout(()=>dmQuick('🎁 I got you a gift 🥺'),300)">🎁 Send gift <small>₦10,000 · +level</small></button>`:''}
- ${!isBoo&&!ME.partnerUid?(s.val()?`<div class="act" style="background:#fce7f3;color:#9d174d">💘 Request sent… waiting for @${esc(p.n)}</div>`:`<button class="act pink" onclick="askBoo('${uid}')">💘 Ask to be my boo <small>chat & hang out more</small></button>`):''}
- ${ME.partnerUid&&!isBoo?`<div class="act" style="background:#fdf2f8;color:#9d174d">💕 You're with @${esc(ME.partnerName)}</div>`:''}
- <button class="act" onclick="sendMoneySheet('${uid}')">💸 Send money</button>
- ${isBoo?`<button class="act" onclick="inviteOver('${uid}')">🏠 Invite over <small>to your home</small></button>
- <button class="act" onclick="visitThem('${uid}')">🚪 Visit them</button>`:''}
- <div class="quickRow">
-   <button class="qb" onclick="dmOpenQuick('${uid}','How far? 👋')">How far? 👋</button>
-   <button class="qb" onclick="dmOpenQuick('${uid}','I dey o 😄')">I dey o 😄</button>
-   <button class="qb" onclick="dmOpenQuick('${uid}','Wetin dey happen?')">Wetin dey happen?</button>
-   <button class="qb" onclick="dmOpenQuick('${uid}','Where you dey?')">Where you dey?</button>
- </div>
- <button class="act red" onclick="reportPlayer('${uid}')" style="margin-top:6px">🚫 Block / Report</button>`);});}
-function askBoo(uid){const p=others[uid];DB.ref('requests/'+uid+'/'+ME.uid).set({from:ME.uid,n:ME.name,ts:Date.now()});
- DB.ref('dm/'+dmId(uid)).push({uid:ME.uid,n:ME.name,text:'💘 Will you be my boo? 😍',ts:Date.now()});
- toast('💘 Request sent to @'+p.n+'!');closeSheet();}
-function acceptBoo(uid){const p=others[uid]||{n:'?'};
- ME.partnerUid=uid;ME.partnerName=p.n;ME.relLvl=1;
- DB.ref('users/'+ME.uid).update({partnerUid:uid,partnerName:p.n,relLvl:1});
- DB.ref('users/'+uid).update({partnerUid:ME.uid,partnerName:ME.name,relLvl:1});
- DB.ref('requests/'+ME.uid+'/'+uid).remove();
- DB.ref('dm/'+dmId(uid)).push({uid:ME.uid,n:ME.name,text:'💕 YES!! We\'re official!! 😍🥰',ts:Date.now()});
- bigTitleFn('💘 IT\'S OFFICIAL!');closeSheet();hud();}
-function dmId(uid){return [ME.uid,uid].sort().join('_');}
-function dmOpenQuick(uid,text){openDM(uid);setTimeout(()=>dmSend(text),350);}
-function sendMoneySheet(uid){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>💸 Send money</h2><div class="sub">To @${esc(others[uid].n)}</div>
- <button class="act" onclick="sendMoney('${uid}',1000)">₦1,000</button><button class="act" onclick="sendMoney('${uid}',5000)">₦5,000</button>
- <button class="act" onclick="sendMoney('${uid}',10000)">₦10,000</button><button class="act" onclick="sendMoney('${uid}',50000)">₦50,000</button>`);}
-function sendMoney(uid,amt){if(ME.money<amt){toast('Not enough money');return;}ME.money-=amt;
- DB.ref('users/'+uid+'/money').get().then(s=>{DB.ref('users/'+uid+'/money').set((s.val()||0)+amt);});
- DB.ref('dm/'+dmId(uid)).push({uid:ME.uid,n:ME.name,text:'💸 sent you '+fmt(amt),ts:Date.now()});
- toast('💸 Sent '+fmt(amt));closeSheet();hud();}
-function inviteOver(uid){DB.ref('dm/'+dmId(uid)).push({uid:ME.uid,n:ME.name,text:'🏠 Come over to my place! Tap Phone → Houses → Visit '+ME.name,ts:Date.now()});
- DB.ref('online/'+uid+'/invite').set({from:ME.uid,n:ME.name,home:ME.homeId});toast('🏠 Invite sent!');}
-function visitThem(uid){const p=others[uid];if(!p){toast('They went offline');return;}
- DB.ref('users/'+uid+'/homeId').get().then(s=>{if(s.val())goScene(s.val(),450,520);else toast('They haven\'t set a home yet');});}
-DB&&setInterval(()=>{ // receive invites
- if(!ME)return;DB.ref('online/'+ME.uid+'/invite').get().then(s=>{const v=s.val();if(!v)return;DB.ref('online/'+ME.uid+'/invite').remove();
-  sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🏠 Invitation!</h2><div class="sub">@${esc(v.n)} invited you to their home 💕</div>
-  <button class="act green" onclick="closeSheet();goScene('${v.home}',450,520)">Go now 🚕</button>
-  <button class="act" onclick="closeSheet()">Later</button>`);});
-},2500);
-function reportPlayer(uid){DB.ref('reports/'+uid).push({by:ME.uid,ts:Date.now()});toast('🚫 Reported. They can\'t bother you again.');closeSheet();}
-
-/* ---------- DM ---------- */
-let dmUid=null;
-function openDM(uid){dmUid=uid;const p=others[uid];
- sheet(`<button class="xBtn" onclick="closeSheet()">✕</button>
- <h2>💬 @${esc(p?p.n:'player')}</h2><div class="sub">Private · only you two can see this</div>
- <div id="dmMsgs"></div>
- <div class="quickRow"><button class="qb" onclick="dmQuick('How far? 👋')">How far? 👋</button><button class="qb" onclick="dmQuick('I dey o 😄')">I dey o 😄</button><button class="qb" onclick="dmQuick('Wetin dey happen?')">Wetin dey happen?</button><button class="qb" onclick="dmQuick('😂😂😂')">😂😂😂</button><button class="qb" onclick="dmQuick('I miss you ❤️')">I miss you ❤️</button></div>
- <div id="dmRow"><input id="dmInput" placeholder="Message…" maxlength="200"><button onclick="dmSend()">Send</button></div>`);
- DB.ref('dm/'+dmId(uid)).limitToLast(60).off();
- DB.ref('dm/'+dmId(uid)).limitToLast(60).on('child_added',s=>{const m=s.val();const d=document.createElement('div');
-  d.className='dmB '+(m.uid===ME.uid?'me':'them');const t=new Date(m.ts);
-  d.innerHTML=`${esc(m.text)}<small>${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}</small>`;
-  const box=$('dmMsgs');if(box){box.appendChild(d);box.scrollTop=box.scrollHeight;}});}
-function dmQuick(t){dmSend(t);}
-function dmSend(preset){const i=$('dmInput');const v=(preset||i.value).trim();if(!v)return;if(i)i.value='';
- DB.ref('dm/'+dmId(dmUid)).push({uid:ME.uid,n:ME.name,text:esc(v).slice(0,200),ts:Date.now()});}
-
-/* ---------- requests bell ---------- */
-$('bell').onclick=()=>{DB.ref('requests/'+ME.uid).get().then(s=>{const r=s.val()||{};
- const rows=Object.entries(r).map(([uid,q])=>`<button class="act pink" onclick="acceptBoo('${uid}')">💘 @${esc(q.n)} asked to be your boo <small>tap to accept</small></button>`).join('');
- sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🔔 Requests</h2><div class="sub">${rows?'People crushing on you 👀':'No new requests'}</div>${rows||''}
- <button class="act" onclick="closeSheet()">Close</button>`);});};
-
-/* ============================= PHONE ============================= */
-$('nPhone').onclick=()=>{phoneHome();};
-function phoneHome(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button>
- <div style="text-align:center;padding:8px 0 2px"><div style="font-size:38px;font-weight:800;background:linear-gradient(90deg,#7c3aed,#db2777);-webkit-background-clip:text;color:transparent" id="phTime"></div>
- <div class="sub">Lagos · 💕</div></div>
- <div class="appGrid">
-  ${appBtn('💼','#16a34a','Jobs','phoneJobs()')}${appBtn('💬','#2563eb','Messages','phoneMsgs()')}${appBtn('🏦','#7c3aed','Bank','phoneBank()')}${appBtn('🚕','#f59e0b','Ride','phoneRide()')}
-  ${appBtn('🏠','#0891b2','Houses','phoneHouses()')}${appBtn('💕','#db2777','Family','phoneFamily()')}${appBtn('🩺','#dc2626','Health','phoneHealth()')}${appBtn('⚽','#059669','LagosBet','phoneBet()')}
- </div>
- <button class="act red" onclick="AUTH.signOut();location.reload()">🚪 Log out</button>`);
- const h=ME.hour%24;$('phTime').textContent=`${((h+11)%12)+1}:00 ${h<12?'AM':'PM'}`;}
-function appBtn(ic,bg,label,fn){return `<button class="app" onclick="${fn}"><div class="ic" style="background:${bg}22;border:2px solid ${bg}55">${ic}</div><span>${label}</span></button>`;}
-function phoneJobs(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>💼 Jobs</h2><div class="sub">${ME.job?`Current: <b>${ME.job}</b> · ${ME.shifts} shifts done · lvl ${ME.jobLevel||1}`:'No job yet — pick one!'} Shifts are 1 hour, anytime.</div>
- ${JOBS.map(j=>`<div class="jobCard"><div class="ji">${j[0]}</div><div style="flex:1"><b>${j[1]} <span class="pay">${fmt(j[2])}/shift</span></b><small>${j[3]}</small></div>
- ${ME.job===j[1]?`<button class="apply" style="background:#2563eb" onclick="phoneWork('${j[1]}',${j[2]})">Work now</button>`:`<button class="apply" onclick="setJob('${j[1]}')">Apply</button>`}</div>`).join('')}
- <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
-function setJob(j){ME.job=j;ME.shifts=0;ME.jobLevel=1;saveProfile();toast('💼 Hired as '+j+'! Start tomorrow — or work now 😉');phoneJobs();}
-function phoneWork(j,p){closeSheet();workShift(p*1.15*(ME.jobLevel||1),1);}
-function phoneMsgs(){DB.ref('dm').get().then(s=>{const all=s.val()||{};const convs=[];
- for(const key in all){if(!key.includes(ME.uid))continue;const msgs=Object.values(all[key]).sort((a,b)=>a.ts-b.ts);const last=msgs[msgs.length-1];if(!last)continue;
-  const otherUid=key.split('_').find(u=>u!==ME.uid);convs.push({otherUid,last});}
- sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>💬 Messages</h2><div class="sub">Your private chats</div>
- ${convs.sort((a,b)=>b.last.ts-a.last.ts).map(c=>{const on=others[c.otherUid];return `<button class="act" onclick="openDM('${c.otherUid}')">💬 @${esc(on?on.n:'player')} ${on?'🟢':''}<small>${esc(c.last.text).slice(0,30)}</small></button>`}).join('')||'<div class="sub">No chats yet — tap a player in a venue 💕</div>'}
- <button class="act" onclick="phoneHome()">⬅ Back</button>`);});}
-function phoneBank(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🏦 Bank</h2><div class="sub" style="font-size:15px">Balance: <b style="color:#16a34a;font-size:22px">${fmt(ME.money)}</b><br>Dream: ${ME.dream||'—'} · Home: ${ME.homeName}</div>
- <button class="act" onclick="closeSheet();toast('🏦 Money dey your pocket already 😄')">Withdraw</button>
- <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
-function phoneRide(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🚕 Ride</h2><div class="sub">Where to?</div>
- ${LOCS.map(l=>`<button class="act" onclick="closeSheet();ME.x=${l.x};ME.y=${l.y+95};writePresence();toast('🚕 Dropped at ${l.n}')">${l.e} ${l.n}<small>₦650</small></button>`).join('')}
- <button class="act" onclick="closeSheet();goScene(ME.homeId,450,520)">🏠 Go home <small>₦650</small></button>
- <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
-function phoneHouses(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🏠 Houses</h2><div class="sub">Your crib: ${ME.homeName} · rent ${fmt(ME.rent)}/wk</div>
- <button class="act green" onclick="closeSheet();goScene(ME.homeId,450,520)">🏠 Enter my home</button>
- ${ME.partnerUid?`<button class="act pink" onclick="closeSheet();visitThem('${ME.partnerUid}')">💕 Visit @${esc(ME.partnerName)}</button>`:''}
- <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
-function phoneFamily(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>💕 Family</h2><div class="sub">${ME.married?`Married to @${esc(ME.partnerName)} 💍${ME.baby?' · expecting 👶':''}`:ME.partnerUid?`Dating @${esc(ME.partnerName)} · level ${ME.relLvl}/5`:'Single & ready 😏 Meet people in venues!'}</div>
- ${ME.partnerUid&&!ME.married?`<button class="act pink" onclick="closeSheet();visitThem('${ME.partnerUid}')">💕 Visit @${esc(ME.partnerName)}</button>`:''}
- ${ME.married&&!ME.baby?`<button class="act pink" onclick="closeSheet();goScene(ME.homeId,330,240);setTimeout(()=>toast('💕 Both lie on the bed together to try for a baby 👶'),800)">🍼 Try for a baby <small>at home, both on bed</small></button>`:''}
- ${ME.baby?`<button class="act green" onclick="ME.happy=clamp(ME.happy+15,0,100);closeSheet();toast('👶 Family time!')">👶 Spend time with baby</button>`:''}
- <button class="act" onclick="phoneHome()">⬅ Back</button>`;}
-function phoneHealth(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🩺 Health</h2><div class="sub">😊 ${Math.round(ME.happy)} · 🍗 ${Math.round(ME.hunger)} · ⚡ ${Math.round(ME.energy)} · 🧼 ${Math.round(ME.hygiene)}<br>Traits: ${ME.traits.join(', ')||'none'}</div>
- <button class="act green" onclick="ME.energy=100;ME.hygiene=clamp(ME.hygiene+10,0,100);ME.hour=(ME.hour+8)%24;if(ME.hour<8){ME.day++;checkRent();}ME.hunger=clamp(ME.hunger-25,0,100);closeSheet();bigTitleFn('☀️ Good morning!');hud()">😴 Sleep 8 hours <small>₦0 at home, ₦15k hotel</small></button>
- <button class="act" onclick="closeSheet();goScene('amala',550,620)">🍲 Go eat</button>
- <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
-function phoneBet(){sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>⚽ LagosBet</h2><div class="sub">Stake small, enjoy the banter 😅</div>
- ${[1000,5000,20000].map(a=>`<button class="act" onclick="bet(${a})">Stake ${fmt(a)} <small>50/50 win 2x</small></button>`).join('')}
- <button class="act" onclick="phoneHome()">⬅ Back</button>`);}
-function bet(a){if(!pay(a))return;if(Math.random()<0.5){ME.money+=a*2;toast('⚽ YOU WIN '+fmt(a*2)+'!!');}else toast('⚽ Cut! Bookies chop your money 😭');hud();phoneBet();}
-
-/* ============================= HOME / BUY ============================= */
-$('nHome').onclick=()=>{if(ME.scene.startsWith('home_')){goScene('city',1300,980);}else if(ME.scene!=='city'){exitVenue();}else goScene(ME.homeId,450,520);};
-$('nMap').onclick=()=>{if(ME.scene!=='city')goScene('city',1300,980);else toast('🗺️ You dey map already — tap a building!');};
-$('nBuy').onclick=()=>{if(ME.scene.startsWith('home_'))openBuy();else toast('🛋️ Buy mode works inside a home (yours or boo\'s)');};
-let nearFurni=null;
-function openBuy(cat='comfort'){const items=ITEMS[cat];
- sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🛋️ Buy mode</h2><div class="sub">Balance: <b style="color:#16a34a">${fmt(ME.money)}</b> · furniture appears in the room</div>
- <div class="catTabs">${CATS.map(c=>`<button class="catTab ${c[1]===cat?'sel':''}" onclick="openBuy('${c[1]}')">${c[0]}</button>`).join('')}</div>
- <div class="catGrid">${items.map((it,i)=>`<div class="itemCard"><div class="ie">${it[0]}</div><b>${it[1]}</b><div class="st">${'★'.repeat(it[4])}</div><div class="pr">${fmt(it[2])}</div><button onclick="buyItem('${cat}',${i})" ${ME.money<it[2]?'disabled':''}>Buy</button></div>`).join('')}</div>`);}
-function buyItem(cat,i){const it=ITEMS[cat][i];if(!pay(it[2]))return;
- const spot=freeSpot();ME.furni.push({t:it[1],e:it[0],x:spot.x,y:spot.y});saveProfile();toast('🛋️ '+it[1]+' delivered!');openBuy(cat);}
-function freeSpot(){for(let y=1;y<5;y++)for(let x=1;x<7;x++){if(!ME.furni.some(f=>f.x===x&&f.y===y))return{x,y};}return{x:irand(1,6),y:irand(1,4)};}
-function homeInteract(){const f=ME.furni.find(f=>f.x===nearFurni.x&&f.y===nearFurni.y);if(!f)return;
- if(/Bed/.test(f.t)){const partnerHere=ME.partnerUid&&others[ME.partnerUid]&&others[ME.partnerUid].sc===ME.scene;
-  sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>🛏️ ${f.t}</h2>
-  <button class="act green" onclick="closeSheet();ME.energy=100;ME.hour=(ME.hour+8)%24;if(ME.hour<8){ME.day++;checkRent();}ME.hunger=clamp(ME.hunger-25,0,100);bigTitleFn('☀️ Good morning!');hud()">😴 Sleep</button>
-  ${partnerHere&&ME.married&&!ME.baby?`<button class="act pink" onclick="closeSheet();tryBaby()">💕 Lie down together <small>private · maybe a baby 👶</small></button>`:''}
-  ${partnerHere&&!ME.married?`<button class="act" onclick="closeSheet();toast('💍 Get married at the Love Chapel first!')">💕 Cuddle <small>marry first 😉</small></button>`:''}`);}
- else if(/Stove|Cooler|Cabinet/.test(f.t)){if(!pay(800))return;ME.hunger=clamp(ME.hunger+45,0,100);ME.happy=clamp(ME.happy+4,0,100);toast('🍳 Nice home-cooked meal!');}
- else if(/Shower|Bathtub/.test(f.t)){ME.hygiene=100;toast('🚿 Sparkling clean!');}
- else if(/WC/.test(f.t)){ME.hygiene=clamp(ME.hygiene+15,0,100);toast('🚽 Relief!');}
- else if(/TV|PS5/.test(f.t)){ME.happy=clamp(ME.happy+10,0,100);ME.energy=clamp(ME.energy-5,0,100);toast('📺 Enjoying your '+f.t);}
- else if(/Chair|Sofa|Armchair/.test(f.t)){ME.happy=clamp(ME.happy+3,0,100);ME.energy=clamp(ME.energy+3,0,100);toast('🛋️ Comfy!');}
- hud();}
-
-/* ============================= THUGS ============================= */
-let thugCool=60,thugActive=false;
-setInterval(()=>{if(!ME||ME.scene!=='city'||thugActive)return;thugCool-=5;const night=ME.hour>=20||ME.hour<5;
- if(thugCool<=0){thugCool=night?rand(45,90):rand(100,200);if(d2(ME,{x:330,y:1290})<300)return;
- if(Math.random()<(night?0.7:0.3)){thugActive=true;const demand=irand(2000,8000);
- sheet(`<button class="xBtn" onclick="closeSheet()">✕</button><h2>😈 Street Thug</h2><div class="sub">"Oga, drop ${fmt(demand)} make we no wound you."</div>
- <button class="act" onclick="thugPay(${demand})">💸 Pay ${fmt(demand)}</button>
- <button class="act" onclick="thugRun()">🏃 Run!</button>
- <button class="act" onclick="thugPolice()">🚔 Call police</button>`);}}},5000);
-function thugPay(d){ME.money=Math.max(0,ME.money-d);thugActive=false;closeSheet();toast('😈 Painful… '+fmt(d)+' gone.');hud();}
-function thugRun(){thugActive=false;closeSheet();
- if(ME.traits.includes('Night Crawler')||Math.random()<0.6)toast('🏃 You escaped!');
- else{const f=irand(1000,3000);ME.money=Math.max(0,ME.money-f);ME.energy=clamp(ME.energy-15,0,100);toast('😈 They caught you! Took '+fmt(f));}hud();}
-function thugPolice(){thugActive=false;closeSheet();DB.ref('users/'+ME.uid+'/thugReports').set(firebase.database.ServerValue.increment(1));toast('🚔 Report filed — collect reward at Police Station!');}
-
-/* ============================= STATS TICK ============================= */
-setInterval(()=>{if(!ME||$('game').classList.contains('hidden'))return;
- ME.hour++;ME.hunger=clamp(ME.hunger-1.1,0,100);ME.energy=clamp(ME.energy-(ME.traits.includes('Gym Rat')?0.5:0.9),0,100);
- ME.hygiene=clamp(ME.hygiene-(ME.traits.includes('Clean Pikin')?0.3:0.7),0,100);ME.happy=clamp(ME.happy-0.35,0,100);
- if(ME.hour>=24){ME.hour=0;ME.day++;checkRent();}
- if(ME.hunger<=0||ME.energy<=0)ME.happy=clamp(ME.happy-3,0,100);
- if(ME.money>=1e6&&!ME.dreamDone){ME.dreamDone=true;ME.happy=100;bigTitleFn('🏆 LIFETIME WISH COMPLETE! Lagos don see you ✨');}
- hud();saveProfile();},10000);
-$('spRadio').onclick=()=>toast('📻 Naija Radio: '+pick(['Wizkid — Essence 🔥','Burna Boy — Last Last','Asake — Lonely At The Top','Ayra Starr — Rush','Davido — Feel','Rema — Calm Down']));
-
-/* ============================= DRAWING ============================= */
+function drawTile(x,y){
+  var p=iso(x,y),q=iso(x+1,y),r=iso(x+1,y+1),s=iso(x,y+1);
+  ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.lineTo(r.x,r.y);ctx.lineTo(s.x,s.y);ctx.closePath();
+  if(y<LAGOON_Y){
+    var w=Math.sin(Date.now()/600+x*.9+y)*3;
+    ctx.fillStyle=(x+y)%2?'#3d94d8':'#4aa3df'; ctx.fill();
+    if((x*7+y*13)%11===0){ctx.strokeStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.moveTo(p.x+8,p.y+w);ctx.lineTo(q.x-8,q.y+w);ctx.stroke();}
+  } else if(isRoad(x,y)){ ctx.fillStyle=((x|0)+(y|0))%2?'#656a72':'#6b7078'; ctx.fill();
+    if(isRoad(x,y-1)===false){ctx.strokeStyle='#e8c547';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(p.x+12,p.y);ctx.lineTo(q.x-12,q.y);ctx.stroke();ctx.lineWidth=1;}
+  } else { ctx.fillStyle=((x*3+y*5)%3===0)?'#8fce7a':'#84c773'; ctx.fill(); ctx.strokeStyle='rgba(0,60,0,.08)'; ctx.stroke(); }
+}
+function drawBuilding(b){
+  var p1=iso(b.x,b.y),p2=iso(b.x+b.w,b.y),p3=iso(b.x+b.w,b.y+b.h),p4=iso(b.x,b.y+b.h);
+  var z=b.z;
+  ctx.beginPath();ctx.moveTo(p1.x,p1.y-z);ctx.lineTo(p2.x,p2.y-z);ctx.lineTo(p3.x,p3.y-z);ctx.lineTo(p4.x,p4.y-z);ctx.closePath();
+  ctx.fillStyle=b.c;ctx.fill();ctx.strokeStyle='rgba(0,0,0,.25)';ctx.stroke();
+  ctx.beginPath();ctx.moveTo(p4.x,p4.y-z);ctx.lineTo(p3.x,p3.y-z);ctx.lineTo(p3.x,p3.y);ctx.lineTo(p4.x,p4.y);ctx.closePath();
+  ctx.fillStyle='rgba(0,0,0,.28)';ctx.fill();
+  ctx.beginPath();ctx.moveTo(p2.x,p2.y-z);ctx.lineTo(p3.x,p3.y-z);ctx.lineTo(p3.x,p3.y);ctx.lineTo(p2.x,p2.y);ctx.closePath();
+  ctx.fillStyle='rgba(0,0,0,.14)';ctx.fill();
+  // windows on the right face
+  ctx.fillStyle='rgba(255,240,180,.9)';
+  for(var i=0;i<Math.floor(b.w);i++){ var wx=p2.x+(p3.x-p2.x)*((i+.5)/b.w), wy=p2.y+(p3.y-p2.y)*((i+.5)/b.w);
+    if(b.z>16){ctx.fillRect(wx-4,wy-z*.62,7,9);ctx.fillRect(wx-4,wy-z*.32,7,9);} }
+  var c=iso(b.x+b.w/2,b.y+b.h/2);
+  if(b.t==='club'){ ctx.fillStyle='#ff5fa2';ctx.beginPath();ctx.arc(c.x,c.y-z-10+Math.sin(Date.now()/300)*4,6,0,7);ctx.fill(); }
+  if(b.t==='police'){ ctx.fillStyle='#2ecc71'; ctx.font='bold 12px Arial'; ctx.fillText('🚓 POLICE', c.x-28, c.y-z-8); }
+  if(b.t==='home'){ ctx.font='20px serif'; ctx.fillText('👑', c.x-10, c.y-z-4); }
+  // label
+  ctx.font='bold 12px Arial'; var tw=ctx.measureText(b.n).width;
+  ctx.fillStyle='rgba(255,255,255,.92)'; rr(c.x-tw/2-8,c.y-z-30,tw+16,20,10); ctx.fill();
+  ctx.fillStyle='#222'; ctx.fillText(b.n,c.x-tw/2,c.y-z-15);
+}
 function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-function human(x,y,p,s=1,phase=0,isMe){ctx.save();ctx.translate(x,y);
- ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(0,14*s,11*s,4*s,0,0,7);ctx.fill();
- const bob=Math.sin(phase)*2*s,lp=Math.sin(phase)*7*s;
- ctx.strokeStyle='#1f2937';ctx.lineWidth=5*s;ctx.lineCap='round';
- ctx.beginPath();ctx.moveTo(-3*s,2*s+bob*.3);ctx.lineTo(-3*s+lp,14*s);ctx.stroke();
- ctx.beginPath();ctx.moveTo(3*s,2*s+bob*.3);ctx.lineTo(3*s-lp,14*s);ctx.stroke();
- const shirt={'Casual':'#fbbf24','Hoodie':'#7c3aed','Office':'#1e3a8a','Chill':'#059669','Owambe':'#dc2626','Street':'#111827'}[p.o]||'#fbbf24';
- ctx.fillStyle=shirt;rr(-8*s,-20*s+bob*.3,16*s,22*s,6*s);ctx.fill();
- ctx.fillStyle='#7c4a22';ctx.beginPath();ctx.arc(0,-28*s+bob*.3,8*s,0,7);ctx.fill();
- ctx.fillStyle='#111';
- if(p.h==='Bald'){}
- else if(p.h==='Afro'||p.h==='Curls'){ctx.beginPath();ctx.arc(0,-31*s+bob*.3,9*s,Math.PI,2*Math.PI);ctx.fill();}
- else if(p.h==='Gele'){ctx.fillStyle='#dc2626';ctx.beginPath();ctx.arc(0,-32*s+bob*.3,9*s,Math.PI,2*Math.PI);ctx.fill();}
- else if(p.h==='Braids'||p.h==='Locs'){ctx.beginPath();ctx.arc(0,-30*s+bob*.3,8.5*s,Math.PI,2*Math.PI);ctx.fill();ctx.fillRect(-10*s,-28*s+bob*.3,4*s,18*s);ctx.fillRect(6*s,-28*s+bob*.3,4*s,18*s);}
- else{ctx.beginPath();ctx.arc(0,-30*s+bob*.3,8.5*s,Math.PI,2*Math.PI);ctx.fill();}
- ctx.font='700 11px sans-serif';ctx.textAlign='center';
- ctx.fillStyle=isMe?'#0a7a4a':'#374151';ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=3;
- const nm='@'+p.n+(p.ring?' 💍':'')+(p.baby?' 👶':'')+(isMe?' (you)':'');
- ctx.strokeText(nm,0,-46*s);ctx.fillText(nm,0,-46*s);ctx.textAlign='left';ctx.restore();}
-function bubbleDraw(){for(const b of bubbles){let x,y;const t=b.uid===ME.uid;
- if(t){x=ME.x;y=ME.y-78;}else if(others[b.uid]&&others[b.uid].sc===ME.scene){x=others[b.uid].x;y=others[b.uid].y-78;}else continue;
- ctx.font='600 12px sans-serif';const tw=ctx.measureText(b.text).width+16;
- ctx.fillStyle=t?'rgba(22,163,74,.95)':'rgba(255,255,255,.95)';rr(x-tw/2,y-24,tw,22,11);ctx.fill();
- ctx.fillStyle=t?'#fff':'#111827';ctx.textAlign='center';ctx.fillText(b.text,x,y-8);ctx.textAlign='left';}}
-function locLabel(x,y,txt){ctx.font='600 13px sans-serif';const tw=ctx.measureText(txt).width+18;
- ctx.fillStyle='rgba(255,255,255,.95)';rr(x-tw/2,y-14,tw,24,12);ctx.fill();
- ctx.fillStyle='#1f2937';ctx.textAlign='center';ctx.fillText(txt,x,y+3);ctx.textAlign='left';}
 
-function drawCity(){
- ctx.fillStyle='#9ccc65';ctx.fillRect(0,0,CITYW,CITYH);
- // lagoon & ocean
- ctx.fillStyle='#4fc3f7';ctx.fillRect(0,LAGY,CITYW,LAGH);
- ctx.fillStyle='#0288d1';ctx.font='bold 34px sans-serif';ctx.fillText('LAGOS LAGOON 🌊',1080,LAGY+80);
- ctx.fillStyle='#81d4fa';ctx.fillRect(0,OCEANY,CITYW,CITYH-OCEANY);
- ctx.fillStyle='#0288d1';ctx.font='bold 26px sans-serif';ctx.fillText('EKO ATLANTIC OCEAN 🌊',1620,OCEANY+40);
- ctx.fillStyle='#ffe082';ctx.fillRect(0,LAGY+LAGH,CITYW,46);
- // roads
- ctx.fillStyle='#78909c';for(const y of ROADS_Y)ctx.fillRect(0,y-28,CITYW,56);for(const x of ROADS_X)ctx.fillRect(x-28,0,56,OCEANY);
- ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=3;ctx.setLineDash([24,20]);
- for(const y of ROADS_Y){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(CITYW,y);ctx.stroke();}
- for(const x of ROADS_X){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,OCEANY);ctx.stroke();}
- ctx.setLineDash([]);
- // billboards
- for(let i=0;i<7;i++){const bx=220+i*340,by=ROADS_Y[1]-76;
-  ctx.fillStyle='#374151';ctx.fillRect(bx,by,6,36);ctx.fillRect(bx+76,by,6,36);
-  ctx.fillStyle=pick(['#0288d1','#16a34a','#f59e0b']);ctx.fillRect(bx-8,by-26,98,32);
-  ctx.fillStyle='#fff';ctx.font='bold 11px sans-serif';ctx.fillText(pick(['GLO 📶','MTN','LAGOS LIFE','BET9JA','DStv']),bx,by-5);}
- // airport & refinery tags like the video
- ctx.fillStyle='#facc15';rr(1050,320,240,44,22);ctx.fill();ctx.fillStyle='#111';ctx.font='bold 15px sans-serif';ctx.fillText('🚧 ✈️ Airport · Coming soon',1070,348);
- ctx.fillStyle='#facc15';rr(360,1340,260,44,22);ctx.fill();ctx.fillStyle='#111';ctx.fillText('🚧 🛢️ Refinery · Coming soon',380,1368);
- // buildings
- for(const l of LOCS){ctx.save();ctx.translate(l.x,l.y);
-  ctx.fillStyle='rgba(0,0,0,.2)';rr(-50,-26,104,72,8);ctx.fill();
-  ctx.fillStyle='#f5f5f4';rr(-52,-44,104,82,8);ctx.fill();ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=2;rr(-52,-44,104,82,8);ctx.stroke();
-  ctx.fillStyle='#d6d3d1';ctx.beginPath();ctx.moveTo(-52,-44);ctx.lineTo(-38,-62);ctx.lineTo(66,-62);ctx.lineTo(52,-44);ctx.closePath();ctx.fill();ctx.stroke();
-  ctx.font='32px sans-serif';ctx.textAlign='center';ctx.fillText(l.e,0,4);ctx.textAlign='left';ctx.restore();
-  locLabel(l.x,l.y-70,l.e+' '+l.n);}
- // trees
- for(let i=0;i<14;i++){ctx.font='30px sans-serif';ctx.fillText('🌴',irand(100,CITYW-100),pick([600,700,1100,1150]));}
- drawPlayersCity();}
-function drawPlayersCity(){for(const uid in others){const p=others[uid];if(p.sc!=='city')continue;
- human(p.x,p.y,p,1,p.x*0.04);}}
-function drawVenue(){const l=loc(ME.scene),st=VENUE_STYLE[ME.scene]||{floor:'#e8e6e3',accent:'#7c3aed'};
- ctx.fillStyle=st.floor;ctx.fillRect(0,0,1100,760);
- if(ME.scene==='quilox'){ctx.strokeStyle='rgba(168,85,247,.18)';ctx.lineWidth=1;
-  for(let x=0;x<1100;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,760);ctx.stroke();}
-  for(let y=0;y<760;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(1100,y);ctx.stroke();}
-  ctx.fillStyle='#f472b6';for(let i=0;i<6;i++)for(let j=0;j<4;j++){ctx.fillStyle=['#f472b6','#60a5fa','#34d399','#facc15'][(i+j)%4];ctx.fillRect(430+i*56,330+j*56,56,56);}}
- if(ME.scene==='beach'){ctx.fillStyle=['#f472b6','#60a5fa','#34d399','#facc15'];for(let i=0;i<6;i++)for(let j=0;j<4;j++){ctx.fillStyle=['#f472b6','#60a5fa','#34d399','#facc15'][(i+j)%4];ctx.fillRect(430+i*56,330+j*56,56,56);}}
- ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=10;ctx.strokeRect(5,5,1090,750);
- for(const pr of (V_PROPS[ME.scene]||[]))drawProp(pr[0],pr[1]*1100,pr[2]*760);
- locLabel(550,36,l.e+' '+l.n+' — '+(Object.values(others).filter(p=>p.sc===ME.scene).length+1)+' here');
- for(const uid in others){const p=others[uid];if(p.sc===ME.scene)human(p.x,p.y,p,1,p.x*0.04);}
- // chat feed bottom-left
- ctx.font='600 11px sans-serif';let fy=700;
- for(const m of roomMsgs.slice(-4)){ctx.fillStyle='rgba(255,255,255,.75)';const tw=ctx.measureText('@'+m.n+': '+m.text).width+14;rr(12,fy-14,tw,20,10);ctx.fill();
-  ctx.fillStyle='#1f2937';ctx.fillText('@'+m.n+': '+m.text,19,fy);fy-=24;}}
-function drawProp(t,x,y){ctx.save();ctx.translate(x,y);
- const P={stage:()=>{ctx.fillStyle='#111827';rr(-110,-40,220,90,10);ctx.fill();ctx.fillStyle='#a855f7';rr(-100,-32,200,50,6);ctx.fill();},
- bar:()=>{ctx.fillStyle='#7c2d12';rr(-90,-25,180,50,8);ctx.fill();ctx.font='24px sans-serif';ctx.textAlign='center';ctx.fillText('🍾🥂🍷',0,8);},
- light:()=>{ctx.fillStyle='rgba(250,204,21,.25)';ctx.beginPath();ctx.arc(0,0,60,0,7);ctx.fill();ctx.font='28px sans-serif';ctx.textAlign='center';ctx.fillText('💡',0,8);},
- palm:()=>{ctx.font='46px sans-serif';ctx.textAlign='center';ctx.fillText('🌴',0,10);},
- umbrella:()=>{ctx.font='46px sans-serif';ctx.textAlign='center';ctx.fillText('⛱️',0,12);},
- fire:()=>{ctx.font='36px sans-serif';ctx.textAlign='center';ctx.fillText('🔥',0,10);},
- dj:()=>{ctx.font='44px sans-serif';ctx.textAlign='center';ctx.fillText('🎧',0,10);},
- pot:()=>{ctx.font='44px sans-serif';ctx.textAlign='center';ctx.fillText('🍲',0,10);},
- table2:()=>{ctx.fillStyle='#b08968';ctx.beginPath();ctx.arc(0,0,34,0,7);ctx.fill();ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText('🍽️',0,6);},
- weights:()=>{ctx.font='40px sans-serif';ctx.textAlign='center';ctx.fillText('🏋️',0,8);},
- treadmill:()=>{ctx.fillStyle='#475569';rr(-35,-18,70,36,5);ctx.fill();ctx.fillStyle='#94a3b8';ctx.fillRect(-25,-10,50,8);},
- shelf:()=>{ctx.fillStyle='#94a3b8';rr(-80,-20,160,40,4);ctx.fill();ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText('📚📚📚',0,6);},
- desk2:()=>{ctx.fillStyle='#b08968';rr(-50,-25,100,50,6);ctx.fill();ctx.font='24px sans-serif';ctx.textAlign='center';ctx.fillText('💻',0,6);},
- altar:()=>{ctx.fillStyle='#d4af37';rr(-70,-25,140,50,6);ctx.fill();ctx.font='32px sans-serif';ctx.textAlign='center';ctx.fillText('💒',0,8);},
- pew:()=>{ctx.fillStyle='#8b5e34';rr(-70,-16,140,32,6);ctx.fill();},
- stall:()=>{ctx.fillStyle='#a16207';rr(-55,-20,110,44,6);ctx.fill();ctx.fillStyle=pick(['#ef4444','#16a34a','#facc15']);ctx.beginPath();ctx.moveTo(-62,-20);ctx.lineTo(0,-52);ctx.lineTo(62,-20);ctx.closePath();ctx.fill();ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText('🥬🍅',0,12);},
- cell:()=>{ctx.fillStyle='#64748b';rr(-45,-35,90,70,4);ctx.fill();ctx.strokeStyle='#1e293b';ctx.lineWidth=4;for(let i=-30;i<=30;i+=15){ctx.beginPath();ctx.moveTo(i,-35);ctx.lineTo(i,35);ctx.stroke();}},
- board:()=>{ctx.fillStyle='#1e3a8a';rr(-40,-25,80,50,4);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText('WANTED 🚨',0,4);},
- pool:()=>{ctx.fillStyle='#38bdf8';rr(-90,-45,180,90,10);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.strokeRect(-90,-45,180,90);}};
- (P[t]||(()=>{}))();ctx.restore();}
-function drawHome(){const isMine=ME.scene===ME.homeId;
- ctx.fillStyle='#7f9c96';ctx.fillRect(0,0,880,660); // walls-ish bg
- ctx.fillStyle='#8a6b48';ctx.fillRect(0,0,880,120);ctx.fillRect(0,0,120,660); // wall bands
- ctx.fillStyle='#c8a06a';ctx.fillRect(120,120,760,540);
- ctx.strokeStyle='rgba(0,0,0,.08)';for(let x=120;x<=880;x+=55){ctx.beginPath();ctx.moveTo(x,120);ctx.lineTo(x,660);ctx.stroke();}
- for(let y=120;y<=660;y+=55){ctx.beginPath();ctx.moveTo(120,y);ctx.lineTo(880,y);ctx.stroke();}
- // window & door
- ctx.fillStyle='#bae6fd';ctx.fillRect(700,20,120,80);ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.strokeRect(700,20,120,80);
- ctx.fillStyle='#7c4a1e';ctx.fillRect(10,300,100,140);
- locLabel(440,40,(isMine?'🏠 Your home — '+ME.homeName:'🏠 Visiting')+' · '+(Object.values(others).filter(p=>p.sc===ME.scene).length+1)+' here');
- const furni=isMine?ME.furni:(homeCache[ME.scene]||[]);
- for(const f of furni){const fx=140+f.x*108,fy=150+f.y*100;
-  ctx.font='46px sans-serif';ctx.textAlign='center';ctx.fillText({'Wooden Bed':'🛏️','Double Bed':'🛏️','Cooler':'🧊','Stove':'🍳','Kitchen Cabinet':'🗄️','WC':'🚽','Shower':'🚿','Bathtub':'🛁','Plastic Chair':'🪑','3-Seater Sofa':'🛋️','Royal Gold Sofa':'👑','Velvet Sofa':'🛋️','TV':'📺','PS5 Setup':'🎮','Snooker Table':'🎱','Standing Lamp':'💡','Air Conditioner':'❄️','Plant':'🪴','Wall Art':'🖼️','Teddy Bear':'🧸','bed':'🛏️','chair':'🪑','cooler':'🧊'}[f.t]||'📦',fx,fy+16);}
- ctx.textAlign='left';
- for(const uid in others){const p=others[uid];if(p.sc===ME.scene)human(p.x,p.y,p,1,p.x*0.04);}
- if(nearFurni){ctx.strokeStyle='#16a34a';ctx.lineWidth=3;ctx.strokeRect(140+nearFurni.x*108-50,150+nearFurni.y*100-44,100,88);
-  const pr=$('prompt');pr.style.display='block';pr.textContent='Press E — use furniture / open Buy mode';
- } else if(!ME.scene.startsWith('home_')){} }
-let homeCache={};
-function loadHomeCache(){if(!ME.scene.startsWith('home_')||ME.scene===ME.homeId)return;
- DB.ref('users/'+ME.scene.slice(5)+'/furni').get().then(s=>homeCache[ME.scene]=s.val()||[]);}
+var CARS=[];
+for(var ci=0;ci<6;ci++) CARS.push({axis:'x',line:ROADY[ci%ROADY.length],p:Math.random()*WORLD,v:(ci%2?1:-1)*(3+Math.random()*2),c:['#e74c3c','#f1c40f','#ecf0f1','#3498db','#2ecc71','#e67e22'][ci],kind:ci%3});
+for(var cj=0;cj<4;cj++) CARS.push({axis:'y',line:ROADX[cj%ROADX.length],p:Math.random()*WORLD,v:(cj%2?1:-1)*(2.4+Math.random()*2),c:['#95a5a6','#f39c12','#bdc3c7','#16a085'][cj],kind:3});
+function drawVehicle(c){
+  var x,y; if(c.axis==='x'){x=c.p;y=c.line;}else{x=c.line;y=c.p;}
+  var p=iso(x,y);
+  ctx.save();ctx.translate(p.x,p.y);
+  var ang=c.axis==='x'?(c.v>0?0.46:-2.68):(c.v>0?2.68:-0.46); ctx.rotate(ang);
+  if(c.kind===3){ // okada (motorbike)
+    ctx.fillStyle='#222';ctx.fillRect(-8,-2,16,4); ctx.fillStyle=c.c;ctx.fillRect(-4,-6,8,6);
+    ctx.beginPath();ctx.arc(8,0,3,0,7);ctx.arc(-8,0,3,0,7);ctx.fillStyle='#111';ctx.fill();
+    ctx.fillStyle='#8d5524';ctx.beginPath();ctx.arc(0,-10,3.4,0,7);ctx.fill(); ctx.fillStyle=c.c;ctx.fillRect(-3,-8,6,7);
+  } else if(c.kind===1){ // danfo bus
+    ctx.fillStyle='#f7b731';ctx.fillRect(-11,-10,22,11);ctx.fillStyle='#2f3542';ctx.fillRect(-8,-8,5,4);ctx.fillRect(1,-8,5,4);
+    ctx.beginPath();ctx.arc(-6,1,3,0,7);ctx.arc(6,1,3,0,7);ctx.fillStyle='#111';ctx.fill();
+  } else { // car
+    ctx.fillStyle=c.c;ctx.fillRect(-10,-8,20,9);ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillRect(-3,-7,6,3);
+    ctx.beginPath();ctx.arc(-5,1,3,0,7);ctx.arc(5,1,3,0,7);ctx.fillStyle='#111';ctx.fill();
+  }
+  ctx.restore();
+}
+function drawPerson(wx,wy,o){
+  var p=iso(wx,wy), bob=o.moving?Math.abs(Math.sin(o.phase))*2.2:0, y=p.y-bob;
+  ctx.fillStyle='rgba(0,0,0,.22)';ctx.beginPath();ctx.ellipse(p.x,p.y,8,4,0,0,7);ctx.fill();
+  var sc=o.baby?0.5:1; ctx.save();ctx.translate(p.x,y);ctx.scale(sc,sc);
+  var sw=o.moving?Math.sin(o.phase)*4:0;
+  ctx.strokeStyle='#3b2f2f';ctx.lineWidth=3;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(-2,-10);ctx.lineTo(-3+sw,0);ctx.moveTo(2,-10);ctx.lineTo(3-sw,0);ctx.stroke();
+  ctx.fillStyle=o.color; rr(-6,-24,12,15,5); ctx.fill();
+  ctx.fillStyle='#8d5524';ctx.beginPath();ctx.arc(0,-29,6,0,7);ctx.fill();
+  ctx.fillStyle='#111'; if(o.gender==='W'){ctx.beginPath();ctx.arc(0,-30,6.6,Math.PI,0);ctx.fill();ctx.fillRect(-6.6,-30,3,10);ctx.fillRect(3.6,-30,3,10);}
+  else ctx.beginPath(),ctx.arc(0,-31,5.6,Math.PI,0),ctx.fill();
+  ctx.fillStyle='#222';ctx.beginPath();ctx.arc(-2,-29,0.9,0,7);ctx.arc(2,-29,0.9,0,7);ctx.fill();
+  ctx.restore();
+  if(o.name){ ctx.font='bold 11px Arial';var tw=ctx.measureText(o.name).width;
+    ctx.fillStyle='rgba(26,31,54,.75)';rr(p.x-tw/2-6,y-52*sc,tw+12,15,7);ctx.fill();
+    ctx.fillStyle=o.married?'#ffd54a':'#fff';ctx.fillText((o.married?'💍 ':'')+o.name,p.x-tw/2,y-41*sc); }
+  if(o.say){ ctx.font='11px Arial';var tw2=ctx.measureText(o.say).width;
+    ctx.fillStyle='#fff';rr(p.x-tw2/2-6,y-70*sc,tw2+12,16,8);ctx.fill();ctx.strokeStyle='#ddd';ctx.stroke();
+    ctx.fillStyle='#333';ctx.fillText(o.say,p.x-tw2/2,y-58*sc); }
+}
+function drawBoats(){ for(var i=0;i<3;i++){ var bx=6+i*13+Math.sin(Date.now()/2000+i)*2, by=1+ (i%2); var p=iso(bx,by);
+  ctx.fillStyle='#8d6e63';ctx.beginPath();ctx.moveTo(p.x-14,p.y);ctx.lineTo(p.x+14,p.y);ctx.lineTo(p.x+8,p.y+8);ctx.lineTo(p.x-8,p.y+8);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(p.x,p.y-2);ctx.lineTo(p.x,p.y-16);ctx.lineTo(p.x+8,p.y-4);ctx.closePath();ctx.fill(); } }
 
-/* ============================= PROMPT / INTERACT ============================= */
-let promptTick=0;
-function tryInteract(){
- if(ME.scene.startsWith('home_')){if(nearFurni)homeInteract();else openBuy();return;}
- if(ME.scene!=='city'){exitVenue();return;}
- const l=LOCS.find(l=>d2(ME,l)<95);if(l)openVenueSheet(l);}
-function updatePrompt(){const pr=$('prompt');if(ME.scene.startsWith('home_'))return; // home handles own
- if(ME.scene==='city'){const l=LOCS.find(l=>d2(ME,l)<95);
-  if(l){pr.style.display='block';pr.textContent=`Tap — ${l.e} ${l.n}`;return;}}
- if(ME.scene!=='city'){pr.style.display='block';pr.textContent='Press E — leave venue · tap someone to chat';return;}
- pr.style.display='none';}
+/* ---------------- main loop ---------------- */
+var last=0;
+function loop(t){
+  var dt=Math.min(.05,(t-last)/1000||0); last=t;
+  update(dt); render();
+  requestAnimationFrame(loop);
+}
+function update(dt){
+  mins+=dt; if(mins>=1440){mins-=1440;dayCount++;}
+  player.hunger=clamp(player.hunger-dt*.35,0,100); player.energy=clamp(player.energy-dt*.22,0,100);
+  player.fun=clamp(player.fun-dt*.15,0,100);
+  if(player.hunger<=0) player.energy=clamp(player.energy-dt*.8,0,100);
+  // movement
+  var sp=3.2;
+  if(travel){ travel.t+=dt; var k=clamp(travel.t/travel.dur,0,1);
+    player.x=travel.fx+(travel.tx-travel.fx)*k; player.y=travel.fy+(travel.ty-travel.fy)*k; player.moving=true; player.phase+=dt*12;
+    if(Math.random()<.3) dust(player.x,player.y, travel.mode==='Trek'?'#cbb':'#ffe');
+    if(k>=1){ toast('Arrived: '+travel.label+' ✔️'); travel=null; player.moving=false; if(onArrive){var f=onArrive;onArrive=null;f();} }
+  } else if(!player.busy){
+    var mx=0,my=0;
+    if(keys['a']||keys['arrowleft'])mx-=1; if(keys['d']||keys['arrowright'])mx+=1;
+    if(keys['w']||keys['arrowup'])my-=1; if(keys['s']||keys['arrowdown'])my+=1;
+    if(player.tx!==null&&(mx||my===0&&player.tap)){ }
+    if(mx||my){ var l=Math.hypot(mx,my); mx/=l;my/=l; player.tx=null;
+      var nx=player.x+mx*sp*dt, ny=player.y+my*sp*dt;
+      if(!isWater(nx,player.y)) player.x=clamp(nx,1,WORLD-1);
+      if(!isWater(player.x,ny)) player.y=clamp(ny,LAGOON_Y,WORLD-1);
+      player.moving=true; player.phase+=dt*10;
+    } else if(player.tx!==null){
+      var d=dist(player.x,player.y,player.tx,player.ty);
+      if(d<.15){player.tx=null;player.moving=false;}
+      else{ var ux=(player.tx-player.x)/d,uy=(player.ty-player.y)/d;
+        player.x+=ux*sp*dt; player.y+=uy*sp*dt; player.moving=true; player.phase+=dt*10; }
+    } else player.moving=false;
+  }
+  // camera
+  cam.x=innerWidth/2-(player.x-player.y)*TW/2;
+  cam.y=innerHeight/2-(player.x+player.y)*TH/2-20;
+  // sims wander
+  SIMS.forEach(function(s){
+    if(party&&dist(s.x,s.y,party.x,party.y)>4){ s.tx=party.x+(Math.random()-.5)*3; s.ty=party.y+(Math.random()-.5)*3; }
+    if(s.sayT>0)s.sayT-=dt;
+    if(!s.moving&&Math.random()<dt*.25){ s.tx=4+Math.random()*33; s.ty=LAGOON_Y+1+Math.random()*30; }
+    var d=dist(s.x,s.y,s.tx,s.ty);
+    if(d>.2){ s.moving=true; s.phase+=dt*8; s.x+=(s.tx-s.x)/d*1.6*dt; s.y+=(s.ty-s.y)/d*1.6*dt; }
+    else s.moving=false;
+  });
+  CARS.forEach(function(c){ c.p+=c.v*dt; if(c.p>WORLD+2)c.p=-2; if(c.p<-2)c.p=WORLD+2; });
+  // remote players interpolation
+  Object.keys(remotes).forEach(function(k){ var r=remotes[k]; r.x+=(r.tx2-r.x)*dt*4; r.y+=(r.ty2-r.y)*dt*4; r.phase+=dt*8; });
+  // particles
+  for(var i=parts.length-1;i>=0;i--){var q=parts[i];q.t+=dt;q.x+=q.vx;q.y+=q.vy;if(q.t>.8)parts.splice(i,1);}
+  // thug event
+  thugTimer-=dt;
+  if(thugTimer<=0&&!thug&&!player.busy){ thugTimer=70+Math.random()*60; spawnThug(); }
+  if(thug){ var d2=dist(thug.x,thug.y,player.x,player.y);
+    if(d2>.6&&!thug.gone){ thug.x+=(player.x-thug.x)/d2*2.2*dt; thug.y+=(player.y-thug.y)/d2*2.2*dt; thug.moving=true; thug.phase+=dt*10; }
+    else if(!thug.asked&&!thug.gone){ thug.asked=true; thugDemand(); }
+    if(thug.gone){ thug.x+=thug.vx*dt; thug.y+=thug.vy*dt; thugT-=dt; if(thugT<=0)thug=null; }
+  }
+  if(party){ partyT-=dt; if(Math.random()<dt*2) SIMS.forEach(function(s){ if(dist(s.x,s.y,party.x,party.y)<3) s.say=['🎶','🔥','💃','🕺','🍾','❤️'][Math.floor(Math.random()*6)],s.sayT=1.5; });
+    if(partyT<=0){party=null;toast('Party over! That was lit 🔥'); player.fun=clamp(player.fun+40,0,100);} }
+  updateHUD(); pushPos();
+}
+var thugT=0, onArrive=null;
+'''
+with open('/mnt/agents/output/scar_belles_love_life.html','a') as f: f.write(js2)
+print('part4 ok', len(js2))
+js3 = '''function render(){
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  var sky=ctx.createLinearGradient(0,0,0,innerHeight); sky.addColorStop(0,'#aee3ff');sky.addColorStop(1,'#e8f7e4');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,innerWidth,innerHeight);
+  for(var x=0;x<WORLD;x++)for(var y=0;y<WORLD;y++)drawTile(x,y);
+  drawBoats();
+  var ents=[];
+  BUILDINGS.forEach(function(b){ents.push({d:b.x+b.y,f:function(){drawBuilding(b);}});});
+  CARS.forEach(function(c){var x,y;if(c.axis==='x'){x=c.p;y=c.line;}else{x=c.line;y=c.p;}ents.push({d:x+y,f:function(){drawVehicle(c);}});});
+  SIMS.forEach(function(s){ents.push({d:s.x+s.y,f:function(){drawPerson(s.x,s.y,{moving:s.moving,phase:s.phase,gender:s.gender,color:s.color,name:s.name,say:s.sayT>0?s.say:''});}});});
+  Object.keys(remotes).forEach(function(k){var r=remotes[k];if(r.hide)return;ents.push({d:r.x+r.y,f:function(){drawPerson(r.x,r.y,{moving:r.mv,phase:r.phase,gender:r.gender,color:r.color,name:r.name,married:r.marriedTo===player.name});}});});
+  if(player.baby) ents.push({d:player.x+player.y+.1,f:function(){drawPerson(player.x+.4,player.y+.3,{moving:false,phase:0,gender:'W',color:'#ff9ff3',name:'👶',baby:true});}});
+  if(thug) ents.push({d:thug.x+thug.y,f:function(){drawPerson(thug.x,thug.y,{moving:thug.moving,phase:thug.phase,gender:'M',color:'#2d3436',name:'😈 Area boy'});}});
+  ents.push({d:player.x+player.y+.05,f:function(){drawPerson(player.x,player.y,{moving:player.moving,phase:player.phase,gender:player.gender,color:player.color,name:player.name+(player.marriedTo?' ❤️':''),married:!!player.marriedTo});}});
+  ents.sort(function(a,b){return a.d-b.d;}); ents.forEach(function(e){e.f();});
+  parts.forEach(function(q){var p=iso(q.x,q.y);ctx.globalAlpha=1-q.t/.8;ctx.fillStyle=q.c;ctx.beginPath();ctx.arc(p.x,p.y-6,3,0,7);ctx.fill();ctx.globalAlpha=1;});
+  if(travel){ ctx.font='bold 13px Arial';ctx.fillStyle='rgba(26,31,54,.85)';
+    var txt='🚌 '+travel.mode+' → '+travel.label+' ('+Math.max(1,Math.ceil(travel.dur-travel.t))+'s)'; var tw=ctx.measureText(txt).width;
+    rr(innerWidth/2-tw/2-10,70,tw+20,24,12);ctx.fill();ctx.fillStyle='#fff';ctx.fillText(txt,innerWidth/2-tw/2,87); }
+}
+function updateHUD(){
+  var h=Math.floor(mins/60)%24,m=Math.floor(mins%60),ap=h>=12?'PM':'AM',h12=((h+11)%12)+1;
+  document.getElementById('timePill').textContent=(h>=19||h<6?'🌙':'☀️')+' '+h12+':'+('0'+m).slice(-2)+' '+ap+' · Day '+dayCount;
+  document.getElementById('moneyPill').textContent='💰 '+fmt(player.money);
+  var mood=player.hunger<25?'😫 Hungry':player.energy<20?'🥱 Tired':player.fun<20?'😔 Bored':player.marriedTo?'😍 In love':'🙂 Happy';
+  document.getElementById('moodPill').textContent=mood;
+  document.querySelector('#bHunger i').style.width=player.hunger+'%';
+  document.querySelector('#bEnergy i').style.width=player.energy+'%';
+  document.querySelector('#bFun i').style.width=player.fun+'%';
+  var near=nearbyPerson();
+  document.getElementById('interactBtn').style.display=near?'block':'none';
+  if(near) document.getElementById('interactBtn').textContent='❤️ '+near.name;
+  document.getElementById('onlineN').textContent=1+Object.keys(remotes).length+(MULTI?0:SIMS.length);
+}
+function nearbyPerson(){
+  var best=null,bd=1.6;
+  SIMS.forEach(function(s){var d=dist(s.x,s.y,player.x,player.y);if(d<bd){bd=d;best=s;}});
+  Object.keys(remotes).forEach(function(k){var r=remotes[k];if(r.hide)return;var d=dist(r.x,r.y,player.x,player.y);if(d<bd){bd=d;best={id:k,name:r.name,real:true,gender:r.gender};}});
+  return best;
+}
+/* ---------------- UI helpers ---------------- */
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._x);t._x=setTimeout(function(){t.classList.remove('show')},2600);}
+var panel=document.getElementById('panel');
+function openPanel(title,html){document.getElementById('panelTitle').innerHTML=title;document.getElementById('panelBody').innerHTML=html;panel.classList.add('open');}
+function closePanel(){panel.classList.remove('open');}
+document.getElementById('panelClose').onclick=closePanel;
+function optBtn(cls,label,sub,fn){var b=document.createElement('button');b.className='opt '+(cls||'');b.innerHTML=label+(sub?'<small>'+sub+'</small>':'');
+  b.onclick=function(){fn();};return b;}
+function addOpt(cls,label,sub,fn){document.getElementById('panelBody').appendChild(optBtn(cls,label,sub,fn));}
+function progress(label,dur,done){ player.busy=true; var p=document.getElementById('prog');p.style.display='block';
+  document.getElementById('progTxt').textContent=label; var i=document.querySelector('#progBar i');i.style.width='0%';var t=0;
+  var iv=setInterval(function(){t+=.1;i.style.width=Math.min(100,t/dur*100)+'%';
+    if(t>=dur){clearInterval(iv);p.style.display='none';player.busy=false;done();}},100); }
+/* ---------------- transport ---------------- */
+function travelTo(b){
+  closePanel(); if(travel||player.busy)return;
+  var entrance={x:b.x+b.w/2,y:b.y+b.h+0.6};
+  var d=dist(player.x,player.y,entrance.x,entrance.y);
+  openPanel('🚌 Go to '+b.n.replace(/^\S+\s/,''),'<div style="text-align:center;margin-bottom:4px">Distance: '+d.toFixed(1)+' km</div>');
+  var modes=[['🚶 Trek',0,Math.min(20,3+d*.9)],['🏍️ Okada',150+d*30,Math.min(20,(3+d*.9)*.45)],['🚌 Danfo',100+d*22,Math.min(20,(3+d*.9)*.32)],['🚕 Cab',350+d*45,Math.min(20,(3+d*.9)*.18)]];
+  modes.forEach(function(m){ addOpt(m[1]===0?'green':'',m[0]+' — '+fmt(m[1]),Math.ceil(m[2])+'s travel time',function(){
+      if(player.money<m[1]){toast('No money for fare! 😭 Go work.');return;}
+      player.money-=m[1]; closePanel();
+      travel={fx:player.x,fy:player.y,tx:entrance.x,ty:entrance.y,t:0,dur:m[2],label:b.n,mode:m[0].split(' ')[1]};
+      toast(m[0]+' waka dey go! ⏱️ '+Math.ceil(m[2])+'s');
+    });});
+}
+/* ---------------- building menus ---------------- */
+function openBuilding(b){
+  if(dist(player.x,player.y,b.x+b.w/2,b.y+b.h/2)>b.w+2.5){ travelTo(b); return; }
+  openPanel(b.n,'<div style="text-align:center;color:#7a819e;margin-bottom:6px">Day '+dayCount+' · '+player.name+' · '+fmt(player.money)+'</div>');
+  var P=document.getElementById('panelBody');
+  if(b.t==='home'){
+    addOpt('green','🛏️ Sleep till morning','Restore full energy',function(){progress('Sleeping zzz...',4,function(){player.energy=100;player.hunger=clamp(player.hunger-20,0,100);mins=7*60;toast('Good morning! ☀️ Energy full.');closePanel();});});
+    addOpt('','🍳 Cook & eat','₦800 · +45 hunger',function(){if(player.money<800)return toast('No money!');player.money-=800;player.hunger=clamp(player.hunger+45,0,100);toast('You cooked jollof rice! 🍲');});
+    if(player.marriedTo){ addOpt('pink','❤️ Lie on bed with '+player.marriedTo,'Cuddle time · +25 fun',function(){player.fun=clamp(player.fun+25,0,100);toast('You and '+player.marriedTo+' cuddle on the bed ❤️');});
+      addOpt('pink','👶 Try for a baby','₦50,000 hospital checkup',babyTime); }
+    else addOpt('pink','💕 Bring partner home','Flirt first, marry, then come here',function(){toast('You need a partner first! Find someone ❤️');});
+    addOpt('','🚪 Go outside','Back to the streets',closePanel);
+  }
+  if(b.t==='job'){ addOpt('green','💼 Office shift (Accountant)','₦14,000 · 10s · -20 energy',function(){workShift(14000,10,20);});
+    addOpt('green','🖥️ Tech bro/sis gig','₦22,000 · 15s · -30 energy',function(){workShift(22000,15,30);});
+    addOpt('green','📊 Intern grind','₦6,000 · 5s · -10 energy',function(){workShift(6000,5,10);}); }
+  if(b.t==='market'){ addOpt('','🥬 Buy groceries','₦1,500 · +30 hunger',function(){buy(1500,function(){player.hunger=clamp(player.hunger+30,0,100);toast('Groceries bought 🥬');});});
+    addOpt('','👗 Buy fine clothes','₦12,000 · +20 fun',function(){buy(12000,function(){player.fun=clamp(player.fun+20,0,100);toast('You look sharp! 👗');});});
+    addOpt('green','📱 Resell phone (hustle)','Earn ₦9,000 · 8s · -10 energy',function(){workShift(9000,8,10);}); }
+  if(b.t==='food'){ addOpt('green','🍲 Amala & ewedu','₦1,200 · +50 hunger',function(){buy(1200,function(){player.hunger=clamp(player.hunger+50,0,100);player.fun=clamp(player.fun+5,0,100);toast('Belly full! Amala slap different 😋');});});
+    addOpt('','🍗 Suya & chapman','₦2,500 · +40 hunger +15 fun',function(){buy(2500,function(){player.hunger=clamp(player.hunger+40,0,100);player.fun=clamp(player.fun+15,0,100);toast('Suya on point! 🔥');});}); }
+  if(b.t==='club'){ addOpt('pink','🎉 Throw a party','₦25,000 · everyone pulls up · +40 fun',throwParty);
+    addOpt('pink','💃 Enter the rave','₦5,000 · +25 fun',function(){buy(5000,function(){player.fun=clamp(player.fun+25,0,100);toast('Gbedu dey body! 💃🕺');});});
+    addOpt('green','🎧 DJ for the night','Earn ₦11,000 · 9s · -15 energy',function(){workShift(11000,9,15);}); }
+  if(b.t==='beach'){ addOpt('pink','🏖️ Beach rave','₦4,000 · +30 fun',function(){buy(4000,function(){player.fun=clamp(player.fun+30,0,100);toast('The bass is shaking the sand 🎶');});});
+    addOpt('','🥥 Fresh coconut','₦500 · +15 hunger',function(){buy(500,function(){player.hunger=clamp(player.hunger+15,0,100);toast('Sweet coconut water 🥥');});});
+    addOpt('green','📸 Beach photoshoot','Earn ₦8,000 · 7s',function(){workShift(8000,7,8);}); }
+  if(b.t==='police'){ addOpt('','🚨 Report a crime','Recover stolen cash',function(){toast('Officers are on it. Lagos is safe-ish 🚓');player.fun=clamp(player.fun+5,0,100);});
+    addOpt('green','🛡️ Traffic warden job','Earn ₦5,000 · 5s',function(){workShift(5000,5,8);}); }
+  if(b.t==='hospital'){ addOpt('green','💊 Full checkup','₦5,000 · all stats +20',function(){buy(5000,function(){player.hunger=clamp(player.hunger+20,0,100);player.energy=clamp(player.energy+20,0,100);player.fun=clamp(player.fun+20,0,100);toast('You are fit! 💪');});});
+    addOpt('pink','👶 Maternity · baby delivery','₦50,000 · welcome your child',babyTime); }
+  if(b.t==='bank'){ addOpt('','🏦 Deposit ₦20,000','Keep money safe',function(){buy(20000,function(){player.savings+=20000;toast('Saved. Bank alerts dey sweet 💳');});});
+    addOpt('green','💰 Withdraw savings','Take out ₦10,000',function(){if(player.savings<10000)return toast('Not enough savings!');player.savings-=10000;player.money+=10000;toast('₦10,000 withdrawn 💵');});
+    addOpt('green','📈 Invest in agro','₦15,000 → ₦24,000 in 20s',function(){if(player.money<15000)return toast('Need ₦15,000!');player.money-=15000;progress('Investment growing...',20,function(){player.money+=24000;toast('Investment paid! +₦9,000 📈');});}); }
+  if(b.t==='fun'){ addOpt('pink','🎬 Watch a show','₦3,000 · +20 fun',function(){buy(3000,function(){player.fun=clamp(player.fun+20,0,100);toast('Nollywood premiere! 🎬');});});
+    addOpt('green','🎭 Perform on stage','Earn ₦10,000 · 8s',function(){workShift(10000,8,12);}); }
+}
+function buy(cost,fn){ if(player.money<cost)return toast('No enough money! 😭'); player.money-=cost; fn(); }
+function workShift(pay,dur,eneg){ if(player.energy<eneg+5)return toast('Too tired! Go sleep or eat first 🥱');
+  closePanel(); progress('Hustling... 💼',dur,function(){ player.money+=pay; player.energy=clamp(player.energy-eneg,0,100);
+  toast('Salary credited: +'+fmt(pay)+' 💰'); sysChat('💼 '+player.name+' just earned '+fmt(pay)+' from work!'); }); }
+function throwParty(){ if(player.money<25000)return toast('Party needs ₦25,000!'); player.money-=25000; closePanel();
+  party={x:player.x,y:player.y}; partyT=18; toast('🎉 PARTY! Everybody dey come!!'); sysChat('🎉 '+player.name+' is throwing a party at their location!'); }
+function babyTime(){ if(!player.marriedTo)return toast('You need to be married first 💍');
+  if(player.baby)return toast('You already get pikin! 👶');
+  if(player.money<50000)return toast('Baby needs ₦50,000 hospital fee 👶');
+  player.money-=50000; player.baby=true; closePanel();
+  toast('🍼 IT\'S A BABY! Congratulations '+player.name+' & '+player.marriedTo+'!');
+  sysChat('👶 '+player.name+' and '+player.marriedTo+' just welcomed a baby!'); }
+/* ---------------- thugs ---------------- */
+function spawnThug(){ thug={x:player.x+(Math.random()<.5?-8:8),y:player.y+(Math.random()<.5?-8:8),moving:true,phase:0,asked:false,gone:false};
+  toast('😈 Area boys dey come your side!'); }
+function thugDemand(){ openPanel('😈 AREA BOYS','<p style="text-align:center">"Oga, this area no free o. Drop <b>₦2,000</b> make we do weekend."</p>');
+  addOpt('green','💸 Pay ₦2,000','Small price for peace',function(){ if(player.money<2000){toast('You no get money! They slap your head 😭');player.fun=clamp(player.fun-10,0,100);thugFlee();closePanel();return;} player.money-=2000; toast('You paid them off 😮‍💨'); closePanel(); thugFlee(); });
+  addOpt('','🏃 Run!','50% they catch you',function(){ closePanel(); if(Math.random()<.5){var loss=Math.min(1500,player.money);player.money-=loss;toast('They catch you! They collect '+fmt(loss)+' 😭');thugFlee();}
+    else{toast('You escape! Usain Bolt no do pass like this 🏃💨');thugFlee();} });
+  addOpt('','🚓 Shout "POLICE!"','Works if police station near',function(){ closePanel();
+    if(dist(player.x,player.y,HOME.x,HOME.y)<99){ toast('🚓 Officers scatter them! Area boys dey run!'); sysChat('🚓 Police chased area boys away from '+player.name+'!'); } 
+    else{ var loss=Math.min(2000,player.money); player.money-=loss; toast('No police around! They still collect '+fmt(loss)+' 😭'); }
+    thugFlee(); }); }
+function thugFlee(){ thug.gone=true; thug.vx=(Math.random()-.5)*8; thug.vy=(Math.random()-.5)*8; thugT=2.5; }
+'''
+with open('/mnt/agents/output/scar_belles_love_life.html','a') as f: f.write(js3)
+print('part5 ok', len(js3))
+js4 = '''/* ---------------- chat ---------------- */
+var chatBox=document.getElementById('chatMsgs');
+function addMsg(name,txt,sys){ var d=document.createElement('div');d.className='msg'+(sys?' sys':'');
+  d.innerHTML=sys?txt:'<b>'+esc(name)+':</b> '+esc(txt); chatBox.appendChild(d); chatBox.scrollTop=chatBox.scrollHeight;
+  while(chatBox.children.length>60)chatBox.removeChild(chatBox.firstChild); }
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function sysChat(t){ addMsg('',t,true); if(MULTI)db.ref('chat').push({n:'SYS',t:t,ts:Date.now()}); }
+function sendChat(txt){ if(!txt.trim())return; addMsg(player.name,txt);
+  if(MULTI)db.ref('chat').push({n:player.name,t:txt,ts:Date.now()});
+  else setTimeout(function(){ var s=SIMS[Math.floor(Math.random()*SIMS.length)]; s.say=CHATLINES[Math.floor(Math.random()*CHATLINES.length)]; s.sayT=3; addMsg(s.name,CHATLINES[Math.floor(Math.random()*CHATLINES.length)]); },800+Math.random()*1500); }
+document.getElementById('chatSend').onclick=function(){var i=document.getElementById('chatTxt');sendChat(i.value);i.value='';};
+document.getElementById('chatTxt').addEventListener('keydown',function(e){if(e.key==='Enter'){sendChat(this.value);this.value='';}});
+function openChat(){document.getElementById('chat').classList.add('open');}
+document.getElementById('chatClose').onclick=function(){document.getElementById('chat').classList.remove('open');};
 
-/* ============================= MAIN LOOP ============================= */
-let last=0,frame=0;
-function loop(t){requestAnimationFrame(loop);if(!ME||$('game').classList.contains('hidden'))return;
- const dt=Math.min(0.05,(t-last)/1000||0.016);last=t;frame++;
- if(!travelTick(dt))move(dt);
- if(walking)ph+=0.16;
- for(const b of bubbles)b.t-=dt;bubbles=bubbles.filter(b=>b.t>0);
- if(frame%60===0){updatePrompt();loadHomeCache();}
- const b=bounds();cam.x=clamp(ME.x-VW/2,0,Math.max(0,b.w-VW));cam.y=clamp(ME.y-VH/2,0,Math.max(0,b.h-VH));
- ctx.save();ctx.translate(-cam.x,-cam.y);
- if(ME.scene==='city')drawCity();
- else if(ME.scene.startsWith('home_'))drawHome();
- else drawVenue();
- human(ME.x,ME.y,{n:ME.name,o:ME.outfit,h:ME.hair,ring:ME.married?1:0,baby:ME.baby?1:0},1.1,ph,true);
- if(travelling)ctx.fillText(travelling.icon,ME.x-14,ME.y-10);
- bubbleDraw();ctx.restore();}
-requestAnimationFrame(loop);
+/* ---------------- firebase multiplayer ---------------- */
+var myPosRef=null;
+function pushPos(){ if(!MULTI||!myPosRef)return; if(Math.random()>.5)return;
+  myPosRef.update({x:+player.x.toFixed(2),y:+player.y.toFixed(2),mv:player.moving}); }
+function initMulti(){
+  myPosRef=db.ref('players/'+uid);
+  myPosRef.set({n:player.name,g:player.gender,c:player.color,x:player.x,y:player.y,mv:false,marriedTo:player.marriedTo||''});
+  myPosRef.onDisconnect().remove();
+  db.ref('players').on('value',function(snap){ var v=snap.val()||{};
+    Object.keys(remotes).forEach(function(k){ if(!v[k])delete remotes[k]; });
+    Object.keys(v).forEach(function(k){ if(k===uid)return;
+      if(!remotes[k])remotes[k]={name:v[k].n,gender:v[k].g,color:v[k].c,x:v[k].x,y:v[k].y,tx2:v[k].x,ty2:v[k].y,phase:0,mv:false,rel:0,marriedTo:v[k].marriedTo};
+      else{var r=remotes[k];r.tx2=v[k].x;r.ty2=v[k].y;r.mv=v[k].mv;r.marriedTo=v[k].marriedTo;r.hide=v[k].hide;} }); });
+  db.ref('chat').limitToLast(40).on('child_added',function(s){var m=s.val();if(m.n==='SYS')addMsg('',m.t,true);else addMsg(m.n,m.t);});
+  db.ref('requests').on('child_added',function(s){ var q=s.val(); if(q.to!==uid)return; s.ref.remove();
+    if(q.type==='flirt'){ toast('💌 '+q.fromName+' is flirting with you!');
+      if(q.fromName===player.marriedTo)toast('Aww, your spouse loves you ❤️'); }
+    if(q.type==='marry') showReq('💍','Marriage Proposal!',q.fromName+' is asking for your hand in marriage. Say yes and you two are joined forever — you can visit each other\'s homes & have babies!',function(){
+        player.marriedTo=q.fromName; myPosRef.update({marriedTo:q.fromName});
+        db.ref('requests').push({to:q.from,from:uid,fromName:player.name,type:'married'});
+        sysChat('💍 '+q.fromName+' and '+player.name+' just got MARRIED!'); toast('💍 You are married to '+q.fromName+'!!'); });
+    if(q.type==='married'){ player.marriedTo=q.fromName; myPosRef.update({marriedTo:q.fromName}); toast('💍 '+q.fromName+' said YES! You are married!!'); sysChat('💍 '+player.name+' and '+q.fromName+' just got MARRIED!'); }
+    if(q.type==='visit') showReq('🏠','Come to my house!',q.fromName+' wants you to come over to their house. Go chill together?',function(){
+        goHome(); db.ref('requests').push({to:q.from,from:uid,fromName:player.name,type:'visit2'}); });
+    if(q.type==='visit2'){ goHome(); }
+    if(q.type==='baby') showReq('👶','Baby time!',q.fromName+' wants to have a baby with you. ₦25,000 each for the hospital?',function(){ babyTime(); db.ref('requests').push({to:q.from,from:uid,fromName:player.name,type:'babygo'}); });
+    if(q.type==='babygo'){ babyTime(); } });
+}
+function sendReq(id,type){ if(!MULTI)return; db.ref('requests').push({to:id,from:uid,fromName:player.name,type:type}); }
+function showReq(icon,title,text,yes){ document.getElementById('reqIcon').textContent=icon;
+  document.getElementById('reqTitle').textContent=title; document.getElementById('reqText').textContent=text;
+  document.getElementById('mReq').classList.add('show');
+  document.getElementById('reqYes').onclick=function(){document.getElementById('mReq').classList.remove('show');yes();};
+  document.getElementById('reqNo').onclick=function(){document.getElementById('mReq').classList.remove('show');toast('Declined 💔');}; }
+
+/* ---------------- interact / romance ---------------- */
+document.getElementById('interactBtn').onclick=function(){
+  var p=nearbyPerson(); if(!p)return;
+  openPanel('❤️ '+p.name,'<div style="text-align:center">Relationship: '+(p.rel||0)+'/100 💕</div>');
+  var key=p.id||p.name;
+  addOpt('','💬 Say hi','Small talk',function(){ closePanel(); if(p.real){sendReq(p.id,'flirt');toast('You said hi to '+p.name+' 👋');} else {p.rel=Math.min(100,(p.rel||0)+5);p.say='Hi '+player.name+'! 😊';p.sayT=2;toast(p.name+' smiles at you 😊');} });
+  addOpt('pink','😘 Flirt','+15 relationship',function(){ closePanel();
+    if(p.real){ sendReq(p.id,'flirt'); toast('You flirted with '+p.name+' 😘'); if(!player.rel[key])player.rel[key]=0; player.rel[key]=Math.min(100,player.rel[key]+15); }
+    else{ p.rel=Math.min(100,(p.rel||0)+15); p.say=['😘','You fine o! 😍','Stop it! 😊'][Math.floor(Math.random()*3)]; p.sayT=2; toast('Sparks flying with '+p.name+' 💕'); } });
+  addOpt('pink','💍 Propose marriage','Needs 60+ relationship',function(){ closePanel();
+    if(player.marriedTo)return toast('You are already married to '+player.marriedTo+' 💍');
+    var r=p.rel||0;
+    if(r<60)return toast('Relationship too low! Flirt more first 💔 ('+r+'/60)');
+    if(p.real){ sendReq(p.id,'marry'); toast('💍 You proposed to '+p.name+'! Waiting for answer...'); }
+    else if(Math.random()<.8){ p.married=true; marrySim(p); } else toast(p.name+' said "let me think about it" 💭 Keep trying!'); });
+  addOpt('','🏠 Invite to your house','Chill together',function(){ closePanel();
+    if(p.real){ sendReq(p.id,'visit'); toast('🏠 Invite sent to '+p.name); }
+    else{ toast(p.name+' is coming over! Meet at your house 🏠'); p.tx=HOME.x+1.5; p.ty=HOME.y+3; p.rel=Math.min(100,(p.rel||0)+10); } });
+  if(player.marriedTo&&(p.name===player.marriedTo||(p.real&&p.id===spouseId())))
+    addOpt('pink','👶 Have a baby','₦50,000 · start a family',function(){ closePanel();
+      if(p.real){ if(player.money<25000)return toast('Your half is ₦25,000!'); player.money-=25000; sendReq(p.id,'baby'); }
+      else babyTime(); });
+};
+function spouseId(){ var k=Object.keys(remotes).find(function(k){return remotes[k].name===player.marriedTo;}); return k; }
+function marrySim(p){ player.marriedTo=p.name; p.married=true;
+  toast('💍 '+p.name+' said YES!! You are married!!'); sysChat('💍 '+player.name+' and '+p.name+' just got MARRIED! Go to your house to celebrate ❤️');
+  p.tx=HOME.x+1.5; p.ty=HOME.y+3; }
+function goHome(){ var e={x:HOME.x+1.5,y:HOME.y+3}; var d=dist(player.x,player.y,e.x,e.y);
+  travel={fx:player.x,fy:player.y,tx:e.x,ty:e.y,t:0,dur:Math.min(20,3+d*.5),label:HOME.n,mode:'Trek'}; toast('🏠 Heading home...'); }
+
+/* ---------------- input ---------------- */
+addEventListener('keydown',function(e){keys[e.key.toLowerCase()]=true;
+  if(e.key==='Enter'&&document.getElementById('chat').classList.contains('open'))return;
+  if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase()))e.preventDefault();});
+addEventListener('keyup',function(e){keys[e.key.toLowerCase()]=false;});
+cv.addEventListener('pointerdown',function(e){
+  if(document.querySelector('.modal.show'))return;
+  var r=cv.getBoundingClientRect(), wx=e.clientX-r.left, wy=e.clientY-r.top;
+  var w=unIso(wx,wy);
+  var hit=null; BUILDINGS.forEach(function(b){ if(w.x>=b.x&&w.x<=b.x+b.w&&w.y>=b.y&&w.y<=b.y+b.h)hit=b; });
+  if(hit){ openBuilding(hit); return; }
+  if(!isWater(w.x,w.y)){ player.tx=clamp(w.x,1,WORLD-1); player.ty=clamp(w.y,LAGOON_Y+.2,WORLD-1); }
+});
+/* ---------------- nav ---------------- */
+document.getElementById('navHome').onclick=function(){ goHome(); };
+document.getElementById('navWork').onclick=function(){ openBuilding(BUILDINGS[1]); };
+document.getElementById('navChat').onclick=openChat;
+document.getElementById('navProfile').onclick=function(){
+  openPanel('👤 '+player.name,'<div style="text-align:center"><div style="font-size:52px">'+(player.gender==='W'?'👩':'👨')+'</div>'
+   +'<p><b>'+player.name+'</b> · '+(player.gender==='W'?'Woman':'Man')+' · Day '+dayCount+' in Lagos</p>'
+   +'<p>💰 Cash: <b>'+fmt(player.money)+'</b> · 🏦 Savings: '+fmt(player.savings)+'</p>'
+   +'<p>💍 Status: '+(player.marriedTo?'Married to '+player.marriedTo+' ❤️':'Single, ready to mingle')+'</p>'
+   +'<p>👶 Children: '+(player.baby?1:0)+'</p></div>');
+  addOpt('','🌍 Invite friends','Copy your link so they join you online',function(){ var l=location.href;
+    if(navigator.clipboard)navigator.clipboard.writeText(l); toast('Link copied! Send it — they appear beside you live 💕 ('+l+')'); });
+  addOpt('pink','❤️ Find love','Walk up to anyone & tap ❤️ Interact',function(){closePanel();toast('Walk near someone — the ❤️ button appears!');});
+  addOpt('gray','🔄 Restart life','Start over with ₦100,000',function(){localStorage.clear();location.reload();});
+};
+/* ---------------- account ---------------- */
+var GW=document.getElementById('gW'),GM=document.getElementById('gM');
+GW.onclick=function(){player.gender='W';GW.classList.add('sel');GM.classList.remove('sel');};
+GM.onclick=function(){player.gender='M';GM.classList.add('sel');GW.classList.remove('sel');};
+if(player.name){document.getElementById('accName').value=player.name; if(player.gender==='M'){GM.classList.add('sel');GW.classList.remove('sel');}}
+document.getElementById('startBtn').onclick=function(){
+  var n=document.getElementById('accName').value.trim()||'scar_belle';
+  player.name=n; localStorage.setItem('sb_name',n); localStorage.setItem('sb_gender',player.gender);
+  document.getElementById('mWelcome').classList.remove('show');
+  if(MULTI)initMulti(); else document.getElementById('netNote').textContent='Offline mode: 12 simulated Lagosians are in the city. Add Firebase config for REAL multiplayer.';
+  sysChat('🌴 '+n+' just landed in Lagos with ₦100,000! Make it count.');
+  toast('Welcome to Lagos, '+n+'! 🌴 Tap buildings, walk with WASD/tap.');
+};
+if(MULTI)document.getElementById('netNote').textContent='✅ Multiplayer ONLINE — share your link & friends appear live!';
+updateHUD(); requestAnimationFrame(loop);
 </script>
 </body>
 </html>
 '''
-with open('/mnt/agents/output/index.html','w') as f:
-    f.write(game)
-print('chars:',len(game))
+with open('/mnt/agents/output/scar_belles_love_life.html','a') as f: f.write(js4)
+import os
+sz=os.path.getsize('/mnt/agents/output/scar_belles_love_life.html')
+print('part6 ok, total file size:', sz, 'bytes')
+import re
+html = open('/mnt/agents/output/scar_belles_love_life.html').read()
+# extract inline script (the one without src)
+scripts = re.findall(r'<script>(.*?)</script>', html, re.S)
+print('inline scripts:', len(scripts))
+open('/tmp/game_check.js','w').write(scripts[0])
+import subprocess
+r = subprocess.run(['node','--check','/tmp/game_check.js'], capture_output=True, text=True)
+print('node --check returncode:', r.returncode)
+print(r.stderr[:2000] if r.stderr else 'JS SYNTAX OK ✔')
+# basic structural checks
+for tag in ['</html>','id="cv"','id="startBtn"','id="chatSend"','requestAnimationFrame(loop)','firebase-app-compat']:
+    print(tag, '->', 'OK' if tag in html else 'MISSING')
+    s=open(path).read()
+bad="q.fromName+' is asking for your hand in marriage. Say yes and you two are joined forever — you can visit each other's homes & have babies!'"
+good="q.fromName+\" is asking for your hand in marriage. Say yes and you two are joined forever — you can visit each other's homes & have babies!\""
+assert bad in s
+s=s.replace(bad,good)
+open(path,'w').write(s)
+js=re.findall(r'<script>(.*?)</script>',s,re.S)[0]
+open('/tmp/game_check.js','w').write(js)
+r=subprocess.run(['node','--check','/tmp/game_check.js'],capture_output=True,text=True)
+print('returncode:',r.returncode, '|', r.stderr[:600] if r.stderr else 'JS SYNTAX OK ✔')
